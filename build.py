@@ -240,36 +240,63 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  padding: 22px 28px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: var(--shadow);
   margin-bottom: 22px;
 }
-.header-right { display:flex; align-items:center; gap:18px; }
-.header img.logo { height: 48px; width: auto; display: block; }
+.header-brand {
+  display: flex;
+  align-items: center;
+  /* Logo is dark-on-transparent (designed for light bg).
+     invert(1) flips black→white; hue-rotate(180) returns cyan to cyan. */
+  filter: invert(1) hue-rotate(180deg) brightness(1.05);
+}
+.header img.logo {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+.header-titles {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .header-titles h1 {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--accent);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
 }
-.header-titles .sub {
-  font-size: 13px;
+.header-titles .period {
+  font-size: 15px;
   color: var(--ink-soft);
-  margin-top: 2px;
+  font-weight: 500;
 }
-.header-meta {
-  text-align: left;
-  font-size: 12px;
-  color: var(--ink-soft);
+.header-titles .count-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
 }
-.header-meta .count {
-  font-size: 13px;
-  color: var(--accent);
+.header-titles .count-pill {
+  font-size: 11px;
   font-weight: 600;
+  color: var(--accent);
+  padding: 3px 10px;
+  background: rgba(56,189,248,0.12);
+  border: 1px solid rgba(56,189,248,0.25);
+  border-radius: 999px;
+}
+.header-titles .hint {
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.01em;
 }
 
 /* LEGEND - status only, compact */
@@ -777,16 +804,16 @@ def render_html(data: dict, logo_b64: str) -> str:
 <body>
 <div class="page">
   <header class="header">
-    <div class="header-right">
+    <div class="header-brand">
       {logo_tag}
-      <div class="header-titles">
-        <h1>{html.escape(client)} · גאנט {html.escape(period)}</h1>
-        <div class="sub">תכנון תוכן חודשי</div>
-      </div>
     </div>
-    <div class="header-meta">
-      <div class="count">{count} תכנים</div>
-      <div>גאנט חי · לחץ על תא לפרטים</div>
+    <div class="header-titles">
+      <h1>{html.escape(client)}</h1>
+      <div class="period">גאנט {html.escape(period)}</div>
+      <div class="count-row">
+        <span class="count-pill">{count} תכנים</span>
+        <span class="hint">לחץ על תא לפרטים</span>
+      </div>
     </div>
   </header>
 
