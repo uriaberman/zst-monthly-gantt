@@ -14,22 +14,25 @@ from pyluach.dates import GregorianDate
 
 # ---------- Pillar / status palette ----------
 
+# Dark mode palette: lighter accent tones readable on slate-950 base.
+# 'short' = compact label for in-cell chip (fits without truncation).
+# 'label' = full label for modal/tooltip.
 PILLAR_COLORS = {
-    'numbers':   {'bg': '#DBEAFE', 'edge': '#1E40AF', 'label': 'מאחורי המספרים'},
-    'question':  {'bg': '#EDE9FE', 'edge': '#6D28D9', 'label': 'השאלה השבועית'},
-    'reel':      {'bg': '#FCE7F3', 'edge': '#BE185D', 'label': 'רילס'},
-    'voices':    {'bg': '#D1FAE5', 'edge': '#047857', 'label': 'קולות מהשטח'},
-    'anchor':    {'bg': '#FEF3C7', 'edge': '#B45309', 'label': 'עוגן / חג'},
-    'advocacy':  {'bg': '#FECACA', 'edge': '#B91C1C', 'label': 'אדווקסי'},
-    'community': {'bg': '#CFFAFE', 'edge': '#0E7490', 'label': 'אנחנו כאן'},
-    'other':     {'bg': '#F3F4F6', 'edge': '#374151', 'label': 'אחר'},
+    'numbers':   {'accent': '#38BDF8', 'chip_bg': 'rgba(56,189,248,0.15)',  'label': 'מאחורי המספרים', 'short': 'מספרים'},
+    'question':  {'accent': '#A78BFA', 'chip_bg': 'rgba(167,139,250,0.15)', 'label': 'השאלה השבועית', 'short': 'שאלה'},
+    'reel':      {'accent': '#FB7185', 'chip_bg': 'rgba(251,113,133,0.15)', 'label': 'רילס', 'short': 'רילס'},
+    'voices':    {'accent': '#34D399', 'chip_bg': 'rgba(52,211,153,0.15)',  'label': 'קולות מהשטח', 'short': 'קולות'},
+    'anchor':    {'accent': '#FBBF24', 'chip_bg': 'rgba(251,191,36,0.15)',  'label': 'עוגן / חג', 'short': 'עוגן'},
+    'advocacy':  {'accent': '#F87171', 'chip_bg': 'rgba(248,113,113,0.15)', 'label': 'אדווקסי', 'short': 'אדווקסי'},
+    'community': {'accent': '#22D3EE', 'chip_bg': 'rgba(34,211,238,0.15)',  'label': 'אנחנו כאן', 'short': 'קהילה'},
+    'other':     {'accent': '#94A3B8', 'chip_bg': 'rgba(148,163,184,0.15)', 'label': 'אחר', 'short': 'אחר'},
 }
 
 STATUS_COLORS = {
-    'בעבודה':       '#9CA3AF',
-    'בעיצוב':       '#3B82F6',
-    'ממתין לאישור': '#F59E0B',
-    'אושר':          '#10B981',
+    'בעבודה':       '#94A3B8',
+    'בעיצוב':       '#60A5FA',
+    'ממתין לאישור': '#FBBF24',
+    'אושר':          '#34D399',
 }
 
 HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
@@ -91,7 +94,6 @@ def render_cell(cell: dict) -> str:
     classes = ['cell']
     if cell['is_outside']:
         classes.append('outside')
-        # Don't render items/holiday tag in outside cells (avoids DOM duplicates across months)
         cell = {**cell, 'items': [], 'holiday': ''}
     if cell['is_friday']:
         classes.append('friday')
@@ -101,16 +103,14 @@ def render_cell(cell: dict) -> str:
         classes.append('holiday')
     if cell['items']:
         classes.append('has-content')
-        # pillar of first item drives background
+
+    # Top accent line - color of primary item's pillar (subtle visual signal, no full fill)
+    accent_html = ''
+    if cell['items']:
         primary = cell['items'][0]
-        pcolor = PILLAR_COLORS.get(primary['pillar_key'], PILLAR_COLORS['other'])
-        bg = pcolor['bg']
-    else:
-        bg = ''
+        pc = PILLAR_COLORS.get(primary['pillar_key'], PILLAR_COLORS['other'])
+        accent_html = f'<div class="cell-accent" style="background:{pc["accent"]};"></div>'
 
-    style = f'background:{bg};' if bg else ''
-
-    # header: gregorian (large) + hebrew (small) + holiday tag
     header_parts = [
         f'<div class="num">{cell["day_num"]}</div>',
         f'<div class="heb">{html.escape(cell["heb_short"])}</div>',
@@ -118,23 +118,24 @@ def render_cell(cell: dict) -> str:
     if cell['holiday']:
         header_parts.append(f'<div class="hol">{html.escape(cell["holiday"])}</div>')
 
-    # items
     body_parts = []
     for it in cell['items']:
-        pcolor = PILLAR_COLORS.get(it['pillar_key'], PILLAR_COLORS['other'])
-        status_color = STATUS_COLORS.get(it['status'], '#9CA3AF')
+        pc = PILLAR_COLORS.get(it['pillar_key'], PILLAR_COLORS['other'])
+        status_color = STATUS_COLORS.get(it['status'], '#94A3B8')
         title = html.escape(it['title'])
-        pillar_label = html.escape(pcolor['label'])
+        pillar_label = html.escape(pc['label'])
+        pillar_short = html.escape(pc.get('short', pc['label']))
         body_parts.append(f'''
-        <div class="item" data-num="{it['num']}" style="border-right:4px solid {pcolor['edge']};">
+        <div class="item" data-num="{it['num']}">
           <div class="item-top">
-            <span class="pill" style="background:{pcolor['edge']};">{pillar_label}</span>
-            <span class="status-dot" style="background:{status_color};" title="{html.escape(it['status'])}"></span>
+            <span class="pill" style="background:{pc['chip_bg']}; color:{pc['accent']}; border:1px solid {pc['accent']}40;" title="{pillar_label}">{pillar_short}</span>
+            <span class="status-dot" style="background:{status_color}; box-shadow:0 0 0 2px rgba(255,255,255,0.06), 0 0 8px {status_color}80;" title="{html.escape(it['status'])}"></span>
           </div>
           <div class="item-title">{title}</div>
         </div>''')
 
-    return f'''<div class="{' '.join(classes)}" style="{style}">
+    return f'''<div class="{' '.join(classes)}">
+      {accent_html}
       <div class="cell-head">{''.join(header_parts)}</div>
       <div class="cell-body">{''.join(body_parts)}</div>
     </div>'''
@@ -161,24 +162,15 @@ def render_month(year: int, month: int, items_by_date: dict) -> str:
 
 
 def render_legend() -> str:
-    pillar_chips = ''.join(
-        f'<span class="legend-chip"><span class="sw" style="background:{v["edge"]};"></span>{html.escape(v["label"])}</span>'
-        for k, v in PILLAR_COLORS.items() if k != 'other'
-    )
+    """Status-only legend. Pillars are self-explanatory via cell chips."""
     status_chips = ''.join(
-        f'<span class="legend-chip"><span class="sw round" style="background:{c};"></span>{html.escape(s)}</span>'
+        f'<span class="legend-chip"><span class="sw round" style="background:{c}; box-shadow:0 0 0 2px rgba(255,255,255,0.06), 0 0 6px {c}80;"></span>{html.escape(s)}</span>'
         for s, c in STATUS_COLORS.items()
     )
     return f'''
     <div class="legend">
-      <div class="legend-group">
-        <span class="legend-label">פינות תוכן</span>
-        {pillar_chips}
-      </div>
-      <div class="legend-group">
-        <span class="legend-label">סטטוס</span>
-        {status_chips}
-      </div>
+      <span class="legend-label">סטטוס</span>
+      {status_chips}
     </div>
     '''
 
@@ -194,7 +186,8 @@ def render_modal_data(items: list) -> str:
             'day': it['day'],
             'pillar_key': it['pillar_key'],
             'pillar_label': pcolor['label'],
-            'pillar_edge': pcolor['edge'],
+            'pillar_accent': pcolor['accent'],
+            'pillar_chip_bg': pcolor['chip_bg'],
             'title': it['title'],
             'explanation': it['explanation'],
             'visuals': it['visuals'],
@@ -207,18 +200,20 @@ def render_modal_data(items: list) -> str:
 
 CSS = '''
 :root {
-  --bg: #FAFAF7;
-  --paper: #FFFFFF;
-  --ink: #1F2937;
-  --ink-soft: #6B7280;
-  --border: #E5E7EB;
-  --border-strong: #D1D5DB;
-  --weekend: #FDF6E3;
-  --saturday: #F5EAD2;
-  --outside-bg: #F9FAFB;
-  --outside-ink: #D1D5DB;
-  --accent: #0F172A;
-  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+  /* Dark mode palette - slate scale */
+  --bg: #0B1220;            /* page background, near-black navy */
+  --paper: #111827;         /* card surface */
+  --paper-2: #1E293B;       /* cell surface */
+  --paper-3: #0A1929;       /* weekend cell - friday, darker tone */
+  --paper-4: #1B2540;       /* saturday cell - slate-blue tinted, more contrast */
+  --ink: #E2E8F0;           /* primary text */
+  --ink-soft: #94A3B8;      /* secondary text */
+  --ink-faint: #475569;     /* outside cell text */
+  --border: #1F2A3B;        /* card borders */
+  --border-soft: #1A2332;   /* subtle dividers */
+  --accent: #F8FAFC;        /* titles / strong text */
+  --gold: #FBBF24;          /* holiday accent */
+  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 4px 14px rgba(0,0,0,0.3);
   --font: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
@@ -277,44 +272,40 @@ body {
   font-weight: 600;
 }
 
-/* LEGEND */
+/* LEGEND - status only, compact */
 .legend {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: 22px;
+  gap: 18px;
   align-items: center;
-  padding: 14px 20px;
+  padding: 10px 18px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 999px;
   margin-bottom: 22px;
-  box-shadow: var(--shadow);
 }
-.legend-group { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .legend-label {
   font-size: 11px;
   font-weight: 600;
   color: var(--ink-soft);
   letter-spacing: 0.05em;
-  margin-left: 6px;
-  padding: 3px 8px;
-  background: #F3F4F6;
-  border-radius: 4px;
+  padding: 2px 8px;
+  background: rgba(148,163,184,0.08);
+  border-radius: 10px;
 }
 .legend-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 12px;
   color: var(--ink);
 }
-.legend-chip .sw {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+.legend-chip .sw.round {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
   display: inline-block;
 }
-.legend-chip .sw.round { border-radius: 50%; }
 
 /* MONTHS LAYOUT - SIDE BY SIDE */
 .months {
@@ -375,31 +366,62 @@ body {
 /* CELL */
 .cell {
   position: relative;
-  background: var(--paper);
+  background: var(--paper-2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  min-height: 110px;
-  padding: 6px 8px;
+  min-height: 116px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  overflow: hidden;
+  transition: transform 0.12s ease, border-color 0.12s ease;
 }
-.cell.friday { background: var(--weekend); }
-.cell.saturday { background: var(--saturday); border-color: #E5D49A; }
+.cell:hover { border-color: rgba(148,163,184,0.3); }
+.cell.friday {
+  background: var(--paper-3);
+  border-color: rgba(251,191,36,0.12);
+}
+.cell.saturday {
+  background: var(--paper-4);
+  border-color: rgba(251,191,36,0.2);
+}
+.cell.saturday::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 50%);
+  pointer-events: none;
+  border-radius: 8px;
+}
 .cell.outside {
-  background: var(--outside-bg);
-  border-color: transparent;
+  background: transparent;
+  border-color: var(--border-soft);
 }
 .cell.outside .cell-head { opacity: 0.35; }
 .cell.outside .cell-body { display: none; }
-.cell.holiday::after {
+.cell.outside .cell-head .num { color: var(--ink-faint); }
+.cell.outside .cell-head .heb { color: var(--ink-faint); }
+
+/* Holiday: subtle gold corner mark (right edge in RTL) */
+.cell.holiday::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 3px;
-  background: #B45309;
-  border-radius: 8px 0 0 8px;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 14px 14px 0 0;
+  border-color: var(--gold) transparent transparent transparent;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* Pillar accent line on top edge */
+.cell-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
 }
 
 .cell-head {
@@ -407,18 +429,20 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px dashed rgba(0,0,0,0.06);
+  padding-bottom: 6px;
+  margin-top: 2px;
+  border-bottom: 1px solid var(--border-soft);
   min-height: 32px;
 }
 .cell-head .num {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--accent);
   line-height: 1;
+  letter-spacing: -0.01em;
 }
 .cell-head .heb {
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--ink-soft);
   font-weight: 500;
   line-height: 1.2;
@@ -427,7 +451,7 @@ body {
   width: 100%;
   font-size: 10px;
   font-weight: 600;
-  color: #B45309;
+  color: var(--gold);
   margin-top: 2px;
   letter-spacing: 0.02em;
 }
@@ -435,54 +459,54 @@ body {
 .cell-body {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   flex: 1;
+  padding-top: 2px;
 }
 
 /* ITEM CHIP */
 .item {
-  background: rgba(255,255,255,0.7);
-  border-radius: 5px;
-  padding: 4px 6px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 5px 7px;
   cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: all 0.12s ease;
 }
 .item:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(148,163,184,0.3);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  background: #FFFFFF;
 }
 .item-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
-  margin-bottom: 2px;
+  gap: 6px;
+  margin-bottom: 3px;
 }
 .item-top .pill {
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 600;
-  color: white;
-  padding: 1px 5px;
-  border-radius: 8px;
-  letter-spacing: 0.02em;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 90%;
+  max-width: calc(100% - 18px);
 }
 .item-top .status-dot {
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 0 0 1.5px white;
 }
 .item-title {
   font-size: 11.5px;
   font-weight: 500;
   color: var(--ink);
-  line-height: 1.25;
+  line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -527,11 +551,10 @@ body {
 .modal-head-left .modal-pill {
   font-size: 11px;
   font-weight: 600;
-  color: white;
   padding: 3px 10px;
   border-radius: 12px;
   display: inline-block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .modal-head-left h2 {
   margin: 0;
@@ -545,8 +568,8 @@ body {
   color: var(--ink-soft);
 }
 .modal-close {
-  background: #F3F4F6;
-  border: none;
+  background: rgba(148,163,184,0.1);
+  border: 1px solid var(--border);
   font-size: 18px;
   font-weight: 600;
   color: var(--ink-soft);
@@ -557,9 +580,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
-.modal-close:hover { background: #E5E7EB; color: var(--ink); }
+.modal-close:hover { background: rgba(148,163,184,0.2); color: var(--ink); }
 
 .modal-body {
   padding: 22px 28px 28px;
@@ -591,7 +614,7 @@ body {
 }
 @media (max-width: 720px) { .pair { grid-template-columns: 1fr; } }
 .pair-item {
-  background: #F9FAFB;
+  background: var(--paper-2);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px;
@@ -631,7 +654,7 @@ function openModal(num) {
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
-        <span class="modal-pill" style="background:${it.pillar_edge};">${it.pillar_label}</span>
+        <span class="modal-pill" style="background:${it.pillar_chip_bg}; color:${it.pillar_accent}; border:1px solid ${it.pillar_accent}40;">${it.pillar_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
         <div class="date-row">רעיון #${it.num} · ${formatDateHe(it.date)} (יום ${it.day}) · סטטוס: ${it.status}</div>
       </div>
