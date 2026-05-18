@@ -96,6 +96,8 @@ def render_cell(cell: dict) -> str:
         classes.append('holiday')
     if cell['items']:
         classes.append('has-content')
+        primary = cell['items'][0]
+        classes.append(f"type-{primary['type_key']}")
 
     header_parts = [
         f'<div class="cell-num">{cell["day_num"]}</div>',
@@ -110,14 +112,22 @@ def render_cell(cell: dict) -> str:
         pillar = html.escape(it.get('pillar_label', ''))
         title = html.escape(it['title'])
         type_label = html.escape(tc['label'])
+        # Warning if content placed on Shabbat or holiday
+        warning = ''
+        if cell.get('is_saturday') or cell.get('holiday'):
+            warning = '<span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>'
         body_parts.append(f'''
-        <div class="item" data-num="{it['num']}" data-type="{it['type_key']}">
-          <div class="item-type-row">
-            <span class="item-type-chip">{type_label}</span>
-          </div>
-          <div class="item-title">{title}</div>
-          <div class="item-pillar">{pillar}</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">{type_label}</span>
+          {warning}
+        </div>
+        <div class="cell-title">{title}</div>
+        <div class="cell-pillar">{pillar}</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
+            __STATUS_OPTS_{it['num']}__
+          </select>
+          <button class="cell-open" data-num="{it['num']}">פתח ←</button>
         </div>''')
 
     return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}">
@@ -128,22 +138,29 @@ def render_cell(cell: dict) -> str:
 
 def render_month(year: int, month: int, items_by_date: dict, is_active: bool) -> str:
     weeks = build_month_grid(year, month, items_by_date)
-    title = f'{HEB_GREG_MONTHS[month]} {year}'
-
     head_cells = ''.join(f'<div class="wd">{wd}</div>' for wd in HEB_WEEKDAYS)
     rows_html = []
     for week in weeks:
         rows_html.append('<div class="week">' + ''.join(render_cell(c) for c in week) + '</div>')
-
     active_cls = ' active' if is_active else ''
     return f'''
     <section class="month{active_cls}" data-month="{year}-{month:02d}">
       <div class="weekdays">{head_cells}</div>
-      <div class="grid">
-        {''.join(rows_html)}
-      </div>
+      <div class="grid">{''.join(rows_html)}</div>
     </section>
     '''
+
+
+def render_status_opts_for_items(html_str: str, items: list) -> str:
+    """Inject <option> sets per item into the rendered cell HTML."""
+    for it in items:
+        status = it.get('status', 'בעבודה')
+        opts = ''.join(
+            f'<option value="{html.escape(s)}"{" selected" if s == status else ""}>{html.escape(s)}</option>'
+            for s in STATUS_ORDER
+        )
+        html_str = html_str.replace(f"__STATUS_OPTS_{it['num']}__", opts)
+    return html_str
 
 
 def render_legend() -> str:
@@ -248,20 +265,20 @@ body {
 .page {
   max-width: 1480px;
   margin: 0 auto;
-  padding: 36px 40px 60px;
+  padding: 24px 32px 36px;
 }
 
-/* HEADER */
+/* COMPACT HEADER */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 26px 32px;
+  padding: 16px 24px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 .header-brand {
   display: flex;
@@ -269,7 +286,7 @@ body {
   filter: invert(1) hue-rotate(180deg) brightness(1.05);
 }
 .header img.logo {
-  height: 62px;
+  height: 46px;
   width: auto;
   display: block;
 }
@@ -277,52 +294,74 @@ body {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
 }
+.h1-label {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 18px;
+}
+.h1-sep {
+  color: var(--ink-faint);
+  font-weight: 300;
+  font-size: 20px;
+}
+.h1-client { color: var(--ink); }
 .header-titles .period {
-  font-family: var(--font);
-  font-size: 16px;
+  font-family: var(--font-en);
+  font-size: 13px;
   color: var(--ink-soft);
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 .header-titles .hint {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
-  margin-top: 8px;
+  margin-top: 4px;
+}
+
+/* CONTROLS ROW: tabs + legend in one compact line */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 /* TABS */
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px;
-  margin-bottom: 24px;
-  width: fit-content;
-  margin-inline: auto;
+  border-radius: 10px;
+  padding: 4px;
 }
 .tab {
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
   background: transparent;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
+  padding: 7px 16px;
+  border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
@@ -351,14 +390,11 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 22px;
-  padding: 14px 20px;
+  gap: 8px 14px;
+  padding: 8px 16px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 999px;
-  margin-bottom: 24px;
-  width: fit-content;
-  margin-inline: auto;
 }
 .legend-divider {
   width: 1px;
@@ -384,13 +420,13 @@ body {
 .legend-chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 12.5px;
+  gap: 6px;
+  font-size: 11.5px;
   color: var(--ink);
 }
 .legend-chip .sw {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 3px;
 }
 .legend-chip .sw.round { border-radius: 50%; }
@@ -399,8 +435,8 @@ body {
 .month {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px 32px;
+  border-radius: 14px;
+  padding: 16px 18px 20px;
   box-shadow: var(--shadow-md);
   display: none;
 }
@@ -410,67 +446,88 @@ body {
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 .wd {
   text-align: center;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-soft);
-  padding: 8px 0 10px;
+  padding: 4px 0 6px;
   letter-spacing: 0.04em;
 }
 
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
-/* CELL - generous breathing room */
+/* CELL - whole cell is the content card. Type color tints the whole cell. */
 .cell {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  min-height: 168px;
-  padding: 14px 14px 12px;
+  border-radius: 10px;
+  min-height: 158px;
+  padding: 10px 10px 9px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   overflow: hidden;
   transition: all 0.15s ease;
 }
 .cell:hover {
   border-color: rgba(148,163,184,0.4);
-  background: var(--paper-4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
 }
 
-.cell.friday { background: var(--paper-3); }
-.cell.saturday {
-  background: var(--paper-3);
-  border-color: rgba(251,191,36,0.18);
+/* Type-tinted cells (content present) */
+.cell.has-content {
+  cursor: pointer;
 }
-.cell.saturday::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 60%);
-  pointer-events: none;
-  border-radius: 12px;
+.cell.type-post {
+  background: linear-gradient(160deg, rgba(103,232,249,0.12) 0%, rgba(103,232,249,0.03) 100%);
+  border-color: rgba(103,232,249,0.35);
+  --type-c: #67E8F9;
+}
+.cell.type-carousel {
+  background: linear-gradient(160deg, rgba(94,234,212,0.12) 0%, rgba(94,234,212,0.03) 100%);
+  border-color: rgba(94,234,212,0.35);
+  --type-c: #5EEAD4;
+}
+.cell.type-story {
+  background: linear-gradient(160deg, rgba(196,181,253,0.12) 0%, rgba(196,181,253,0.03) 100%);
+  border-color: rgba(196,181,253,0.35);
+  --type-c: #C4B5FD;
+}
+.cell.type-reel {
+  background: linear-gradient(160deg, rgba(253,164,175,0.14) 0%, rgba(253,164,175,0.03) 100%);
+  border-color: rgba(253,164,175,0.4);
+  --type-c: #FDA4AF;
+}
+.cell.has-content:hover {
+  box-shadow: 0 0 0 1px var(--type-c, #67E8F9), 0 12px 30px -8px color-mix(in srgb, var(--type-c, #67E8F9) 30%, transparent);
+  transform: translateY(-2px);
+}
+
+.cell.friday:not(.has-content) {
+  background: var(--paper-3);
+}
+.cell.saturday:not(.has-content) {
+  background: rgba(251,191,36,0.03);
+  border-color: rgba(251,191,36,0.14);
 }
 .cell.outside {
-  background: transparent;
-  border-color: var(--border-soft);
+  background: transparent !important;
+  border-color: var(--border-soft) !important;
 }
 .cell.outside .cell-head { opacity: 0.35; }
 .cell.outside .cell-body { display: none; }
@@ -483,11 +540,25 @@ body {
   top: 0; right: 0;
   width: 0; height: 0;
   border-style: solid;
-  border-width: 18px 18px 0 0;
+  border-width: 14px 14px 0 0;
   border-color: var(--gold) transparent transparent transparent;
   opacity: 0.92;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Today indicator - glowing gold ring */
+.cell.is-today {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  animation: today-pulse 2.5s ease-in-out infinite;
+}
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
+  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+}
+.cell.is-today .cell-num {
+  color: var(--gold);
 }
 
 /* CELL HEAD: numbers, dates */
@@ -496,13 +567,13 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-soft);
-  min-height: 36px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.1);
+  min-height: 28px;
 }
 .cell-num {
   font-family: var(--font-en);
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1;
@@ -510,7 +581,7 @@ body {
 }
 .cell-heb {
   font-family: var(--font-he);
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--ink-soft);
   font-weight: 500;
   line-height: 1.3;
@@ -518,86 +589,64 @@ body {
 .cell-hol {
   width: 100%;
   font-family: var(--font-he);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--gold);
-  margin-top: 4px;
+  margin-top: 2px;
   letter-spacing: 0.01em;
 }
 
 .cell-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
   flex: 1;
   padding-top: 4px;
 }
 
-/* ITEM CARD - new structure: type chip → title (hero) → pillar → hover affordance.
-   Top stripe = type color. Bottom stripe = status color (set via JS). */
-.item {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px 12px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.item::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0; left: 0;
-  height: 3px;
-  background: var(--item-accent, #67E8F9);
-}
-.item[data-type="post"]     { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
-.item[data-type="carousel"] { --item-accent: #5EEAD4; --item-soft: rgba(94,234,212,0.10); }
-.item[data-type="story"]    { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
-.item[data-type="reel"]     { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
-.item:hover {
-  background: var(--item-soft);
-  border-color: var(--item-accent);
-}
-.item-type-row {
+.cell-type-row {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 6px;
   width: 100%;
 }
-.item-type-chip {
+.cell-type-chip {
   font-family: var(--font-he);
   font-size: 9.5px;
   font-weight: 600;
-  color: var(--item-accent);
-  background: var(--item-soft);
-  border: 1px solid color-mix(in srgb, var(--item-accent) 35%, transparent);
-  padding: 2px 9px;
+  color: var(--type-c);
+  background: color-mix(in srgb, var(--type-c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--type-c) 40%, transparent);
+  padding: 2px 10px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
-.item-title {
+.cell-warning {
+  font-size: 11px;
+  color: #FBBF24;
+  cursor: help;
+}
+.cell-title {
   font-family: var(--font-he);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
-  line-height: 1.35;
+  line-height: 1.3;
   text-align: center;
+  padding: 0 2px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  padding: 0 2px;
+  margin: 2px 0;
 }
-.item-pillar {
+.cell-pillar {
   font-family: var(--font-he);
   font-size: 10px;
   font-weight: 400;
-  color: var(--ink-mute);
+  color: var(--ink-soft);
   text-align: center;
   letter-spacing: 0.01em;
   display: -webkit-box;
@@ -606,17 +655,54 @@ body {
   overflow: hidden;
   max-width: 100%;
 }
-.item-open {
+
+.cell-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid rgba(148,163,184,0.08);
+}
+.cell-status {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 500;
-  color: var(--item-accent);
-  letter-spacing: 0.02em;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  margin-top: auto;
+  font-weight: 600;
+  padding: 3px 18px 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  /* Status color set by JS */
 }
-.item:hover .item-open { opacity: 0.9; }
+.cell-status:focus { outline: none; }
+.cell-status option { background: var(--paper); color: var(--ink); }
+
+.cell-open {
+  font-family: var(--font-he);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--type-c, var(--accent-cyan));
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--type-c, #67E8F9) 40%, transparent);
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.cell-open:hover {
+  background: color-mix(in srgb, var(--type-c, #67E8F9) 18%, transparent);
+}
+
+/* (item-card legacy CSS removed - cell IS the card now) */
 
 /* MODAL */
 .modal-bg {
@@ -927,12 +1013,18 @@ details.collapsible > .pair {
 }
 
 .footer {
-  margin-top: 36px;
+  margin-top: 28px;
   text-align: center;
-  font-family: var(--font);
+  font-family: var(--font-en);
   font-size: 11px;
   color: var(--ink-mute);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-brand {
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 6px;
 }
 '''
 
@@ -960,15 +1052,38 @@ function setLocal(num, field, value) {
 }
 
 /* ---------- Status decoration on cells (read from localStorage) ---------- */
+function paintStatus(selectEl) {
+  const status = selectEl.value;
+  const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
+  selectEl.style.color = c;
+  selectEl.style.borderColor = c;
+  selectEl.style.background = `color-mix(in srgb, ${c} 14%, transparent)`;
+}
+
 function applyStatusToCells() {
-  document.querySelectorAll('.item').forEach(el => {
-    const num = parseInt(el.dataset.num);
+  document.querySelectorAll('.cell-status').forEach(sel => {
+    const num = parseInt(sel.dataset.num);
     const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
-    el.dataset.status = status;
-    const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-    // Bottom status stripe + subtle glow
-    el.style.boxShadow = `inset 0 -3px 0 ${c}, 0 0 0 0 ${c}`;
+    sel.value = status;
+    paintStatus(sel);
   });
+}
+
+/* Wire cell-status changes */
+document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('cell-status')) {
+    const sel = e.target;
+    const num = parseInt(sel.dataset.num);
+    setLocal(num, 'status', sel.value);
+    paintStatus(sel);
+  }
+});
+
+/* ---------- Today highlight ---------- */
+function highlightToday() {
+  const now = new Date();
+  const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
 }
 
 /* ---------- Tabs ---------- */
@@ -1164,10 +1279,24 @@ function formatDateHe(iso) {
 }
 
 document.addEventListener('click', (e) => {
-  const item = e.target.closest('.item');
-  if (item) {
-    const num = parseInt(item.dataset.num);
+  // Don't open modal if user clicked the inline status select
+  if (e.target.closest('.cell-status')) return;
+  // Explicit open button
+  const openBtn = e.target.closest('.cell-open');
+  if (openBtn) {
+    e.stopPropagation();
+    const num = parseInt(openBtn.dataset.num);
     if (num) openModal(num);
+    return;
+  }
+  // Clicking anywhere else on a content cell opens modal
+  const cell = e.target.closest('.cell.has-content');
+  if (cell) {
+    const firstItem = cell.querySelector('[data-num]');
+    if (firstItem) {
+      const num = parseInt(firstItem.dataset.num);
+      if (num) openModal(num);
+    }
     return;
   }
   if (e.target.classList.contains('modal-bg')) closeModal();
@@ -1177,6 +1306,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
 
+highlightToday();
 applyStatusToCells();
 '''
 
@@ -1209,7 +1339,9 @@ def render_html(data: dict, logo_b64: str) -> str:
 
     months_html_parts = []
     for i, (y, m) in enumerate(months):
-        months_html_parts.append(render_month(y, m, items_by_date, is_active=(i == 0)))
+        month_html = render_month(y, m, items_by_date, is_active=(i == 0))
+        month_html = render_status_opts_for_items(month_html, items)
+        months_html_parts.append(month_html)
 
     tabs_html = render_tabs(months)
     legend_html = render_legend()
@@ -1240,20 +1372,22 @@ def render_html(data: dict, logo_b64: str) -> str:
       {logo_tag}
     </div>
     <div class="header-titles">
-      <h1>{html.escape(client)}</h1>
-      <div class="period">גאנט {html.escape(period)}</div>
-      <div class="hint">לחץ על תא לפרטים ועריכה</div>
+      <h1><span class="h1-label">גאנט</span><span class="h1-sep">|</span><span class="h1-client">{html.escape(client)}</span></h1>
+      <div class="period">{html.escape(period)}</div>
+      <div class="hint">לחץ על קוביה לפרטים ועריכה</div>
     </div>
   </header>
 
-  {tabs_html}
-  {legend_html}
+  <div class="controls">
+    {tabs_html}
+    {legend_html}
+  </div>
 
   <div class="months-container">
     {''.join(months_html_parts)}
   </div>
 
-  <div class="footer">מחלקת הסושיאל · זליגר שומרון</div>
+  <div class="footer" dir="ltr">Made by <span class="footer-brand">Social @ Seliger Shomron</span></div>
 </div>
 
 <div class="modal-bg" id="modal">

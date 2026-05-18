@@ -51,20 +51,20 @@ body {
 .page {
   max-width: 1480px;
   margin: 0 auto;
-  padding: 36px 40px 60px;
+  padding: 24px 32px 36px;
 }
 
-/* HEADER */
+/* COMPACT HEADER */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 26px 32px;
+  padding: 16px 24px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 .header-brand {
   display: flex;
@@ -72,7 +72,7 @@ body {
   filter: invert(1) hue-rotate(180deg) brightness(1.05);
 }
 .header img.logo {
-  height: 62px;
+  height: 46px;
   width: auto;
   display: block;
 }
@@ -80,52 +80,74 @@ body {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
 }
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
 }
+.h1-label {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 18px;
+}
+.h1-sep {
+  color: var(--ink-faint);
+  font-weight: 300;
+  font-size: 20px;
+}
+.h1-client { color: var(--ink); }
 .header-titles .period {
-  font-family: var(--font);
-  font-size: 16px;
+  font-family: var(--font-en);
+  font-size: 13px;
   color: var(--ink-soft);
   font-weight: 400;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 .header-titles .hint {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
-  margin-top: 8px;
+  margin-top: 4px;
+}
+
+/* CONTROLS ROW: tabs + legend in one compact line */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 /* TABS */
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px;
-  margin-bottom: 24px;
-  width: fit-content;
-  margin-inline: auto;
+  border-radius: 10px;
+  padding: 4px;
 }
 .tab {
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
   background: transparent;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
+  padding: 7px 16px;
+  border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
@@ -154,14 +176,11 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 22px;
-  padding: 14px 20px;
+  gap: 8px 14px;
+  padding: 8px 16px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 999px;
-  margin-bottom: 24px;
-  width: fit-content;
-  margin-inline: auto;
 }
 .legend-divider {
   width: 1px;
@@ -187,13 +206,13 @@ body {
 .legend-chip {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 12.5px;
+  gap: 6px;
+  font-size: 11.5px;
   color: var(--ink);
 }
 .legend-chip .sw {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 3px;
 }
 .legend-chip .sw.round { border-radius: 50%; }
@@ -202,8 +221,8 @@ body {
 .month {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px 28px 32px;
+  border-radius: 14px;
+  padding: 16px 18px 20px;
   box-shadow: var(--shadow-md);
   display: none;
 }
@@ -213,67 +232,88 @@ body {
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 .wd {
   text-align: center;
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-soft);
-  padding: 8px 0 10px;
+  padding: 4px 0 6px;
   letter-spacing: 0.04em;
 }
 
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
-/* CELL - generous breathing room */
+/* CELL - whole cell is the content card. Type color tints the whole cell. */
 .cell {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  min-height: 168px;
-  padding: 14px 14px 12px;
+  border-radius: 10px;
+  min-height: 158px;
+  padding: 10px 10px 9px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   overflow: hidden;
   transition: all 0.15s ease;
 }
 .cell:hover {
   border-color: rgba(148,163,184,0.4);
-  background: var(--paper-4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
 }
 
-.cell.friday { background: var(--paper-3); }
-.cell.saturday {
-  background: var(--paper-3);
-  border-color: rgba(251,191,36,0.18);
+/* Type-tinted cells (content present) */
+.cell.has-content {
+  cursor: pointer;
 }
-.cell.saturday::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 60%);
-  pointer-events: none;
-  border-radius: 12px;
+.cell.type-post {
+  background: linear-gradient(160deg, rgba(103,232,249,0.12) 0%, rgba(103,232,249,0.03) 100%);
+  border-color: rgba(103,232,249,0.35);
+  --type-c: #67E8F9;
+}
+.cell.type-carousel {
+  background: linear-gradient(160deg, rgba(94,234,212,0.12) 0%, rgba(94,234,212,0.03) 100%);
+  border-color: rgba(94,234,212,0.35);
+  --type-c: #5EEAD4;
+}
+.cell.type-story {
+  background: linear-gradient(160deg, rgba(196,181,253,0.12) 0%, rgba(196,181,253,0.03) 100%);
+  border-color: rgba(196,181,253,0.35);
+  --type-c: #C4B5FD;
+}
+.cell.type-reel {
+  background: linear-gradient(160deg, rgba(253,164,175,0.14) 0%, rgba(253,164,175,0.03) 100%);
+  border-color: rgba(253,164,175,0.4);
+  --type-c: #FDA4AF;
+}
+.cell.has-content:hover {
+  box-shadow: 0 0 0 1px var(--type-c, #67E8F9), 0 12px 30px -8px color-mix(in srgb, var(--type-c, #67E8F9) 30%, transparent);
+  transform: translateY(-2px);
+}
+
+.cell.friday:not(.has-content) {
+  background: var(--paper-3);
+}
+.cell.saturday:not(.has-content) {
+  background: rgba(251,191,36,0.03);
+  border-color: rgba(251,191,36,0.14);
 }
 .cell.outside {
-  background: transparent;
-  border-color: var(--border-soft);
+  background: transparent !important;
+  border-color: var(--border-soft) !important;
 }
 .cell.outside .cell-head { opacity: 0.35; }
 .cell.outside .cell-body { display: none; }
@@ -286,11 +326,25 @@ body {
   top: 0; right: 0;
   width: 0; height: 0;
   border-style: solid;
-  border-width: 18px 18px 0 0;
+  border-width: 14px 14px 0 0;
   border-color: var(--gold) transparent transparent transparent;
   opacity: 0.92;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Today indicator - glowing gold ring */
+.cell.is-today {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  animation: today-pulse 2.5s ease-in-out infinite;
+}
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
+  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+}
+.cell.is-today .cell-num {
+  color: var(--gold);
 }
 
 /* CELL HEAD: numbers, dates */
@@ -299,13 +353,13 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-soft);
-  min-height: 36px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.1);
+  min-height: 28px;
 }
 .cell-num {
   font-family: var(--font-en);
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1;
@@ -313,7 +367,7 @@ body {
 }
 .cell-heb {
   font-family: var(--font-he);
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--ink-soft);
   font-weight: 500;
   line-height: 1.3;
@@ -321,86 +375,64 @@ body {
 .cell-hol {
   width: 100%;
   font-family: var(--font-he);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--gold);
-  margin-top: 4px;
+  margin-top: 2px;
   letter-spacing: 0.01em;
 }
 
 .cell-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 4px;
   flex: 1;
   padding-top: 4px;
 }
 
-/* ITEM CARD - new structure: type chip → title (hero) → pillar → hover affordance.
-   Top stripe = type color. Bottom stripe = status color (set via JS). */
-.item {
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px 12px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.item::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0; left: 0;
-  height: 3px;
-  background: var(--item-accent, #67E8F9);
-}
-.item[data-type="post"]     { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
-.item[data-type="carousel"] { --item-accent: #5EEAD4; --item-soft: rgba(94,234,212,0.10); }
-.item[data-type="story"]    { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
-.item[data-type="reel"]     { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
-.item:hover {
-  background: var(--item-soft);
-  border-color: var(--item-accent);
-}
-.item-type-row {
+.cell-type-row {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 6px;
   width: 100%;
 }
-.item-type-chip {
+.cell-type-chip {
   font-family: var(--font-he);
   font-size: 9.5px;
   font-weight: 600;
-  color: var(--item-accent);
-  background: var(--item-soft);
-  border: 1px solid color-mix(in srgb, var(--item-accent) 35%, transparent);
-  padding: 2px 9px;
+  color: var(--type-c);
+  background: color-mix(in srgb, var(--type-c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--type-c) 40%, transparent);
+  padding: 2px 10px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
-.item-title {
+.cell-warning {
+  font-size: 11px;
+  color: #FBBF24;
+  cursor: help;
+}
+.cell-title {
   font-family: var(--font-he);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--ink);
-  line-height: 1.35;
+  line-height: 1.3;
   text-align: center;
+  padding: 0 2px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  padding: 0 2px;
+  margin: 2px 0;
 }
-.item-pillar {
+.cell-pillar {
   font-family: var(--font-he);
   font-size: 10px;
   font-weight: 400;
-  color: var(--ink-mute);
+  color: var(--ink-soft);
   text-align: center;
   letter-spacing: 0.01em;
   display: -webkit-box;
@@ -409,17 +441,54 @@ body {
   overflow: hidden;
   max-width: 100%;
 }
-.item-open {
+
+.cell-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid rgba(148,163,184,0.08);
+}
+.cell-status {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 500;
-  color: var(--item-accent);
-  letter-spacing: 0.02em;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  margin-top: auto;
+  font-weight: 600;
+  padding: 3px 18px 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  /* Status color set by JS */
 }
-.item:hover .item-open { opacity: 0.9; }
+.cell-status:focus { outline: none; }
+.cell-status option { background: var(--paper); color: var(--ink); }
+
+.cell-open {
+  font-family: var(--font-he);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--type-c, var(--accent-cyan));
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--type-c, #67E8F9) 40%, transparent);
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.cell-open:hover {
+  background: color-mix(in srgb, var(--type-c, #67E8F9) 18%, transparent);
+}
+
+/* (item-card legacy CSS removed - cell IS the card now) */
 
 /* MODAL */
 .modal-bg {
@@ -730,12 +799,18 @@ details.collapsible > .pair {
 }
 
 .footer {
-  margin-top: 36px;
+  margin-top: 28px;
   text-align: center;
-  font-family: var(--font);
+  font-family: var(--font-en);
   font-size: 11px;
   color: var(--ink-mute);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-brand {
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 6px;
 }
 </style>
 </head>
@@ -746,14 +821,15 @@ details.collapsible > .pair {
       <img class="logo" src="data:image/png;base64,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" alt="זליגר שומרון" />
     </div>
     <div class="header-titles">
-      <h1>עמותת אדוות</h1>
-      <div class="period">גאנט 20.5 - 30.6.2026</div>
-      <div class="hint">לחץ על תא לפרטים ועריכה</div>
+      <h1><span class="h1-label">גאנט</span><span class="h1-sep">|</span><span class="h1-client">עמותת אדוות</span></h1>
+      <div class="period">20.5 - 30.6.2026</div>
+      <div class="hint">לחץ על קוביה לפרטים ועריכה</div>
     </div>
   </header>
 
-  <div class="tabs"><button class="tab active" data-month="2026-05">מאי <span class="tab-year">2026</span></button><button class="tab" data-month="2026-06">יוני <span class="tab-year">2026</span></button></div>
-  
+  <div class="controls">
+    <div class="tabs"><button class="tab active" data-month="2026-05">מאי <span class="tab-year">2026</span></button><button class="tab" data-month="2026-06">יוני <span class="tab-year">2026</span></button></div>
+    
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
@@ -766,13 +842,13 @@ details.collapsible > .pair {
       </div>
     </div>
     
+  </div>
 
   <div class="months-container">
     
     <section class="month active" data-month="2026-05">
       <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
-      <div class="grid">
-        <div class="week"><div class="cell outside" data-iso="2026-04-26">
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-04-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">ט׳</div></div>
       <div class="cell-body"></div>
     </div><div class="cell outside" data-iso="2026-04-27">
@@ -844,121 +920,161 @@ details.collapsible > .pair {
     </div><div class="cell" data-iso="2026-05-19">
       <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ג׳</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-05-20">
+    </div><div class="cell has-content type-post" data-iso="2026-05-20">
       <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ד׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="1" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">1,000 בחודש</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">1,000 בחודש</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="1">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-05-21">
+    </div><div class="cell has-content type-post" data-iso="2026-05-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ה׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="2" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">שירה (מייצג): השנה שלא ישנתי</div>
-          <div class="item-pillar">קולות מהשטח</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">שירה (מייצג): השנה שלא ישנתי</div>
+        <div class="cell-pillar">קולות מהשטח</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="2">פתח ←</button>
         </div></div>
-    </div><div class="cell friday holiday has-content" data-iso="2026-05-22">
+    </div><div class="cell friday holiday has-content type-post" data-iso="2026-05-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ו׳</div><div class="cell-hol">ערב שבועות</div></div>
       <div class="cell-body">
-        <div class="item" data-num="3" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">10 הדברות של בן משפחת פצוע</div>
-          <div class="item-pillar">עוגן שבועות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">10 הדברות של בן משפחת פצוע</div>
+        <div class="cell-pillar">עוגן שבועות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="3">פתח ←</button>
         </div></div>
-    </div><div class="cell saturday holiday has-content" data-iso="2026-05-23">
+    </div><div class="cell saturday holiday has-content type-post" data-iso="2026-05-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ז׳</div><div class="cell-hol">חג שבועות</div></div>
       <div class="cell-body">
-        <div class="item" data-num="4" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">מה הביכורים שלך השנה?</div>
-          <div class="item-pillar">עוגן שבועות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">מה הביכורים שלך השנה?</div>
+        <div class="cell-pillar">עוגן שבועות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="4">פתח ←</button>
         </div></div>
-    </div></div><div class="week"><div class="cell has-content" data-iso="2026-05-24">
+    </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ח׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="5" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">8.3 מיליארד מול 12 טיפולים</div>
-          <div class="item-pillar">אדווקסי</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">8.3 מיליארד מול 12 טיפולים</div>
+        <div class="cell-pillar">אדווקסי</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="5">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-05-25">
+    </div><div class="cell has-content type-reel" data-iso="2026-05-25">
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">ט׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="6" data-type="reel">
-          <div class="item-type-row">
-            <span class="item-type-chip">רילס</span>
-          </div>
-          <div class="item-title">מי שואל את האמא?</div>
-          <div class="item-pillar">רייל</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">מי שואל את האמא?</div>
+        <div class="cell-pillar">רייל</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="6">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-05-26">
+    </div><div class="cell has-content type-post" data-iso="2026-05-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="7" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">&quot;איך אני לא מרגישה אשמה שאני לא חולה?&quot;</div>
-          <div class="item-pillar">השאלה השבועית</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">&quot;איך אני לא מרגישה אשמה שאני לא חולה?&quot;</div>
+        <div class="cell-pillar">השאלה השבועית</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="7">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-05-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-05-28">
+    </div><div class="cell has-content type-post" data-iso="2026-05-28">
       <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ב</div></div>
       <div class="cell-body">
-        <div class="item" data-num="8" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">25,274 ילדים</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">25,274 ילדים</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="8">פתח ←</button>
         </div></div>
     </div><div class="cell friday" data-iso="2026-05-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ג</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell saturday has-content" data-iso="2026-05-30">
+    </div><div class="cell saturday has-content type-post" data-iso="2026-05-30">
       <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">י״ד</div></div>
       <div class="cell-body">
-        <div class="item" data-num="9" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">פורום אחים - דיווח שטח</div>
-          <div class="item-pillar">אנחנו כאן</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">פורום אחים - דיווח שטח</div>
+        <div class="cell-pillar">אנחנו כאן</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="9">פתח ←</button>
         </div></div>
-    </div></div><div class="week"><div class="cell has-content" data-iso="2026-05-31">
+    </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-31">
       <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
       <div class="cell-body">
-        <div class="item" data-num="10" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">חודש בריאות נפש נסגר. אצלנו זה כל חודש.</div>
-          <div class="item-pillar">גשר חודשים</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">חודש בריאות נפש נסגר. אצלנו זה כל חודש.</div>
+        <div class="cell-pillar">גשר חודשים</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="10">פתח ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-06-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
@@ -978,297 +1094,391 @@ details.collapsible > .pair {
     </div><div class="cell outside saturday" data-iso="2026-06-06">
       <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
       <div class="cell-body"></div>
-    </div></div>
-      </div>
+    </div></div></div>
     </section>
     
     <section class="month" data-month="2026-06">
       <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
-      <div class="grid">
-        <div class="week"><div class="cell outside" data-iso="2026-05-31">
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-05-31">
       <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-06-01">
+    </div><div class="cell has-content type-post" data-iso="2026-06-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
       <div class="cell-body">
-        <div class="item" data-num="11" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">31,000 פצועי נפש</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">31,000 פצועי נפש</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="11" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="11">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-02">
+    </div><div class="cell has-content type-post" data-iso="2026-06-02">
       <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
       <div class="cell-body">
-        <div class="item" data-num="12" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">&quot;איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?&quot;</div>
-          <div class="item-pillar">השאלה השבועית</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">&quot;איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?&quot;</div>
+        <div class="cell-pillar">השאלה השבועית</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="12" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="12">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-03">
       <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-06-04">
+    </div><div class="cell has-content type-reel" data-iso="2026-06-04">
       <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
       <div class="cell-body">
-        <div class="item" data-num="13" data-type="reel">
-          <div class="item-type-row">
-            <span class="item-type-chip">רילס</span>
-          </div>
-          <div class="item-title">אבא לא בוכה</div>
-          <div class="item-pillar">רייל</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">אבא לא בוכה</div>
+        <div class="cell-pillar">רייל</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="13" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="13">פתח ←</button>
         </div></div>
-    </div><div class="cell friday has-content" data-iso="2026-06-05">
+    </div><div class="cell friday has-content type-post" data-iso="2026-06-05">
       <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="14" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">אחים ואחיות - אין להם שורה בחוק</div>
-          <div class="item-pillar">אדווקסי</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">אחים ואחיות - אין להם שורה בחוק</div>
+        <div class="cell-pillar">אדווקסי</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="14" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="14">פתח ←</button>
         </div></div>
-    </div><div class="cell saturday has-content" data-iso="2026-06-06">
+    </div><div class="cell saturday has-content type-post" data-iso="2026-06-06">
       <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
       <div class="cell-body">
-        <div class="item" data-num="15" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">גיא (מייצג), אח של פצוע</div>
-          <div class="item-pillar">קולות מהשטח</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">גיא (מייצג), אח של פצוע</div>
+        <div class="cell-pillar">קולות מהשטח</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="15" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="15">פתח ←</button>
         </div></div>
-    </div></div><div class="week"><div class="cell has-content" data-iso="2026-06-07">
+    </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-07">
       <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
       <div class="cell-body">
-        <div class="item" data-num="16" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">1 מ-7 בני זוג</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">1 מ-7 בני זוג</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="16" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="16">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-08">
+    </div><div class="cell has-content type-post" data-iso="2026-06-08">
       <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
       <div class="cell-body">
-        <div class="item" data-num="17" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">&quot;מתי הפעם האחרונה שלא קמתי באמצע הלילה?&quot;</div>
-          <div class="item-pillar">השאלה השבועית</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">&quot;מתי הפעם האחרונה שלא קמתי באמצע הלילה?&quot;</div>
+        <div class="cell-pillar">השאלה השבועית</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="17" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="17">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-09">
       <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-06-10">
+    </div><div class="cell has-content type-post" data-iso="2026-06-10">
       <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
       <div class="cell-body">
-        <div class="item" data-num="18" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">8 אבות בחדר. לראשונה.</div>
-          <div class="item-pillar">אנחנו כאן - פורום אבות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">8 אבות בחדר. לראשונה.</div>
+        <div class="cell-pillar">אנחנו כאן - פורום אבות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="18" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="18">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-11">
+    </div><div class="cell has-content type-reel" data-iso="2026-06-11">
       <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
       <div class="cell-body">
-        <div class="item" data-num="19" data-type="reel">
-          <div class="item-type-row">
-            <span class="item-type-chip">רילס</span>
-          </div>
-          <div class="item-title">₪46 לשעה</div>
-          <div class="item-pillar">רייל</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">₪46 לשעה</div>
+        <div class="cell-pillar">רייל</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="19" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="19">פתח ←</button>
         </div></div>
-    </div><div class="cell friday has-content" data-iso="2026-06-12">
+    </div><div class="cell friday has-content type-post" data-iso="2026-06-12">
       <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
       <div class="cell-body">
-        <div class="item" data-num="20" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">דיווח שטח מהפורום השבועי</div>
-          <div class="item-pillar">חמישי בנחלים</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">דיווח שטח מהפורום השבועי</div>
+        <div class="cell-pillar">חמישי בנחלים</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="20" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="20">פתח ←</button>
         </div></div>
-    </div><div class="cell saturday has-content" data-iso="2026-06-13">
+    </div><div class="cell saturday has-content type-post" data-iso="2026-06-13">
       <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
       <div class="cell-body">
-        <div class="item" data-num="21" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">מאיה, 7, ציירה את אבא</div>
-          <div class="item-pillar">קולות מהשטח</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">מאיה, 7, ציירה את אבא</div>
+        <div class="cell-pillar">קולות מהשטח</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="21" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="21">פתח ←</button>
         </div></div>
-    </div></div><div class="week"><div class="cell has-content" data-iso="2026-06-14">
+    </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-14">
       <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
       <div class="cell-body">
-        <div class="item" data-num="22" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">873 בכיסא גלגלים</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">873 בכיסא גלגלים</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="22" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="22">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-15">
       <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell holiday has-content" data-iso="2026-06-16">
+    </div><div class="cell holiday has-content type-post" data-iso="2026-06-16">
       <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">א׳</div><div class="cell-hol">ראש חודש תמוז</div></div>
       <div class="cell-body">
-        <div class="item" data-num="23" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">בראש חודש סופרים. גם אנחנו.</div>
-          <div class="item-pillar">ראש חודש תמוז</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">בראש חודש סופרים. גם אנחנו.</div>
+        <div class="cell-pillar">ראש חודש תמוז</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="23" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="23">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-17">
+    </div><div class="cell has-content type-post" data-iso="2026-06-17">
       <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="24" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">&quot;איך אני מתחיל יום שלא תלוי בו?&quot;</div>
-          <div class="item-pillar">השאלה השבועית</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">&quot;איך אני מתחיל יום שלא תלוי בו?&quot;</div>
+        <div class="cell-pillar">השאלה השבועית</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="24" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="24">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-18">
+    </div><div class="cell has-content type-reel" data-iso="2026-06-18">
       <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="25" data-type="reel">
-          <div class="item-type-row">
-            <span class="item-type-chip">רילס</span>
-          </div>
-          <div class="item-title">60 דקות בשבוע</div>
-          <div class="item-pillar">רייל</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">60 דקות בשבוע</div>
+        <div class="cell-pillar">רייל</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="25" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="25">פתח ←</button>
         </div></div>
-    </div><div class="cell friday has-content" data-iso="2026-06-19">
+    </div><div class="cell friday has-content type-post" data-iso="2026-06-19">
       <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="26" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">60 דקות בשבוע</div>
-          <div class="item-pillar">אדווקסי - ידעתם ש...</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">60 דקות בשבוע</div>
+        <div class="cell-pillar">אדווקסי - ידעתם ש...</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="26" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="26">פתח ←</button>
         </div></div>
-    </div><div class="cell saturday has-content" data-iso="2026-06-20">
+    </div><div class="cell saturday has-content type-post" data-iso="2026-06-20">
       <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="27" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">מתנדבת השבוע</div>
-          <div class="item-pillar">אנחנו כאן</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">מתנדבת השבוע</div>
+        <div class="cell-pillar">אנחנו כאן</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="27" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="27">פתח ←</button>
         </div></div>
-    </div></div><div class="week"><div class="cell holiday has-content" data-iso="2026-06-21">
+    </div></div><div class="week"><div class="cell holiday has-content type-post" data-iso="2026-06-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div><div class="cell-hol">יום אבא</div></div>
       <div class="cell-body">
-        <div class="item" data-num="28" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">אבא של פצוע - 24/7</div>
-          <div class="item-pillar">יום אבא</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          <span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>
+        </div>
+        <div class="cell-title">אבא של פצוע - 24/7</div>
+        <div class="cell-pillar">יום אבא</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="28" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="28">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-22">
+    </div><div class="cell has-content type-post" data-iso="2026-06-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="29" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">5 שנים אחרי</div>
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">5 שנים אחרי</div>
+        <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="29" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="29">פתח ←</button>
         </div></div>
-    </div><div class="cell has-content" data-iso="2026-06-23">
+    </div><div class="cell has-content type-post" data-iso="2026-06-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="30" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">&quot;מתי הפסקתי לבכות מול הילדים? וזה טוב?&quot;</div>
-          <div class="item-pillar">השאלה השבועית</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">&quot;מתי הפסקתי לבכות מול הילדים? וזה טוב?&quot;</div>
+        <div class="cell-pillar">השאלה השבועית</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="30" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="30">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-06-25">
+    </div><div class="cell has-content type-reel" data-iso="2026-06-25">
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">י׳</div></div>
       <div class="cell-body">
-        <div class="item" data-num="31" data-type="reel">
-          <div class="item-type-row">
-            <span class="item-type-chip">רילס</span>
-          </div>
-          <div class="item-title">6 מספרים. 6 שבועות. סיפור אחד.</div>
-          <div class="item-pillar">רייל</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">6 מספרים. 6 שבועות. סיפור אחד.</div>
+        <div class="cell-pillar">רייל</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="31" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="31">פתח ←</button>
         </div></div>
-    </div><div class="cell friday has-content" data-iso="2026-06-26">
+    </div><div class="cell friday has-content type-post" data-iso="2026-06-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
       <div class="cell-body">
-        <div class="item" data-num="32" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">תורם מספר</div>
-          <div class="item-pillar">קולות מהשטח</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">תורם מספר</div>
+        <div class="cell-pillar">קולות מהשטח</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="32" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="32">פתח ←</button>
         </div></div>
     </div><div class="cell saturday" data-iso="2026-06-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
       <div class="cell-body"></div>
-    </div></div><div class="week"><div class="cell has-content" data-iso="2026-06-28">
+    </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-28">
       <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ג</div></div>
       <div class="cell-body">
-        <div class="item" data-num="33" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">כולם מטפלים בפצוע. אנחנו במשפחה.</div>
-          <div class="item-pillar">אדווקסי + בידול</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">כולם מטפלים בפצוע. אנחנו במשפחה.</div>
+        <div class="cell-pillar">אדווקסי + בידול</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="33" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="33">פתח ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell has-content" data-iso="2026-06-30">
+    </div><div class="cell has-content type-post" data-iso="2026-06-30">
       <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">ט״ו</div></div>
       <div class="cell-body">
-        <div class="item" data-num="34" data-type="post">
-          <div class="item-type-row">
-            <span class="item-type-chip">פוסט</span>
-          </div>
-          <div class="item-title">מה ראינו ב-6 שבועות</div>
-          <div class="item-pillar">סגירה</div>
-          <div class="item-open">פתח לפרטים ←</div>
+        <div class="cell-type-row">
+          <span class="cell-type-chip">פוסט</span>
+          
+        </div>
+        <div class="cell-title">מה ראינו ב-6 שבועות</div>
+        <div class="cell-pillar">סגירה</div>
+        <div class="cell-footer">
+          <select class="cell-status" data-num="34" aria-label="סטטוס" onclick="event.stopPropagation()">
+            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+          </select>
+          <button class="cell-open" data-num="34">פתח ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-07-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
@@ -1282,13 +1492,12 @@ details.collapsible > .pair {
     </div><div class="cell outside saturday" data-iso="2026-07-04">
       <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
       <div class="cell-body"></div>
-    </div></div>
-      </div>
+    </div></div></div>
     </section>
     
   </div>
 
-  <div class="footer">מחלקת הסושיאל · זליגר שומרון</div>
+  <div class="footer" dir="ltr">Made by <span class="footer-brand">Social @ Seliger Shomron</span></div>
 </div>
 
 <div class="modal-bg" id="modal">
@@ -1318,15 +1527,38 @@ function setLocal(num, field, value) {
 }
 
 /* ---------- Status decoration on cells (read from localStorage) ---------- */
+function paintStatus(selectEl) {
+  const status = selectEl.value;
+  const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
+  selectEl.style.color = c;
+  selectEl.style.borderColor = c;
+  selectEl.style.background = `color-mix(in srgb, ${c} 14%, transparent)`;
+}
+
 function applyStatusToCells() {
-  document.querySelectorAll('.item').forEach(el => {
-    const num = parseInt(el.dataset.num);
+  document.querySelectorAll('.cell-status').forEach(sel => {
+    const num = parseInt(sel.dataset.num);
     const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
-    el.dataset.status = status;
-    const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-    // Bottom status stripe + subtle glow
-    el.style.boxShadow = `inset 0 -3px 0 ${c}, 0 0 0 0 ${c}`;
+    sel.value = status;
+    paintStatus(sel);
   });
+}
+
+/* Wire cell-status changes */
+document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('cell-status')) {
+    const sel = e.target;
+    const num = parseInt(sel.dataset.num);
+    setLocal(num, 'status', sel.value);
+    paintStatus(sel);
+  }
+});
+
+/* ---------- Today highlight ---------- */
+function highlightToday() {
+  const now = new Date();
+  const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
 }
 
 /* ---------- Tabs ---------- */
@@ -1522,10 +1754,24 @@ function formatDateHe(iso) {
 }
 
 document.addEventListener('click', (e) => {
-  const item = e.target.closest('.item');
-  if (item) {
-    const num = parseInt(item.dataset.num);
+  // Don't open modal if user clicked the inline status select
+  if (e.target.closest('.cell-status')) return;
+  // Explicit open button
+  const openBtn = e.target.closest('.cell-open');
+  if (openBtn) {
+    e.stopPropagation();
+    const num = parseInt(openBtn.dataset.num);
     if (num) openModal(num);
+    return;
+  }
+  // Clicking anywhere else on a content cell opens modal
+  const cell = e.target.closest('.cell.has-content');
+  if (cell) {
+    const firstItem = cell.querySelector('[data-num]');
+    if (firstItem) {
+      const num = parseInt(firstItem.dataset.num);
+      if (num) openModal(num);
+    }
     return;
   }
   if (e.target.classList.contains('modal-bg')) closeModal();
@@ -1535,6 +1781,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
 
+highlightToday();
 applyStatusToCells();
 </script>
 </body>
