@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-Build: data.json -> index.html (Seliger Shomron branded monthly Gantt viewer).
+Build V4: data.json -> index.html.
 
-RTL landscape, side-by-side May/June calendars, content pillars color-coded,
-cell-click modal with full content (2 visuals / 2 copy / 2 captions).
+Premium dark mode monthly Gantt viewer for Seliger Shomron clients.
+- One month per view, tabs between months
+- 3 content types only (post / story / reel) drive color
+- Rubik (Hebrew) + Inter (English/digits)
+- Generous breathing room
+- Modal: editable copy (right) + image dropzone (left), localStorage persistence
+- Status dropdown per cell with localStorage persistence
 """
 import sys, io, json, html, argparse, base64, calendar
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 from pyluach.dates import GregorianDate
 
-# ---------- Pillar / status palette ----------
 
-# Dark mode palette: lighter accent tones readable on slate-950 base.
-# 'short' = compact label for in-cell chip (fits without truncation).
-# 'label' = full label for modal/tooltip.
-PILLAR_COLORS = {
-    'numbers':   {'accent': '#38BDF8', 'chip_bg': 'rgba(56,189,248,0.15)',  'label': 'מאחורי המספרים', 'short': 'מספרים'},
-    'question':  {'accent': '#A78BFA', 'chip_bg': 'rgba(167,139,250,0.15)', 'label': 'השאלה השבועית', 'short': 'שאלה'},
-    'reel':      {'accent': '#FB7185', 'chip_bg': 'rgba(251,113,133,0.15)', 'label': 'רילס', 'short': 'רילס'},
-    'voices':    {'accent': '#34D399', 'chip_bg': 'rgba(52,211,153,0.15)',  'label': 'קולות מהשטח', 'short': 'קולות'},
-    'anchor':    {'accent': '#FBBF24', 'chip_bg': 'rgba(251,191,36,0.15)',  'label': 'עוגן / חג', 'short': 'עוגן'},
-    'advocacy':  {'accent': '#F87171', 'chip_bg': 'rgba(248,113,113,0.15)', 'label': 'אדווקסי', 'short': 'אדווקסי'},
-    'community': {'accent': '#22D3EE', 'chip_bg': 'rgba(34,211,238,0.15)',  'label': 'אנחנו כאן', 'short': 'קהילה'},
-    'other':     {'accent': '#94A3B8', 'chip_bg': 'rgba(148,163,184,0.15)', 'label': 'אחר', 'short': 'אחר'},
+# Three content types - only these drive color.
+TYPE_COLORS = {
+    'post':  {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
+    'story': {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
+    'reel':  {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
 }
 
 STATUS_COLORS = {
@@ -35,13 +32,14 @@ STATUS_COLORS = {
     'אושר':          '#34D399',
 }
 
+STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר']
+
 HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
 
-# Hebrew month names (Gregorian)
+# Hebrew names for Gregorian months
 HEB_GREG_MONTHS = ['','ינואר','פברואר','מרץ','אפריל','מאי','יוני',
                    'יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
-# Known holidays for May-June 2026 (manual since pyluach API for festivals)
 HOLIDAYS_2026 = {
     '2026-05-22': 'ערב שבועות',
     '2026-05-23': 'חג שבועות',
@@ -51,7 +49,6 @@ HOLIDAYS_2026 = {
 
 
 def heb_date(d: date) -> tuple[str, str]:
-    """Return (day-only-letters, full-string) e.g. ('כ"ה', 'כ"ה אייר תשפ"ו')."""
     gd = GregorianDate(d.year, d.month, d.day)
     hd = gd.to_heb()
     full = hd.hebrew_date_string()
@@ -60,15 +57,9 @@ def heb_date(d: date) -> tuple[str, str]:
 
 
 def build_month_grid(year: int, month: int, items_by_date: dict) -> list:
-    """
-    Return list of weeks, each week = list of 7 cells.
-    Cells outside the month are marked is_outside=True.
-    Order in week is Sunday->Saturday (Israeli/Hebrew week start).
-    """
-    cal = calendar.Calendar(firstweekday=6)  # 6 = Sunday
+    cal = calendar.Calendar(firstweekday=6)
     weeks = []
     for week_dates in cal.monthdatescalendar(year, month):
-        # monthdatescalendar with firstweekday=6 gives Sun..Sat
         row = []
         for d in week_dates:
             heb_short, heb_full = heb_date(d)
@@ -104,44 +95,31 @@ def render_cell(cell: dict) -> str:
     if cell['items']:
         classes.append('has-content')
 
-    # Top accent line - color of primary item's pillar (subtle visual signal, no full fill)
-    accent_html = ''
-    if cell['items']:
-        primary = cell['items'][0]
-        pc = PILLAR_COLORS.get(primary['pillar_key'], PILLAR_COLORS['other'])
-        accent_html = f'<div class="cell-accent" style="background:{pc["accent"]};"></div>'
-
     header_parts = [
-        f'<div class="num">{cell["day_num"]}</div>',
-        f'<div class="heb">{html.escape(cell["heb_short"])}</div>',
+        f'<div class="cell-num">{cell["day_num"]}</div>',
+        f'<div class="cell-heb">{html.escape(cell["heb_short"])}</div>',
     ]
     if cell['holiday']:
-        header_parts.append(f'<div class="hol">{html.escape(cell["holiday"])}</div>')
+        header_parts.append(f'<div class="cell-hol">{html.escape(cell["holiday"])}</div>')
 
     body_parts = []
     for it in cell['items']:
-        pc = PILLAR_COLORS.get(it['pillar_key'], PILLAR_COLORS['other'])
-        status_color = STATUS_COLORS.get(it['status'], '#94A3B8')
+        tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
+        pillar = html.escape(it.get('pillar_label', ''))
         title = html.escape(it['title'])
-        pillar_label = html.escape(pc['label'])
-        pillar_short = html.escape(pc.get('short', pc['label']))
         body_parts.append(f'''
-        <div class="item" data-num="{it['num']}">
-          <div class="item-top">
-            <span class="pill" style="background:{pc['chip_bg']}; color:{pc['accent']}; border:1px solid {pc['accent']}40;" title="{pillar_label}">{pillar_short}</span>
-            <span class="status-dot" style="background:{status_color}; box-shadow:0 0 0 2px rgba(255,255,255,0.06), 0 0 8px {status_color}80;" title="{html.escape(it['status'])}"></span>
-          </div>
+        <div class="item" data-num="{it['num']}" data-type="{it['type_key']}">
+          <div class="item-pillar">{pillar}</div>
           <div class="item-title">{title}</div>
         </div>''')
 
-    return f'''<div class="{' '.join(classes)}">
-      {accent_html}
+    return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}">
       <div class="cell-head">{''.join(header_parts)}</div>
       <div class="cell-body">{''.join(body_parts)}</div>
     </div>'''
 
 
-def render_month(year: int, month: int, items_by_date: dict) -> str:
+def render_month(year: int, month: int, items_by_date: dict, is_active: bool) -> str:
     weeks = build_month_grid(year, month, items_by_date)
     title = f'{HEB_GREG_MONTHS[month]} {year}'
 
@@ -150,9 +128,9 @@ def render_month(year: int, month: int, items_by_date: dict) -> str:
     for week in weeks:
         rows_html.append('<div class="week">' + ''.join(render_cell(c) for c in week) + '</div>')
 
+    active_cls = ' active' if is_active else ''
     return f'''
-    <section class="month">
-      <h2 class="month-title">{title}</h2>
+    <section class="month{active_cls}" data-month="{year}-{month:02d}">
       <div class="weekdays">{head_cells}</div>
       <div class="grid">
         {''.join(rows_html)}
@@ -162,32 +140,53 @@ def render_month(year: int, month: int, items_by_date: dict) -> str:
 
 
 def render_legend() -> str:
-    """Status-only legend. Pillars are self-explanatory via cell chips."""
+    type_chips = ''.join(
+        f'<span class="legend-chip"><span class="sw" style="background:{v["accent"]};"></span>{html.escape(v["label"])}</span>'
+        for v in TYPE_COLORS.values()
+    )
     status_chips = ''.join(
-        f'<span class="legend-chip"><span class="sw round" style="background:{c}; box-shadow:0 0 0 2px rgba(255,255,255,0.06), 0 0 6px {c}80;"></span>{html.escape(s)}</span>'
+        f'<span class="legend-chip"><span class="sw round" style="background:{c}; box-shadow:0 0 6px {c}80;"></span>{html.escape(s)}</span>'
         for s, c in STATUS_COLORS.items()
     )
     return f'''
     <div class="legend">
-      <span class="legend-label">סטטוס</span>
-      {status_chips}
+      <div class="legend-group">
+        <span class="legend-label">סוג תוכן</span>
+        {type_chips}
+      </div>
+      <div class="legend-divider"></div>
+      <div class="legend-group">
+        <span class="legend-label">סטטוס</span>
+        {status_chips}
+      </div>
     </div>
     '''
 
 
+def render_tabs(months: list) -> str:
+    if len(months) <= 1:
+        return ''
+    btns = []
+    for i, (y, m) in enumerate(months):
+        title = f'{HEB_GREG_MONTHS[m]} <span class="tab-year">{y}</span>'
+        active = ' active' if i == 0 else ''
+        btns.append(f'<button class="tab{active}" data-month="{y}-{m:02d}">{title}</button>')
+    return f'<div class="tabs">{"".join(btns)}</div>'
+
+
 def render_modal_data(items: list) -> str:
-    """Serialize items for client-side modal."""
     slim = []
     for it in items:
-        pcolor = PILLAR_COLORS.get(it['pillar_key'], PILLAR_COLORS['other'])
+        tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
         slim.append({
             'num': it['num'],
             'date': it['date_iso'],
             'day': it['day'],
-            'pillar_key': it['pillar_key'],
-            'pillar_label': pcolor['label'],
-            'pillar_accent': pcolor['accent'],
-            'pillar_chip_bg': pcolor['chip_bg'],
+            'type_key': it['type_key'],
+            'type_label': tc['label'],
+            'type_accent': tc['accent'],
+            'type_soft': tc['soft'],
+            'pillar_label': it.get('pillar_label', ''),
             'title': it['title'],
             'explanation': it['explanation'],
             'visuals': it['visuals'],
@@ -200,21 +199,29 @@ def render_modal_data(items: list) -> str:
 
 CSS = '''
 :root {
-  /* Dark mode palette - slate scale */
-  --bg: #0B1220;            /* page background, near-black navy */
-  --paper: #111827;         /* card surface */
-  --paper-2: #1E293B;       /* cell surface */
-  --paper-3: #0A1929;       /* weekend cell - friday, darker tone */
-  --paper-4: #1B2540;       /* saturday cell - slate-blue tinted, more contrast */
-  --ink: #E2E8F0;           /* primary text */
-  --ink-soft: #94A3B8;      /* secondary text */
-  --ink-faint: #475569;     /* outside cell text */
-  --border: #1F2A3B;        /* card borders */
-  --border-soft: #1A2332;   /* subtle dividers */
-  --accent: #F8FAFC;        /* titles / strong text */
-  --gold: #FBBF24;          /* holiday accent */
-  --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 4px 14px rgba(0,0,0,0.3);
-  --font: 'Rubik', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Slate dark base */
+  --bg:        #07101F;
+  --paper:     #0F1A2E;
+  --paper-2:   #14223A;
+  --paper-3:   #0C1828;
+  --paper-4:   #18253F;
+  --ink:       #F1F5F9;
+  --ink-soft:  #94A3B8;
+  --ink-faint: #475569;
+  --ink-mute:  #64748B;
+  --border:    #1E2D45;
+  --border-soft: #182338;
+  --accent-cyan: #67E8F9;
+  --gold:      #FBBF24;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+
+  /* Fonts - Hebrew = Rubik, English/digits = Inter (different family, complements Rubik) */
+  --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
+  --font-en: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Inter first → Latin/digits picked from Inter, Hebrew falls through to Rubik */
+  --font: 'Inter', 'Rubik', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -225,14 +232,16 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .page {
-  max-width: 1840px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 28px 32px 48px;
+  padding: 36px 40px 60px;
 }
 
 /* HEADER */
@@ -240,22 +249,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 28px;
+  padding: 26px 32px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  margin-bottom: 22px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 28px;
 }
 .header-brand {
   display: flex;
   align-items: center;
-  /* Logo is dark-on-transparent (designed for light bg).
-     invert(1) flips black→white; hue-rotate(180) returns cyan to cyan. */
   filter: invert(1) hue-rotate(180deg) brightness(1.05);
 }
 .header img.logo {
-  height: 56px;
+  height: 62px;
   width: auto;
   display: block;
 }
@@ -263,131 +270,177 @@ body {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .header-titles h1 {
   margin: 0;
-  font-size: 26px;
+  font-family: var(--font-he);
+  font-size: 32px;
   font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -0.015em;
-  line-height: 1.1;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }
 .header-titles .period {
-  font-size: 15px;
+  font-family: var(--font);
+  font-size: 16px;
   color: var(--ink-soft);
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 .header-titles .count-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 6px;
+  gap: 12px;
+  margin-top: 8px;
 }
 .header-titles .count-pill {
+  font-family: var(--font-en);
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
-  padding: 3px 10px;
-  background: rgba(56,189,248,0.12);
-  border: 1px solid rgba(56,189,248,0.25);
+  color: var(--accent-cyan);
+  padding: 4px 12px;
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.25);
   border-radius: 999px;
+  letter-spacing: 0.02em;
 }
 .header-titles .hint {
-  font-size: 11px;
-  color: var(--ink-soft);
+  font-size: 12px;
+  color: var(--ink-mute);
   letter-spacing: 0.01em;
 }
 
-/* LEGEND - status only, compact */
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 8px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  margin-bottom: 24px;
+  width: fit-content;
+  margin-inline: auto;
+}
+.tab {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.tab .tab-year {
+  font-family: var(--font-en);
+  font-weight: 400;
+  color: var(--ink-mute);
+  margin-inline-start: 6px;
+}
+.tab:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+.tab.active {
+  background: var(--accent-cyan);
+  color: var(--bg);
+}
+.tab.active .tab-year {
+  color: var(--bg);
+  opacity: 0.7;
+}
+
+/* LEGEND */
 .legend {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
-  gap: 18px;
   align-items: center;
-  padding: 10px 18px;
+  gap: 14px 22px;
+  padding: 14px 20px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 999px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
+  width: fit-content;
+  margin-inline: auto;
+}
+.legend-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+.legend-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .legend-label {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--ink-soft);
-  letter-spacing: 0.05em;
-  padding: 2px 8px;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
   background: rgba(148,163,184,0.08);
-  border-radius: 10px;
+  border-radius: 8px;
+  text-transform: none;
 }
 .legend-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 7px;
+  font-size: 12.5px;
   color: var(--ink);
 }
-.legend-chip .sw.round {
+.legend-chip .sw {
   width: 12px;
   height: 12px;
-  border-radius: 50%;
-  display: inline-block;
+  border-radius: 3px;
 }
+.legend-chip .sw.round { border-radius: 50%; }
 
-/* MONTHS LAYOUT - SIDE BY SIDE */
-.months {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-}
-@media (max-width: 1200px) {
-  .months { grid-template-columns: 1fr; }
-}
-
+/* MONTH (one at a time via tabs) */
 .month {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 26px 28px 32px;
+  box-shadow: var(--shadow-md);
+  display: none;
 }
-.month-title {
-  margin: 0 0 14px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--accent);
-  text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
+.month.active { display: block; }
 
-/* WEEKDAYS HEADER */
+/* WEEKDAY HEADER */
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 .wd {
   text-align: center;
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
   color: var(--ink-soft);
-  padding: 6px 0;
-  text-transform: none;
-  letter-spacing: 0.02em;
+  padding: 8px 0 10px;
+  letter-spacing: 0.04em;
 }
 
-/* GRID */
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 8px;
 }
 
 /* CELL */
@@ -395,31 +448,33 @@ body {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  min-height: 116px;
-  padding: 8px 10px;
+  border-radius: 10px;
+  min-height: 138px;
+  padding: 12px 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   overflow: hidden;
-  transition: transform 0.12s ease, border-color 0.12s ease;
+  transition: all 0.15s ease;
 }
-.cell:hover { border-color: rgba(148,163,184,0.3); }
-.cell.friday {
-  background: var(--paper-3);
-  border-color: rgba(251,191,36,0.12);
-}
-.cell.saturday {
+.cell:hover {
+  border-color: rgba(148,163,184,0.35);
   background: var(--paper-4);
-  border-color: rgba(251,191,36,0.2);
+  transform: translateY(-1px);
+}
+
+.cell.friday { background: var(--paper-3); }
+.cell.saturday {
+  background: var(--paper-3);
+  border-color: rgba(251,191,36,0.18);
 }
 .cell.saturday::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 50%);
+  background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 60%);
   pointer-events: none;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 .cell.outside {
   background: transparent;
@@ -427,113 +482,107 @@ body {
 }
 .cell.outside .cell-head { opacity: 0.35; }
 .cell.outside .cell-body { display: none; }
-.cell.outside .cell-head .num { color: var(--ink-faint); }
-.cell.outside .cell-head .heb { color: var(--ink-faint); }
+.cell.outside .cell-num,
+.cell.outside .cell-heb { color: var(--ink-faint); }
 
-/* Holiday: subtle gold corner mark (right edge in RTL) */
 .cell.holiday::before {
   content: '';
   position: absolute;
   top: 0; right: 0;
   width: 0; height: 0;
   border-style: solid;
-  border-width: 14px 14px 0 0;
+  border-width: 16px 16px 0 0;
   border-color: var(--gold) transparent transparent transparent;
-  opacity: 0.85;
+  opacity: 0.9;
   pointer-events: none;
 }
 
-/* Pillar accent line on top edge */
-.cell-accent {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  border-radius: 8px 8px 0 0;
-}
-
+/* CELL HEAD: numbers, dates */
 .cell-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 6px;
-  padding-bottom: 6px;
-  margin-top: 2px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border-soft);
-  min-height: 32px;
+  min-height: 36px;
 }
-.cell-head .num {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--accent);
+.cell-num {
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
-.cell-head .heb {
-  font-size: 10.5px;
+.cell-heb {
+  font-family: var(--font-he);
+  font-size: 11.5px;
   color: var(--ink-soft);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.3;
 }
-.cell-head .hol {
+.cell-hol {
   width: 100%;
-  font-size: 10px;
+  font-family: var(--font-he);
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--gold);
-  margin-top: 2px;
-  letter-spacing: 0.02em;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
 }
 
 .cell-body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
-  padding-top: 2px;
+  padding-top: 4px;
 }
 
-/* ITEM CHIP */
+/* ITEM CARD - color-driven by type, text RTL with title centered */
 .item {
-  background: rgba(255,255,255,0.025);
-  border: 1px solid var(--border-soft);
-  border-radius: 6px;
-  padding: 5px 7px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
 }
+.item::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; left: 0;
+  height: 3px;
+  background: var(--item-accent, #67E8F9);
+}
+.item[data-type="post"]  { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
+.item[data-type="story"] { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
+.item[data-type="reel"]  { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
 .item:hover {
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(148,163,184,0.3);
+  background: var(--item-soft, rgba(103,232,249,0.10));
+  border-color: var(--item-accent, #67E8F9);
   transform: translateY(-1px);
 }
-.item-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 3px;
-}
-.item-top .pill {
-  font-size: 9.5px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 10px;
+.item-pillar {
+  font-family: var(--font-he);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-mute);
+  text-align: right;
   letter-spacing: 0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 18px);
-}
-.item-top .status-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  flex-shrink: 0;
+  margin-top: 2px;
+  margin-bottom: 4px;
 }
 .item-title {
-  font-size: 11.5px;
-  font-weight: 500;
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.35;
+  text-align: center;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -544,8 +593,8 @@ body {
 .modal-bg {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(4px);
+  background: rgba(7, 16, 31, 0.78);
+  backdrop-filter: blur(8px);
   display: none;
   align-items: center;
   justify-content: center;
@@ -555,16 +604,17 @@ body {
 .modal-bg.open { display: flex; }
 .modal {
   background: var(--paper);
-  border-radius: 16px;
-  max-width: 880px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  max-width: 1100px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-lg);
   direction: rtl;
 }
 .modal-head {
-  padding: 22px 28px 16px;
+  padding: 26px 32px 22px;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -573,107 +623,355 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 18px;
 }
 .modal-head-left .modal-pill {
+  font-family: var(--font-he);
   font-size: 11px;
   font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
   display: inline-block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .modal-head-left h2 {
   margin: 0;
-  font-size: 22px;
+  font-family: var(--font-he);
+  font-size: 26px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--ink);
+  letter-spacing: -0.015em;
 }
-.modal-head-left .date-row {
-  margin-top: 6px;
+.modal-head-left .pillar-name {
+  font-family: var(--font-he);
   font-size: 13px;
   color: var(--ink-soft);
+  margin-top: 4px;
 }
+.modal-head-left .date-row {
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.modal-head-left .date-row .dot {
+  width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
+}
+.modal-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 4px 28px 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+.status-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
 .modal-close {
-  background: rgba(148,163,184,0.1);
+  background: rgba(148,163,184,0.08);
   border: 1px solid var(--border);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-soft);
-  width: 32px;
-  height: 32px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
-.modal-close:hover { background: rgba(148,163,184,0.2); color: var(--ink); }
+.modal-close:hover {
+  background: rgba(148,163,184,0.18);
+  color: var(--ink);
+}
 
-.modal-body {
-  padding: 22px 28px 28px;
+.modal-body { padding: 26px 32px 32px; }
+
+/* PRIMARY ROW: image dropzone (left) + accompanying copy (right) */
+.modal-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
 }
+@media (max-width: 820px) { .modal-primary { grid-template-columns: 1fr; } }
+
+.dropzone {
+  background: var(--paper-2);
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+.dropzone:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.04);
+}
+.dropzone.has-image { padding: 0; border-style: solid; }
+.dropzone img.uploaded {
+  max-width: 100%;
+  max-height: 380px;
+  border-radius: 12px;
+  display: block;
+}
+.dropzone .dz-icon {
+  width: 44px; height: 44px;
+  color: var(--ink-mute);
+}
+.dropzone .dz-text {
+  font-family: var(--font-he);
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  font-weight: 500;
+}
+.dropzone .dz-sub {
+  font-family: var(--font);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+}
+.dropzone input[type="file"] { display: none; }
+.dz-remove {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  border-radius: 999px;
+  font-size: 11px;
+  padding: 4px 12px;
+  cursor: pointer;
+  display: none;
+}
+.dropzone.has-image .dz-remove { display: block; }
+
+.copy-area {
+  display: flex;
+  flex-direction: column;
+}
+.copy-area label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.copy-area textarea {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 18px;
+  resize: none;
+  flex: 1;
+  min-height: 280px;
+  direction: rtl;
+  text-align: right;
+  transition: border-color 0.15s ease;
+}
+.copy-area textarea:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+}
+.copy-area textarea::placeholder { color: var(--ink-faint); }
+.copy-saved {
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: 6px;
+  text-align: left;
+  min-height: 14px;
+}
+
+/* SECONDARY: original explanation + 2x3 options collapsible */
 .modal-section {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 .modal-section:last-child { margin-bottom: 0; }
-.modal-section h3 {
-  margin: 0 0 10px;
-  font-size: 12px;
+.modal-section > h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-he);
+  font-size: 11px;
   font-weight: 700;
-  color: var(--ink-soft);
-  letter-spacing: 0.06em;
-  text-transform: none;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-soft);
 }
-.modal-section .explanation {
+.explanation {
+  font-family: var(--font-he);
   font-size: 14px;
-  line-height: 1.6;
-  color: var(--ink);
+  line-height: 1.7;
+  color: var(--ink-soft);
   white-space: pre-wrap;
 }
-.pair {
+
+details.collapsible {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--paper-2);
+  margin-bottom: 12px;
+}
+details.collapsible > summary {
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+details.collapsible > summary::-webkit-details-marker { display: none; }
+details.collapsible > summary::after {
+  content: '+';
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+details.collapsible[open] > summary::after { content: '−'; }
+details.collapsible > .pair {
+  padding: 0 18px 18px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
-@media (max-width: 720px) { .pair { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { details.collapsible > .pair { grid-template-columns: 1fr; } }
 .pair-item {
-  background: var(--paper-2);
-  border: 1px solid var(--border);
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
   border-radius: 10px;
-  padding: 14px;
+  padding: 14px 16px;
 }
 .pair-item .pair-label {
+  font-family: var(--font-he);
   font-size: 11px;
   font-weight: 600;
-  color: var(--ink-soft);
+  color: var(--ink-mute);
   margin-bottom: 8px;
+  letter-spacing: 0.04em;
 }
 .pair-item .pair-text {
-  font-size: 13.5px;
+  font-family: var(--font-he);
+  font-size: 13px;
   line-height: 1.6;
   white-space: pre-wrap;
   color: var(--ink);
 }
 
 .footer {
-  margin-top: 30px;
+  margin-top: 36px;
   text-align: center;
-  font-size: 12px;
-  color: var(--ink-soft);
+  font-family: var(--font);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
 }
 '''
+
 
 JS = '''
 const ITEMS_DATA = __ITEMS_JSON__;
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
+const CLIENT_KEY = '__CLIENT_KEY__';
 
+const STATUS_COLORS = {
+  'בעבודה': '#94A3B8',
+  'בעיצוב': '#60A5FA',
+  'ממתין לאישור': '#FBBF24',
+  'אושר': '#34D399',
+};
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
+
+/* ---------- localStorage helpers (per-client, per-item) ---------- */
+function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
+function getLocal(num, field, fallback) {
+  try { return localStorage.getItem(lsKey(num, field)) ?? fallback; } catch (e) { return fallback; }
+}
+function setLocal(num, field, value) {
+  try { localStorage.setItem(lsKey(num, field), value); } catch (e) {}
+}
+
+/* ---------- Status decoration on cells (read from localStorage) ---------- */
+function applyStatusToCells() {
+  document.querySelectorAll('.item').forEach(el => {
+    const num = parseInt(el.dataset.num);
+    const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
+    el.dataset.status = status;
+    // soft top-stripe color = type accent; but add a status border-bottom band:
+    const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
+    el.style.boxShadow = `inset 0 -3px 0 ${c}`;
+  });
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const m = tab.dataset.month;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
+  });
+});
+/* Restore last active month */
+try {
+  const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
+  if (saved) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.month === saved));
+    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+  }
+} catch (e) {}
+
+/* ---------- Modal ---------- */
 function openModal(num) {
   const it = itemsByNum[num];
   if (!it) return;
+
+  const status = getLocal(num, 'status', it.status || 'בעבודה');
+  const savedCopy = getLocal(num, 'copy', '');
+  const savedImg = getLocal(num, 'img', '');
+
+  const statusOpts = STATUS_ORDER.map(s =>
+    `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
+  ).join('');
 
   const modal = document.getElementById('modal');
   const inner = document.getElementById('modal-inner');
@@ -681,42 +979,139 @@ function openModal(num) {
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
-        <span class="modal-pill" style="background:${it.pillar_chip_bg}; color:${it.pillar_accent}; border:1px solid ${it.pillar_accent}40;">${it.pillar_label}</span>
+        <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
-        <div class="date-row">רעיון #${it.num} · ${formatDateHe(it.date)} (יום ${it.day}) · סטטוס: ${it.status}</div>
+        <div class="pillar-name">${escapeHtml(it.pillar_label || '')}</div>
+        <div class="date-row">
+          <span>רעיון #${it.num}</span>
+          <span class="dot"></span>
+          <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
+          <span class="dot"></span>
+          <span class="modal-status">
+            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; color:${STATUS_COLORS[status]};"></span>
+            <select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>
+          </span>
+        </div>
       </div>
       <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
+      <div class="modal-primary">
+        <div class="dropzone ${savedImg ? 'has-image' : ''}" id="dropzone" data-num="${num}">
+          <input type="file" id="fileInput" accept="image/*">
+          ${savedImg
+            ? `<img class="uploaded" src="${savedImg}" alt="ויזואל" /><button class="dz-remove" onclick="event.stopPropagation(); removeImage(${num})">הסר</button>`
+            : `<svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+               <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
+               <div class="dz-sub">PNG · JPG · WebP</div>`
+          }
+        </div>
+        <div class="copy-area">
+          <label>קופי נלווה (ניתן לעריכה)</label>
+          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+          <div class="copy-saved" id="copySaved"></div>
+        </div>
+      </div>
+
       ${it.explanation ? `<div class="modal-section">
         <h3>הסבר לרעיון</h3>
         <div class="explanation">${escapeHtml(it.explanation)}</div>
       </div>` : ''}
-      <div class="modal-section">
-        <h3>2 הצעות ויזואל</h3>
+
+      <details class="collapsible">
+        <summary>2 הצעות ויזואל</summary>
         <div class="pair">
           <div class="pair-item"><div class="pair-label">ויזואל א'</div><div class="pair-text">${escapeHtml(it.visuals.a || '—')}</div></div>
           <div class="pair-item"><div class="pair-label">ויזואל ב'</div><div class="pair-text">${escapeHtml(it.visuals.b || '—')}</div></div>
         </div>
-      </div>
-      <div class="modal-section">
-        <h3>2 הצעות קופי על ויזואל</h3>
+      </details>
+
+      <details class="collapsible">
+        <summary>2 הצעות קופי על ויזואל</summary>
         <div class="pair">
           <div class="pair-item"><div class="pair-label">קופי א'</div><div class="pair-text">${escapeHtml(it.copy_on_visual.a || '—')}</div></div>
           <div class="pair-item"><div class="pair-label">קופי ב'</div><div class="pair-text">${escapeHtml(it.copy_on_visual.b || '—')}</div></div>
         </div>
-      </div>
-      <div class="modal-section">
-        <h3>2 הצעות קפשן</h3>
+      </details>
+
+      <details class="collapsible">
+        <summary>2 הצעות קפשן</summary>
         <div class="pair">
           <div class="pair-item"><div class="pair-label">קפשן א'</div><div class="pair-text">${escapeHtml(it.captions.a || '—')}</div></div>
           <div class="pair-item"><div class="pair-label">קפשן ב'</div><div class="pair-text">${escapeHtml(it.captions.b || '—')}</div></div>
         </div>
-      </div>
+      </details>
     </div>
   `;
+
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Wire up status select
+  const sel = document.getElementById('statusSelect');
+  const dot = document.getElementById('statusDot');
+  sel.addEventListener('change', () => {
+    const v = sel.value;
+    setLocal(num, 'status', v);
+    const c = STATUS_COLORS[v] || '#94A3B8';
+    dot.style.background = c;
+    dot.style.color = c;
+    applyStatusToCells();
+  });
+
+  // Wire up copy editor (debounced save)
+  const ta = document.getElementById('copyArea');
+  const savedHint = document.getElementById('copySaved');
+  let saveTimer;
+  ta.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    savedHint.textContent = 'מקליד...';
+    saveTimer = setTimeout(() => {
+      setLocal(num, 'copy', ta.value);
+      savedHint.textContent = '✓ נשמר אוטומטית';
+      setTimeout(() => savedHint.textContent = '', 1800);
+    }, 400);
+  });
+
+  // Wire up dropzone
+  setupDropzone(num);
+}
+
+function setupDropzone(num) {
+  const dz = document.getElementById('dropzone');
+  const fi = document.getElementById('fileInput');
+  if (!dz || !fi) return;
+  dz.addEventListener('click', (e) => {
+    if (e.target.classList.contains('dz-remove')) return;
+    fi.click();
+  });
+  fi.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (f) handleImage(num, f);
+  });
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.style.borderColor = '#67E8F9'; });
+  dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dz.style.borderColor = '';
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImage(num, f);
+  });
+}
+
+function handleImage(num, file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    setLocal(num, 'img', dataUrl);
+    openModal(num);
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(num) {
+  try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
+  openModal(num);
 }
 
 function closeModal() {
@@ -752,6 +1147,8 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
+
+applyStatusToCells();
 '''
 
 
@@ -765,28 +1162,34 @@ def render_html(data: dict, logo_b64: str) -> str:
     period = data['period']
     count = data['count']
 
-    # Find date range for months
     dates = sorted(it['date_iso'] for it in items)
     first = dates[0]
     last = dates[-1]
     year_a, month_a = int(first[:4]), int(first[5:7])
     year_b, month_b = int(last[:4]), int(last[5:7])
 
-    months_html_parts = []
-    seen = set()
+    # Collect ordered list of months
+    months = []
     cur_y, cur_m = year_a, month_a
     while (cur_y, cur_m) <= (year_b, month_b):
-        if (cur_y, cur_m) not in seen:
-            months_html_parts.append(render_month(cur_y, cur_m, items_by_date))
-            seen.add((cur_y, cur_m))
+        months.append((cur_y, cur_m))
         cur_m += 1
         if cur_m > 12:
             cur_m = 1
             cur_y += 1
 
+    months_html_parts = []
+    for i, (y, m) in enumerate(months):
+        months_html_parts.append(render_month(y, m, items_by_date, is_active=(i == 0)))
+
+    tabs_html = render_tabs(months)
     legend_html = render_legend()
     items_json = render_modal_data(items)
-    js_filled = JS.replace('__ITEMS_JSON__', items_json)
+
+    # Client key for localStorage scoping (slug-ish)
+    client_key = ''.join(c if c.isalnum() else '_' for c in client) or 'client'
+
+    js_filled = JS.replace('__ITEMS_JSON__', items_json).replace('__CLIENT_KEY__', client_key)
 
     logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="זליגר שומרון" />'
 
@@ -798,7 +1201,7 @@ def render_html(data: dict, logo_b64: str) -> str:
 <title>{html.escape(client)} | גאנט {html.escape(period)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style>
 </head>
 <body>
@@ -812,14 +1215,15 @@ def render_html(data: dict, logo_b64: str) -> str:
       <div class="period">גאנט {html.escape(period)}</div>
       <div class="count-row">
         <span class="count-pill">{count} תכנים</span>
-        <span class="hint">לחץ על תא לפרטים</span>
+        <span class="hint">לחץ על תא לפרטים ועריכה</span>
       </div>
     </div>
   </header>
 
+  {tabs_html}
   {legend_html}
 
-  <div class="months">
+  <div class="months-container">
     {''.join(months_html_parts)}
   </div>
 

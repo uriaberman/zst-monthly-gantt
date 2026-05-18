@@ -130,39 +130,36 @@ def normalize_date(s: str) -> str:
     return f'{y:04d}-{int(m):02d}-{int(d):02d}'
 
 
-PILLAR_CANONICAL = {
-    'מאחורי המספרים': 'numbers',
-    'השאלה השבועית': 'question',
-    'השאלה ששמעתי': 'question',
+# Content type classification - 3 buckets only by FORMAT (post vs story vs reel).
+# The original pillar name stays as the human-readable label inside each cell;
+# the type drives color only (less visual noise across the calendar).
+TYPE_CANONICAL = {
+    # video / motion → reel
     'רייל': 'reel',
     'רילס': 'reel',
-    'קולות מהשטח': 'voices',
-    'עוגן שבועות': 'anchor',
-    'אדווקסי': 'advocacy',
-    'גשר חודשים': 'anchor',
-    'אנחנו כאן': 'community',
-    'חמישי בנחלים': 'community',
-    'ראש חודש': 'anchor',
-    'יום אבא': 'anchor',
-    'ידעתם ש': 'advocacy',
+    'סרטון': 'reel',
+    'reel': 'reel',
+    # ephemeral / story
+    'סטורי': 'story',
+    'סטוריז': 'story',
+    'story': 'story',
+    'stories': 'story',
 }
 
-PILLAR_LABEL = {
-    'numbers': 'מאחורי המספרים',
-    'question': 'השאלה השבועית',
+TYPE_LABEL = {
+    'post': 'פוסט',
+    'story': 'סטורי',
     'reel': 'רילס',
-    'voices': 'קולות מהשטח',
-    'anchor': 'עוגן',
-    'advocacy': 'אדווקסי',
-    'community': 'אנחנו כאן',
 }
 
 
-def classify_pillar(raw: str) -> str:
-    for key, val in PILLAR_CANONICAL.items():
-        if key in raw:
+def classify_type(raw: str) -> str:
+    """Default = post (covers carousels, regular posts, advocacy, anchors, etc.)."""
+    low = raw.lower()
+    for key, val in TYPE_CANONICAL.items():
+        if key in low or key in raw:
             return val
-    return 'other'
+    return 'post'
 
 
 def main():
@@ -176,8 +173,12 @@ def main():
     items = parse_docx(Path(args.docx))
     for it in items:
         it['date_iso'] = normalize_date(it['date'])
-        it['pillar_key'] = classify_pillar(it['pillar'])
-        it['pillar_short'] = PILLAR_LABEL.get(it['pillar_key'], it['pillar'])
+        # Original pillar name (e.g. "מאחורי המספרים #1") stays as the readable label.
+        # type_key drives color only - 3 buckets: post / story / reel.
+        it['type_key'] = classify_type(it['pillar'])
+        it['type_label'] = TYPE_LABEL[it['type_key']]
+        # Pillar label cleaned (drop trailing "#N" if exists)
+        it['pillar_label'] = it['pillar'].rsplit('#', 1)[0].strip().rstrip('-').strip() or it['pillar']
 
     out = {
         'client': args.client,
@@ -188,7 +189,7 @@ def main():
     Path(args.out).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'WROTE {args.out}: {len(items)} items')
     for it in items[:5]:
-        print(f"  #{it['num']:>2} {it['date_iso']} ({it['day']}) [{it['pillar_key']}] {it['title'][:50]}")
+        print(f"  #{it['num']:>2} {it['date_iso']} ({it['day']}) [{it['type_key']}] {it['title'][:50]}")
 
 
 if __name__ == '__main__':
