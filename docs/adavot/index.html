@@ -98,27 +98,11 @@ body {
   font-weight: 400;
   letter-spacing: 0.01em;
 }
-.header-titles .count-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-.header-titles .count-pill {
-  font-family: var(--font-en);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent-cyan);
-  padding: 4px 12px;
-  background: rgba(103,232,249,0.08);
-  border: 1px solid rgba(103,232,249,0.25);
-  border-radius: 999px;
-  letter-spacing: 0.02em;
-}
 .header-titles .hint {
   font-size: 12px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
+  margin-top: 8px;
 }
 
 /* TABS */
@@ -253,24 +237,25 @@ body {
   gap: 8px;
 }
 
-/* CELL */
+/* CELL - generous breathing room */
 .cell {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  min-height: 138px;
-  padding: 12px 12px 10px;
+  border-radius: 12px;
+  min-height: 168px;
+  padding: 14px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   overflow: hidden;
   transition: all 0.15s ease;
 }
 .cell:hover {
-  border-color: rgba(148,163,184,0.35);
+  border-color: rgba(148,163,184,0.4);
   background: var(--paper-4);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 .cell.friday { background: var(--paper-3); }
@@ -284,7 +269,7 @@ body {
   inset: 0;
   background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 60%);
   pointer-events: none;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .cell.outside {
   background: transparent;
@@ -301,10 +286,11 @@ body {
   top: 0; right: 0;
   width: 0; height: 0;
   border-style: solid;
-  border-width: 16px 16px 0 0;
+  border-width: 18px 18px 0 0;
   border-color: var(--gold) transparent transparent transparent;
-  opacity: 0.9;
+  opacity: 0.92;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* CELL HEAD: numbers, dates */
@@ -350,16 +336,21 @@ body {
   padding-top: 4px;
 }
 
-/* ITEM CARD - color-driven by type, text RTL with title centered */
+/* ITEM CARD - new structure: type chip → title (hero) → pillar → hover affordance.
+   Top stripe = type color. Bottom stripe = status color (set via JS). */
 .item {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
+  border-radius: 10px;
+  padding: 10px 12px 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 .item::before {
   content: '';
@@ -368,27 +359,33 @@ body {
   height: 3px;
   background: var(--item-accent, #67E8F9);
 }
-.item[data-type="post"]  { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
-.item[data-type="story"] { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
-.item[data-type="reel"]  { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
+.item[data-type="post"]     { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
+.item[data-type="carousel"] { --item-accent: #5EEAD4; --item-soft: rgba(94,234,212,0.10); }
+.item[data-type="story"]    { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
+.item[data-type="reel"]     { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
 .item:hover {
-  background: var(--item-soft, rgba(103,232,249,0.10));
-  border-color: var(--item-accent, #67E8F9);
-  transform: translateY(-1px);
+  background: var(--item-soft);
+  border-color: var(--item-accent);
 }
-.item-pillar {
+.item-type-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.item-type-chip {
   font-family: var(--font-he);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--ink-mute);
-  text-align: right;
-  letter-spacing: 0.01em;
-  margin-top: 2px;
-  margin-bottom: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--item-accent);
+  background: var(--item-soft);
+  border: 1px solid color-mix(in srgb, var(--item-accent) 35%, transparent);
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
 }
 .item-title {
   font-family: var(--font-he);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1.35;
@@ -397,7 +394,32 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  padding: 0 2px;
 }
+.item-pillar {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--ink-mute);
+  text-align: center;
+  letter-spacing: 0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+}
+.item-open {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--item-accent);
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  margin-top: auto;
+}
+.item:hover .item-open { opacity: 0.9; }
 
 /* MODAL */
 .modal-bg {
@@ -726,10 +748,7 @@ details.collapsible > .pair {
     <div class="header-titles">
       <h1>עמותת אדוות</h1>
       <div class="period">גאנט 20.5 - 30.6.2026</div>
-      <div class="count-row">
-        <span class="count-pill">34 תכנים</span>
-        <span class="hint">לחץ על תא לפרטים ועריכה</span>
-      </div>
+      <div class="hint">לחץ על תא לפרטים ועריכה</div>
     </div>
   </header>
 
@@ -738,12 +757,12 @@ details.collapsible > .pair {
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
-        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
       </div>
       <div class="legend-divider"></div>
       <div class="legend-group">
         <span class="legend-label">סטטוס</span>
-        <span class="legend-chip"><span class="sw round" style="background:#94A3B8; box-shadow:0 0 6px #94A3B880;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#60A5FA; box-shadow:0 0 6px #60A5FA80;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#FBBF24; box-shadow:0 0 6px #FBBF2480;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#34D399; box-shadow:0 0 6px #34D39980;"></span>אושר</span>
+        <span class="legend-chip"><span class="sw round" style="background:#64748B; box-shadow:0 0 6px #64748B80;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span>
       </div>
     </div>
     
@@ -829,50 +848,78 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ד׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="1" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">1,000 בחודש</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-05-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ה׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="2" data-type="post">
-          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">שירה (מייצג): השנה שלא ישנתי</div>
+          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday holiday has-content" data-iso="2026-05-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ו׳</div><div class="cell-hol">ערב שבועות</div></div>
       <div class="cell-body">
         <div class="item" data-num="3" data-type="post">
-          <div class="item-pillar">עוגן שבועות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">10 הדברות של בן משפחת פצוע</div>
+          <div class="item-pillar">עוגן שבועות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell saturday holiday has-content" data-iso="2026-05-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ז׳</div><div class="cell-hol">חג שבועות</div></div>
       <div class="cell-body">
         <div class="item" data-num="4" data-type="post">
-          <div class="item-pillar">עוגן שבועות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">מה הביכורים שלך השנה?</div>
+          <div class="item-pillar">עוגן שבועות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div></div><div class="week"><div class="cell has-content" data-iso="2026-05-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ח׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="5" data-type="post">
-          <div class="item-pillar">אדווקסי</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">8.3 מיליארד מול 12 טיפולים</div>
+          <div class="item-pillar">אדווקסי</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-05-25">
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">ט׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="6" data-type="reel">
-          <div class="item-pillar">רייל</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">רילס</span>
+          </div>
           <div class="item-title">מי שואל את האמא?</div>
+          <div class="item-pillar">רייל</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-05-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="7" data-type="post">
-          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">&quot;איך אני לא מרגישה אשמה שאני לא חולה?&quot;</div>
+          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-05-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
@@ -881,8 +928,12 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ב</div></div>
       <div class="cell-body">
         <div class="item" data-num="8" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">25,274 ילדים</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday" data-iso="2026-05-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ג</div></div>
@@ -891,15 +942,23 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">י״ד</div></div>
       <div class="cell-body">
         <div class="item" data-num="9" data-type="post">
-          <div class="item-pillar">אנחנו כאן</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">פורום אחים - דיווח שטח</div>
+          <div class="item-pillar">אנחנו כאן</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div></div><div class="week"><div class="cell has-content" data-iso="2026-05-31">
       <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
       <div class="cell-body">
         <div class="item" data-num="10" data-type="post">
-          <div class="item-pillar">גשר חודשים</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">חודש בריאות נפש נסגר. אצלנו זה כל חודש.</div>
+          <div class="item-pillar">גשר חודשים</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell outside" data-iso="2026-06-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
@@ -933,15 +992,23 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
       <div class="cell-body">
         <div class="item" data-num="11" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">31,000 פצועי נפש</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-02">
       <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
       <div class="cell-body">
         <div class="item" data-num="12" data-type="post">
-          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">&quot;איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?&quot;</div>
+          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-06-03">
       <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
@@ -950,36 +1017,56 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
       <div class="cell-body">
         <div class="item" data-num="13" data-type="reel">
-          <div class="item-pillar">רייל</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">רילס</span>
+          </div>
           <div class="item-title">אבא לא בוכה</div>
+          <div class="item-pillar">רייל</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday has-content" data-iso="2026-06-05">
       <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="14" data-type="post">
-          <div class="item-pillar">אדווקסי</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">אחים ואחיות - אין להם שורה בחוק</div>
+          <div class="item-pillar">אדווקסי</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell saturday has-content" data-iso="2026-06-06">
       <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
       <div class="cell-body">
         <div class="item" data-num="15" data-type="post">
-          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">גיא (מייצג), אח של פצוע</div>
+          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div></div><div class="week"><div class="cell has-content" data-iso="2026-06-07">
       <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
       <div class="cell-body">
         <div class="item" data-num="16" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">1 מ-7 בני זוג</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-08">
       <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
       <div class="cell-body">
         <div class="item" data-num="17" data-type="post">
-          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">&quot;מתי הפעם האחרונה שלא קמתי באמצע הלילה?&quot;</div>
+          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-06-09">
       <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
@@ -988,36 +1075,56 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
       <div class="cell-body">
         <div class="item" data-num="18" data-type="post">
-          <div class="item-pillar">אנחנו כאן - פורום אבות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">8 אבות בחדר. לראשונה.</div>
+          <div class="item-pillar">אנחנו כאן - פורום אבות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-11">
       <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
       <div class="cell-body">
         <div class="item" data-num="19" data-type="reel">
-          <div class="item-pillar">רייל</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">רילס</span>
+          </div>
           <div class="item-title">₪46 לשעה</div>
+          <div class="item-pillar">רייל</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday has-content" data-iso="2026-06-12">
       <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
       <div class="cell-body">
         <div class="item" data-num="20" data-type="post">
-          <div class="item-pillar">חמישי בנחלים</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">דיווח שטח מהפורום השבועי</div>
+          <div class="item-pillar">חמישי בנחלים</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell saturday has-content" data-iso="2026-06-13">
       <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
       <div class="cell-body">
         <div class="item" data-num="21" data-type="post">
-          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">מאיה, 7, ציירה את אבא</div>
+          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div></div><div class="week"><div class="cell has-content" data-iso="2026-06-14">
       <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
       <div class="cell-body">
         <div class="item" data-num="22" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">873 בכיסא גלגלים</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-06-15">
       <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
@@ -1026,57 +1133,89 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">א׳</div><div class="cell-hol">ראש חודש תמוז</div></div>
       <div class="cell-body">
         <div class="item" data-num="23" data-type="post">
-          <div class="item-pillar">ראש חודש תמוז</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">בראש חודש סופרים. גם אנחנו.</div>
+          <div class="item-pillar">ראש חודש תמוז</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-17">
       <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="24" data-type="post">
-          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">&quot;איך אני מתחיל יום שלא תלוי בו?&quot;</div>
+          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-18">
       <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="25" data-type="reel">
-          <div class="item-pillar">רייל</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">רילס</span>
+          </div>
           <div class="item-title">60 דקות בשבוע</div>
+          <div class="item-pillar">רייל</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday has-content" data-iso="2026-06-19">
       <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="26" data-type="post">
-          <div class="item-pillar">אדווקסי - ידעתם ש...</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">60 דקות בשבוע</div>
+          <div class="item-pillar">אדווקסי - ידעתם ש...</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell saturday has-content" data-iso="2026-06-20">
       <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="27" data-type="post">
-          <div class="item-pillar">אנחנו כאן</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">מתנדבת השבוע</div>
+          <div class="item-pillar">אנחנו כאן</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div></div><div class="week"><div class="cell holiday has-content" data-iso="2026-06-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div><div class="cell-hol">יום אבא</div></div>
       <div class="cell-body">
         <div class="item" data-num="28" data-type="post">
-          <div class="item-pillar">יום אבא</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">אבא של פצוע - 24/7</div>
+          <div class="item-pillar">יום אבא</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="29" data-type="post">
-          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">5 שנים אחרי</div>
+          <div class="item-pillar">מאחורי המספרים יש אדוות</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell has-content" data-iso="2026-06-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="30" data-type="post">
-          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">&quot;מתי הפסקתי לבכות מול הילדים? וזה טוב?&quot;</div>
+          <div class="item-pillar">השאלה השבועית</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-06-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
@@ -1085,15 +1224,23 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">י׳</div></div>
       <div class="cell-body">
         <div class="item" data-num="31" data-type="reel">
-          <div class="item-pillar">רייל</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">רילס</span>
+          </div>
           <div class="item-title">6 מספרים. 6 שבועות. סיפור אחד.</div>
+          <div class="item-pillar">רייל</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell friday has-content" data-iso="2026-06-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
       <div class="cell-body">
         <div class="item" data-num="32" data-type="post">
-          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">תורם מספר</div>
+          <div class="item-pillar">קולות מהשטח</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell saturday" data-iso="2026-06-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
@@ -1102,8 +1249,12 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ג</div></div>
       <div class="cell-body">
         <div class="item" data-num="33" data-type="post">
-          <div class="item-pillar">אדווקסי + בידול</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">כולם מטפלים בפצוע. אנחנו במשפחה.</div>
+          <div class="item-pillar">אדווקסי + בידול</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell" data-iso="2026-06-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
@@ -1112,8 +1263,12 @@ details.collapsible > .pair {
       <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">ט״ו</div></div>
       <div class="cell-body">
         <div class="item" data-num="34" data-type="post">
-          <div class="item-pillar">סגירה</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">פוסט</span>
+          </div>
           <div class="item-title">מה ראינו ב-6 שבועות</div>
+          <div class="item-pillar">סגירה</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div></div>
     </div><div class="cell outside" data-iso="2026-07-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
@@ -1146,10 +1301,10 @@ const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
 
 const STATUS_COLORS = {
-  'בעבודה': '#94A3B8',
-  'בעיצוב': '#60A5FA',
-  'ממתין לאישור': '#FBBF24',
-  'אושר': '#34D399',
+  'בעבודה': '#64748B',
+  'בעיצוב': '#F97316',
+  'ממתין לאישור': '#EAB308',
+  'אושר': '#22C55E',
 };
 const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
 
@@ -1168,9 +1323,9 @@ function applyStatusToCells() {
     const num = parseInt(el.dataset.num);
     const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
     el.dataset.status = status;
-    // soft top-stripe color = type accent; but add a status border-bottom band:
     const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-    el.style.boxShadow = `inset 0 -3px 0 ${c}`;
+    // Bottom status stripe + subtle glow
+    el.style.boxShadow = `inset 0 -3px 0 ${c}, 0 0 0 0 ${c}`;
   });
 }
 
@@ -1229,6 +1384,11 @@ function openModal(num) {
     </div>
     <div class="modal-body">
       <div class="modal-primary">
+        <div class="copy-area">
+          <label>קופי נלווה (ניתן לעריכה)</label>
+          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+          <div class="copy-saved" id="copySaved"></div>
+        </div>
         <div class="dropzone ${savedImg ? 'has-image' : ''}" id="dropzone" data-num="${num}">
           <input type="file" id="fileInput" accept="image/*">
           ${savedImg
@@ -1237,11 +1397,6 @@ function openModal(num) {
                <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
                <div class="dz-sub">PNG · JPG · WebP</div>`
           }
-        </div>
-        <div class="copy-area">
-          <label>קופי נלווה (ניתן לעריכה)</label>
-          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
-          <div class="copy-saved" id="copySaved"></div>
         </div>
       </div>
 

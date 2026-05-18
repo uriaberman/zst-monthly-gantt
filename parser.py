@@ -133,13 +133,17 @@ def normalize_date(s: str) -> str:
 # Content type classification - 3 buckets only by FORMAT (post vs story vs reel).
 # The original pillar name stays as the human-readable label inside each cell;
 # the type drives color only (less visual noise across the calendar).
+# 4 content types only - drive color
 TYPE_CANONICAL = {
     # video / motion → reel
     'רייל': 'reel',
     'רילס': 'reel',
     'סרטון': 'reel',
     'reel': 'reel',
-    # ephemeral / story
+    # carousel (multi-slide post)
+    'קרוסלה': 'carousel',
+    'carousel': 'carousel',
+    # ephemeral story
     'סטורי': 'story',
     'סטוריז': 'story',
     'story': 'story',
@@ -148,13 +152,14 @@ TYPE_CANONICAL = {
 
 TYPE_LABEL = {
     'post': 'פוסט',
+    'carousel': 'קרוסלה',
     'story': 'סטורי',
     'reel': 'רילס',
 }
 
 
 def classify_type(raw: str) -> str:
-    """Default = post (covers carousels, regular posts, advocacy, anchors, etc.)."""
+    """Default = post (single-image / text post). Use type tokens in pillar name."""
     low = raw.lower()
     for key, val in TYPE_CANONICAL.items():
         if key in low or key in raw:

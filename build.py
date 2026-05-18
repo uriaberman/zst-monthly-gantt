@@ -18,18 +18,20 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 from pyluach.dates import GregorianDate
 
 
-# Three content types - only these drive color.
+# 4 content types - cool family (cyan/teal/lavender/rose)
 TYPE_COLORS = {
-    'post':  {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
-    'story': {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
-    'reel':  {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
+    'post':     {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
+    'carousel': {'accent': '#5EEAD4', 'soft': 'rgba(94,234,212,0.14)',  'label': 'קרוסלה'},
+    'story':    {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
+    'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
 }
 
+# Statuses - warm family (gray/orange/yellow/green) - no overlap with cool content palette
 STATUS_COLORS = {
-    'בעבודה':       '#94A3B8',
-    'בעיצוב':       '#60A5FA',
-    'ממתין לאישור': '#FBBF24',
-    'אושר':          '#34D399',
+    'בעבודה':       '#64748B',  # slate (neutral / dim)
+    'בעיצוב':       '#F97316',  # orange (in motion)
+    'ממתין לאישור': '#EAB308',  # yellow (caution / wait)
+    'אושר':          '#22C55E',  # green (go)
 }
 
 STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר']
@@ -107,10 +109,15 @@ def render_cell(cell: dict) -> str:
         tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
         pillar = html.escape(it.get('pillar_label', ''))
         title = html.escape(it['title'])
+        type_label = html.escape(tc['label'])
         body_parts.append(f'''
         <div class="item" data-num="{it['num']}" data-type="{it['type_key']}">
-          <div class="item-pillar">{pillar}</div>
+          <div class="item-type-row">
+            <span class="item-type-chip">{type_label}</span>
+          </div>
           <div class="item-title">{title}</div>
+          <div class="item-pillar">{pillar}</div>
+          <div class="item-open">פתח לפרטים ←</div>
         </div>''')
 
     return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}">
@@ -288,27 +295,11 @@ body {
   font-weight: 400;
   letter-spacing: 0.01em;
 }
-.header-titles .count-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-.header-titles .count-pill {
-  font-family: var(--font-en);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--accent-cyan);
-  padding: 4px 12px;
-  background: rgba(103,232,249,0.08);
-  border: 1px solid rgba(103,232,249,0.25);
-  border-radius: 999px;
-  letter-spacing: 0.02em;
-}
 .header-titles .hint {
   font-size: 12px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
+  margin-top: 8px;
 }
 
 /* TABS */
@@ -443,24 +434,25 @@ body {
   gap: 8px;
 }
 
-/* CELL */
+/* CELL - generous breathing room */
 .cell {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  min-height: 138px;
-  padding: 12px 12px 10px;
+  border-radius: 12px;
+  min-height: 168px;
+  padding: 14px 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   overflow: hidden;
   transition: all 0.15s ease;
 }
 .cell:hover {
-  border-color: rgba(148,163,184,0.35);
+  border-color: rgba(148,163,184,0.4);
   background: var(--paper-4);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 .cell.friday { background: var(--paper-3); }
@@ -474,7 +466,7 @@ body {
   inset: 0;
   background: linear-gradient(135deg, rgba(251,191,36,0.04), transparent 60%);
   pointer-events: none;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 .cell.outside {
   background: transparent;
@@ -491,10 +483,11 @@ body {
   top: 0; right: 0;
   width: 0; height: 0;
   border-style: solid;
-  border-width: 16px 16px 0 0;
+  border-width: 18px 18px 0 0;
   border-color: var(--gold) transparent transparent transparent;
-  opacity: 0.9;
+  opacity: 0.92;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* CELL HEAD: numbers, dates */
@@ -540,16 +533,21 @@ body {
   padding-top: 4px;
 }
 
-/* ITEM CARD - color-driven by type, text RTL with title centered */
+/* ITEM CARD - new structure: type chip → title (hero) → pillar → hover affordance.
+   Top stripe = type color. Bottom stripe = status color (set via JS). */
 .item {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
+  border-radius: 10px;
+  padding: 10px 12px 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 .item::before {
   content: '';
@@ -558,27 +556,33 @@ body {
   height: 3px;
   background: var(--item-accent, #67E8F9);
 }
-.item[data-type="post"]  { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
-.item[data-type="story"] { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
-.item[data-type="reel"]  { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
+.item[data-type="post"]     { --item-accent: #67E8F9; --item-soft: rgba(103,232,249,0.10); }
+.item[data-type="carousel"] { --item-accent: #5EEAD4; --item-soft: rgba(94,234,212,0.10); }
+.item[data-type="story"]    { --item-accent: #C4B5FD; --item-soft: rgba(196,181,253,0.10); }
+.item[data-type="reel"]     { --item-accent: #FDA4AF; --item-soft: rgba(253,164,175,0.10); }
 .item:hover {
-  background: var(--item-soft, rgba(103,232,249,0.10));
-  border-color: var(--item-accent, #67E8F9);
-  transform: translateY(-1px);
+  background: var(--item-soft);
+  border-color: var(--item-accent);
 }
-.item-pillar {
+.item-type-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.item-type-chip {
   font-family: var(--font-he);
-  font-size: 10.5px;
-  font-weight: 500;
-  color: var(--ink-mute);
-  text-align: right;
-  letter-spacing: 0.01em;
-  margin-top: 2px;
-  margin-bottom: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--item-accent);
+  background: var(--item-soft);
+  border: 1px solid color-mix(in srgb, var(--item-accent) 35%, transparent);
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
 }
 .item-title {
   font-family: var(--font-he);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1.35;
@@ -587,7 +591,32 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  padding: 0 2px;
 }
+.item-pillar {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--ink-mute);
+  text-align: center;
+  letter-spacing: 0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+}
+.item-open {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--item-accent);
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  margin-top: auto;
+}
+.item:hover .item-open { opacity: 0.9; }
 
 /* MODAL */
 .modal-bg {
@@ -914,10 +943,10 @@ const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = '__CLIENT_KEY__';
 
 const STATUS_COLORS = {
-  'בעבודה': '#94A3B8',
-  'בעיצוב': '#60A5FA',
-  'ממתין לאישור': '#FBBF24',
-  'אושר': '#34D399',
+  'בעבודה': '#64748B',
+  'בעיצוב': '#F97316',
+  'ממתין לאישור': '#EAB308',
+  'אושר': '#22C55E',
 };
 const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
 
@@ -936,9 +965,9 @@ function applyStatusToCells() {
     const num = parseInt(el.dataset.num);
     const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
     el.dataset.status = status;
-    // soft top-stripe color = type accent; but add a status border-bottom band:
     const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-    el.style.boxShadow = `inset 0 -3px 0 ${c}`;
+    // Bottom status stripe + subtle glow
+    el.style.boxShadow = `inset 0 -3px 0 ${c}, 0 0 0 0 ${c}`;
   });
 }
 
@@ -997,6 +1026,11 @@ function openModal(num) {
     </div>
     <div class="modal-body">
       <div class="modal-primary">
+        <div class="copy-area">
+          <label>קופי נלווה (ניתן לעריכה)</label>
+          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+          <div class="copy-saved" id="copySaved"></div>
+        </div>
         <div class="dropzone ${savedImg ? 'has-image' : ''}" id="dropzone" data-num="${num}">
           <input type="file" id="fileInput" accept="image/*">
           ${savedImg
@@ -1005,11 +1039,6 @@ function openModal(num) {
                <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
                <div class="dz-sub">PNG · JPG · WebP</div>`
           }
-        </div>
-        <div class="copy-area">
-          <label>קופי נלווה (ניתן לעריכה)</label>
-          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
-          <div class="copy-saved" id="copySaved"></div>
         </div>
       </div>
 
@@ -1213,10 +1242,7 @@ def render_html(data: dict, logo_b64: str) -> str:
     <div class="header-titles">
       <h1>{html.escape(client)}</h1>
       <div class="period">גאנט {html.escape(period)}</div>
-      <div class="count-row">
-        <span class="count-pill">{count} תכנים</span>
-        <span class="hint">לחץ על תא לפרטים ועריכה</span>
-      </div>
+      <div class="hint">לחץ על תא לפרטים ועריכה</div>
     </div>
   </header>
 
