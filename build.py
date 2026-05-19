@@ -122,9 +122,8 @@ def render_cell(cell: dict) -> str:
           {warning}
         </div>
         <div class="cell-title">{title}</div>
-        <div class="cell-pillar">{pillar}</div>
         <div class="cell-footer">
-          <div class="cell-status-wrap">
+          <div class="cell-status-row">
             <span class="cell-status-label">סטטוס:</span>
             <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
               __STATUS_OPTS_{it['num']}__
@@ -638,47 +637,35 @@ body {
 }
 .cell-title {
   font-family: var(--font-he);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.35;
   text-align: center;
-  padding: 0 2px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  padding: 6px 4px 4px;
   overflow: hidden;
-  margin: 2px 0;
-}
-.cell-pillar {
-  font-family: var(--font-he);
-  font-size: 10px;
-  font-weight: 400;
-  color: var(--ink-soft);
-  text-align: center;
-  letter-spacing: 0.01em;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Bottom action zone - LIGHT tray to clearly separate from content area */
+/* Bottom action zone - LIGHT tray, stacked: status row + button row below */
 .cell-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 7px;
   margin: 8px -10px -9px;
-  padding: 8px 10px;
-  background: rgba(255,255,255,0.10);
-  border-top: 1px solid rgba(255,255,255,0.18);
+  padding: 9px 10px;
+  background: rgba(255,255,255,0.12);
+  border-top: 1px solid rgba(255,255,255,0.22);
 }
-.cell-status-wrap {
-  display: inline-flex;
+.cell-status-row {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+  width: 100%;
 }
 .cell-status-label {
   font-family: var(--font-he);
@@ -710,16 +697,18 @@ body {
 
 .cell-open {
   font-family: var(--font-he);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
   color: #0B1220;
   background: #FFFFFF;
   border: 1px solid #FFFFFF;
-  padding: 3px 12px;
+  padding: 5px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
+  width: 100%;
+  text-align: center;
 }
 .cell-open:hover {
   background: var(--type-c, #67E8F9);
