@@ -26,12 +26,12 @@ TYPE_COLORS = {
     'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
 }
 
-# Statuses - warm family (gray/orange/yellow/green) - no overlap with cool content palette
+# Statuses - distinct hues that stay visible on light tray
 STATUS_COLORS = {
-    'בעבודה':       '#64748B',  # slate (neutral / dim)
-    'בעיצוב':       '#F97316',  # orange (in motion)
-    'ממתין לאישור': '#EAB308',  # yellow (caution / wait)
-    'אושר':          '#22C55E',  # green (go)
+    'בעבודה':       '#3B82F6',  # blue (active / in-progress)
+    'בעיצוב':       '#F97316',  # orange (in design)
+    'ממתין לאישור': '#EAB308',  # yellow (waiting)
+    'אושר':          '#22C55E',  # green (approved)
 }
 
 STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר']
@@ -1049,7 +1049,7 @@ const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = '__CLIENT_KEY__';
 
 const STATUS_COLORS = {
-  'בעבודה': '#64748B',
+  'בעבודה': '#3B82F6',
   'בעיצוב': '#F97316',
   'ממתין לאישור': '#EAB308',
   'אושר': '#22C55E',
