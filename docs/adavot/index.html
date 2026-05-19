@@ -279,11 +279,16 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-/* Uniform neutral glow for ALL content cells - color comes only from the type chip. */
+/* Uniform but PROMINENT glow for content cells - clearly "lit up" vs empty cells.
+   Color comes only from the type chip - the cell itself is dramatically brighter. */
 .cell.has-content {
-  background: linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.015) 100%);
-  border-color: rgba(255,255,255,0.12);
-  box-shadow: 0 0 0 1px transparent, 0 4px 16px rgba(0,0,0,0.18);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 60%, rgba(255,255,255,0.03) 100%);
+  border-color: rgba(255,255,255,0.28);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 6px 24px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 /* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
 .cell.type-post     { --type-c: #67E8F9; }
@@ -291,9 +296,13 @@ body {
 .cell.type-story    { --type-c: #C4B5FD; }
 .cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  background: linear-gradient(155deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.025) 100%);
-  border-color: rgba(255,255,255,0.22);
-  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 60%, rgba(255,255,255,0.04) 100%);
+  border-color: rgba(255,255,255,0.42);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 14px 36px -6px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.12);
   transform: translateY(-2px);
 }
 
@@ -446,6 +455,18 @@ body {
   padding: 8px 10px;
   background: rgba(255,255,255,0.10);
   border-top: 1px solid rgba(255,255,255,0.18);
+}
+.cell-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.cell-status-label {
+  font-family: var(--font-he);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
 }
 .cell-status {
   font-family: var(--font-he);
@@ -928,9 +949,12 @@ details.collapsible > .pair {
         <div class="cell-title">1,000 בחודש</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="1">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-05-21">
@@ -943,9 +967,12 @@ details.collapsible > .pair {
         <div class="cell-title">שירה (מייצג): השנה שלא ישנתי</div>
         <div class="cell-pillar">קולות מהשטח</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="2">צפייה ←</button>
         </div></div>
     </div><div class="cell friday holiday has-content type-post" data-iso="2026-05-22">
@@ -958,9 +985,12 @@ details.collapsible > .pair {
         <div class="cell-title">10 הדברות של בן משפחת פצוע</div>
         <div class="cell-pillar">עוגן שבועות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="3">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday holiday has-content type-post" data-iso="2026-05-23">
@@ -973,9 +1003,12 @@ details.collapsible > .pair {
         <div class="cell-title">מה הביכורים שלך השנה?</div>
         <div class="cell-pillar">עוגן שבועות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="4">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-24">
@@ -988,9 +1021,12 @@ details.collapsible > .pair {
         <div class="cell-title">8.3 מיליארד מול 12 טיפולים</div>
         <div class="cell-pillar">אדווקסי</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="5">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-05-25">
@@ -1003,9 +1039,12 @@ details.collapsible > .pair {
         <div class="cell-title">מי שואל את האמא?</div>
         <div class="cell-pillar">רייל</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="6">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-05-26">
@@ -1018,9 +1057,12 @@ details.collapsible > .pair {
         <div class="cell-title">&quot;איך אני לא מרגישה אשמה שאני לא חולה?&quot;</div>
         <div class="cell-pillar">השאלה השבועית</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="7">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-05-27">
@@ -1036,9 +1078,12 @@ details.collapsible > .pair {
         <div class="cell-title">25,274 ילדים</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="8">צפייה ←</button>
         </div></div>
     </div><div class="cell friday" data-iso="2026-05-29">
@@ -1054,9 +1099,12 @@ details.collapsible > .pair {
         <div class="cell-title">פורום אחים - דיווח שטח</div>
         <div class="cell-pillar">אנחנו כאן</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="9">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-31">
@@ -1069,9 +1117,12 @@ details.collapsible > .pair {
         <div class="cell-title">חודש בריאות נפש נסגר. אצלנו זה כל חודש.</div>
         <div class="cell-pillar">גשר חודשים</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="10">צפייה ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-06-01">
@@ -1110,9 +1161,12 @@ details.collapsible > .pair {
         <div class="cell-title">31,000 פצועי נפש</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="11" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="11" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="11">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-02">
@@ -1125,9 +1179,12 @@ details.collapsible > .pair {
         <div class="cell-title">&quot;איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?&quot;</div>
         <div class="cell-pillar">השאלה השבועית</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="12" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="12" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="12">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-03">
@@ -1143,9 +1200,12 @@ details.collapsible > .pair {
         <div class="cell-title">אבא לא בוכה</div>
         <div class="cell-pillar">רייל</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="13" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="13" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="13">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-05">
@@ -1158,9 +1218,12 @@ details.collapsible > .pair {
         <div class="cell-title">אחים ואחיות - אין להם שורה בחוק</div>
         <div class="cell-pillar">אדווקסי</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="14" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="14" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="14">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-06">
@@ -1173,9 +1236,12 @@ details.collapsible > .pair {
         <div class="cell-title">גיא (מייצג), אח של פצוע</div>
         <div class="cell-pillar">קולות מהשטח</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="15" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="15" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="15">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-07">
@@ -1188,9 +1254,12 @@ details.collapsible > .pair {
         <div class="cell-title">1 מ-7 בני זוג</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="16" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="16" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="16">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-08">
@@ -1203,9 +1272,12 @@ details.collapsible > .pair {
         <div class="cell-title">&quot;מתי הפעם האחרונה שלא קמתי באמצע הלילה?&quot;</div>
         <div class="cell-pillar">השאלה השבועית</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="17" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="17" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="17">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-09">
@@ -1221,9 +1293,12 @@ details.collapsible > .pair {
         <div class="cell-title">8 אבות בחדר. לראשונה.</div>
         <div class="cell-pillar">אנחנו כאן - פורום אבות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="18" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="18" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="18">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-06-11">
@@ -1236,9 +1311,12 @@ details.collapsible > .pair {
         <div class="cell-title">₪46 לשעה</div>
         <div class="cell-pillar">רייל</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="19" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="19" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="19">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-12">
@@ -1251,9 +1329,12 @@ details.collapsible > .pair {
         <div class="cell-title">דיווח שטח מהפורום השבועי</div>
         <div class="cell-pillar">חמישי בנחלים</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="20" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="20" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="20">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-13">
@@ -1266,9 +1347,12 @@ details.collapsible > .pair {
         <div class="cell-title">מאיה, 7, ציירה את אבא</div>
         <div class="cell-pillar">קולות מהשטח</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="21" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="21" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="21">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-14">
@@ -1281,9 +1365,12 @@ details.collapsible > .pair {
         <div class="cell-title">873 בכיסא גלגלים</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="22" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="22" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="22">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-15">
@@ -1299,9 +1386,12 @@ details.collapsible > .pair {
         <div class="cell-title">בראש חודש סופרים. גם אנחנו.</div>
         <div class="cell-pillar">ראש חודש תמוז</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="23" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="23" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="23">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-17">
@@ -1314,9 +1404,12 @@ details.collapsible > .pair {
         <div class="cell-title">&quot;איך אני מתחיל יום שלא תלוי בו?&quot;</div>
         <div class="cell-pillar">השאלה השבועית</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="24" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="24" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="24">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-06-18">
@@ -1329,9 +1422,12 @@ details.collapsible > .pair {
         <div class="cell-title">60 דקות בשבוע</div>
         <div class="cell-pillar">רייל</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="25" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="25" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="25">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-19">
@@ -1344,9 +1440,12 @@ details.collapsible > .pair {
         <div class="cell-title">60 דקות בשבוע</div>
         <div class="cell-pillar">אדווקסי - ידעתם ש...</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="26" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="26" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="26">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-20">
@@ -1359,9 +1458,12 @@ details.collapsible > .pair {
         <div class="cell-title">מתנדבת השבוע</div>
         <div class="cell-pillar">אנחנו כאן</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="27" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="27" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="27">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell holiday has-content type-post" data-iso="2026-06-21">
@@ -1374,9 +1476,12 @@ details.collapsible > .pair {
         <div class="cell-title">אבא של פצוע - 24/7</div>
         <div class="cell-pillar">יום אבא</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="28" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="28" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="28">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-22">
@@ -1389,9 +1494,12 @@ details.collapsible > .pair {
         <div class="cell-title">5 שנים אחרי</div>
         <div class="cell-pillar">מאחורי המספרים יש אדוות</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="29" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="29" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="29">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-23">
@@ -1404,9 +1512,12 @@ details.collapsible > .pair {
         <div class="cell-title">&quot;מתי הפסקתי לבכות מול הילדים? וזה טוב?&quot;</div>
         <div class="cell-pillar">השאלה השבועית</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="30" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="30" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="30">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-24">
@@ -1422,9 +1533,12 @@ details.collapsible > .pair {
         <div class="cell-title">6 מספרים. 6 שבועות. סיפור אחד.</div>
         <div class="cell-pillar">רייל</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="31" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="31" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="31">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-26">
@@ -1437,9 +1551,12 @@ details.collapsible > .pair {
         <div class="cell-title">תורם מספר</div>
         <div class="cell-pillar">קולות מהשטח</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="32" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="32" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="32">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday" data-iso="2026-06-27">
@@ -1455,9 +1572,12 @@ details.collapsible > .pair {
         <div class="cell-title">כולם מטפלים בפצוע. אנחנו במשפחה.</div>
         <div class="cell-pillar">אדווקסי + בידול</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="33" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="33" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="33">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-29">
@@ -1473,9 +1593,12 @@ details.collapsible > .pair {
         <div class="cell-title">מה ראינו ב-6 שבועות</div>
         <div class="cell-pillar">סגירה</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="34" aria-label="סטטוס" onclick="event.stopPropagation()">
-            <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="34" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
           <button class="cell-open" data-num="34">צפייה ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-07-01">

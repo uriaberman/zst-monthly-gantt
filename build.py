@@ -124,9 +124,12 @@ def render_cell(cell: dict) -> str:
         <div class="cell-title">{title}</div>
         <div class="cell-pillar">{pillar}</div>
         <div class="cell-footer">
-          <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
-            __STATUS_OPTS_{it['num']}__
-          </select>
+          <div class="cell-status-wrap">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
+              __STATUS_OPTS_{it['num']}__
+            </select>
+          </div>
           <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
         </div>''')
 
@@ -493,11 +496,16 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-/* Uniform neutral glow for ALL content cells - color comes only from the type chip. */
+/* Uniform but PROMINENT glow for content cells - clearly "lit up" vs empty cells.
+   Color comes only from the type chip - the cell itself is dramatically brighter. */
 .cell.has-content {
-  background: linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.015) 100%);
-  border-color: rgba(255,255,255,0.12);
-  box-shadow: 0 0 0 1px transparent, 0 4px 16px rgba(0,0,0,0.18);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 60%, rgba(255,255,255,0.03) 100%);
+  border-color: rgba(255,255,255,0.28);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 6px 24px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 /* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
 .cell.type-post     { --type-c: #67E8F9; }
@@ -505,9 +513,13 @@ body {
 .cell.type-story    { --type-c: #C4B5FD; }
 .cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  background: linear-gradient(155deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.025) 100%);
-  border-color: rgba(255,255,255,0.22);
-  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 60%, rgba(255,255,255,0.04) 100%);
+  border-color: rgba(255,255,255,0.42);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 14px 36px -6px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.12);
   transform: translateY(-2px);
 }
 
@@ -660,6 +672,18 @@ body {
   padding: 8px 10px;
   background: rgba(255,255,255,0.10);
   border-top: 1px solid rgba(255,255,255,0.18);
+}
+.cell-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.cell-status-label {
+  font-family: var(--font-he);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
 }
 .cell-status {
   font-family: var(--font-he);
