@@ -496,16 +496,16 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-/* Uniform but PROMINENT glow for content cells - clearly "lit up" vs empty cells.
-   Color comes only from the type chip - the cell itself is dramatically brighter. */
+/* Truly LIT-UP content cells - illuminated tiles standing out on the dark grid. */
 .cell.has-content {
   background:
-    linear-gradient(155deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 60%, rgba(255,255,255,0.03) 100%);
-  border-color: rgba(255,255,255,0.28);
+    linear-gradient(155deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.16) 55%, rgba(255,255,255,0.08) 100%);
+  border-color: rgba(255,255,255,0.5);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.04),
-    0 6px 24px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.08);
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 0 28px rgba(255,255,255,0.06),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.18);
 }
 /* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
 .cell.type-post     { --type-c: #67E8F9; }
@@ -514,12 +514,13 @@ body {
 .cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
   background:
-    linear-gradient(155deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 60%, rgba(255,255,255,0.04) 100%);
-  border-color: rgba(255,255,255,0.42);
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08),
-    0 14px 36px -6px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(255,255,255,0.12);
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
+    0 16px 40px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
 }
 
