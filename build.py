@@ -127,7 +127,7 @@ def render_cell(cell: dict) -> str:
           <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
             __STATUS_OPTS_{it['num']}__
           </select>
-          <button class="cell-open" data-num="{it['num']}">פתח ←</button>
+          <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
         </div>''')
 
     return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}">
@@ -493,31 +493,21 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-.cell.type-post {
-  background: linear-gradient(155deg, rgba(103,232,249,0.20) 0%, rgba(103,232,249,0.06) 100%);
-  border-color: rgba(103,232,249,0.5);
-  --type-c: #67E8F9;
-}
-.cell.type-carousel {
-  background: linear-gradient(155deg, rgba(94,234,212,0.20) 0%, rgba(94,234,212,0.06) 100%);
-  border-color: rgba(94,234,212,0.5);
-  --type-c: #5EEAD4;
-}
-.cell.type-story {
-  background: linear-gradient(155deg, rgba(196,181,253,0.20) 0%, rgba(196,181,253,0.06) 100%);
-  border-color: rgba(196,181,253,0.5);
-  --type-c: #C4B5FD;
-}
-.cell.type-reel {
-  background: linear-gradient(155deg, rgba(253,164,175,0.22) 0%, rgba(253,164,175,0.06) 100%);
-  border-color: rgba(253,164,175,0.55);
-  --type-c: #FDA4AF;
-}
+/* Uniform neutral glow for ALL content cells - color comes only from the type chip. */
 .cell.has-content {
-  box-shadow: 0 0 0 1px transparent, 0 4px 14px color-mix(in srgb, var(--type-c, #67E8F9) 12%, transparent);
+  background: linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.015) 100%);
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 0 0 1px transparent, 0 4px 16px rgba(0,0,0,0.18);
 }
+/* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  box-shadow: 0 0 0 1px var(--type-c, #67E8F9), 0 12px 30px -8px color-mix(in srgb, var(--type-c, #67E8F9) 30%, transparent);
+  background: linear-gradient(155deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.025) 100%);
+  border-color: rgba(255,255,255,0.22);
+  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4);
   transform: translateY(-2px);
 }
 
@@ -660,17 +650,16 @@ body {
   max-width: 100%;
 }
 
-/* Bottom action zone - visually separated dark tray inside the lit cell */
+/* Bottom action zone - LIGHT tray to clearly separate from content area */
 .cell-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 6px;
-  margin: 6px -10px -9px;
-  padding: 7px 10px;
-  background: rgba(7, 16, 31, 0.45);
-  border-top: 1px solid rgba(255,255,255,0.05);
-  backdrop-filter: blur(2px);
+  margin: 8px -10px -9px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.10);
+  border-top: 1px solid rgba(255,255,255,0.18);
 }
 .cell-status {
   font-family: var(--font-he);
@@ -695,19 +684,20 @@ body {
 .cell-open {
   font-family: var(--font-he);
   font-size: 10.5px;
-  font-weight: 600;
-  color: var(--type-c, var(--accent-cyan));
-  background: rgba(255,255,255,0.05);
-  border: 1px solid color-mix(in srgb, var(--type-c, #67E8F9) 35%, transparent);
-  padding: 3px 11px;
+  font-weight: 700;
+  color: #0B1220;
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 3px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
 }
 .cell-open:hover {
-  background: color-mix(in srgb, var(--type-c, #67E8F9) 25%, transparent);
+  background: var(--type-c, #67E8F9);
   border-color: var(--type-c, #67E8F9);
+  color: #0B1220;
 }
 
 /* (item-card legacy CSS removed - cell IS the card now) */

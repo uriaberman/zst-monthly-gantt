@@ -279,31 +279,21 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-.cell.type-post {
-  background: linear-gradient(155deg, rgba(103,232,249,0.20) 0%, rgba(103,232,249,0.06) 100%);
-  border-color: rgba(103,232,249,0.5);
-  --type-c: #67E8F9;
-}
-.cell.type-carousel {
-  background: linear-gradient(155deg, rgba(94,234,212,0.20) 0%, rgba(94,234,212,0.06) 100%);
-  border-color: rgba(94,234,212,0.5);
-  --type-c: #5EEAD4;
-}
-.cell.type-story {
-  background: linear-gradient(155deg, rgba(196,181,253,0.20) 0%, rgba(196,181,253,0.06) 100%);
-  border-color: rgba(196,181,253,0.5);
-  --type-c: #C4B5FD;
-}
-.cell.type-reel {
-  background: linear-gradient(155deg, rgba(253,164,175,0.22) 0%, rgba(253,164,175,0.06) 100%);
-  border-color: rgba(253,164,175,0.55);
-  --type-c: #FDA4AF;
-}
+/* Uniform neutral glow for ALL content cells - color comes only from the type chip. */
 .cell.has-content {
-  box-shadow: 0 0 0 1px transparent, 0 4px 14px color-mix(in srgb, var(--type-c, #67E8F9) 12%, transparent);
+  background: linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.015) 100%);
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 0 0 1px transparent, 0 4px 16px rgba(0,0,0,0.18);
 }
+/* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  box-shadow: 0 0 0 1px var(--type-c, #67E8F9), 0 12px 30px -8px color-mix(in srgb, var(--type-c, #67E8F9) 30%, transparent);
+  background: linear-gradient(155deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.025) 100%);
+  border-color: rgba(255,255,255,0.22);
+  box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4);
   transform: translateY(-2px);
 }
 
@@ -446,17 +436,16 @@ body {
   max-width: 100%;
 }
 
-/* Bottom action zone - visually separated dark tray inside the lit cell */
+/* Bottom action zone - LIGHT tray to clearly separate from content area */
 .cell-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 6px;
-  margin: 6px -10px -9px;
-  padding: 7px 10px;
-  background: rgba(7, 16, 31, 0.45);
-  border-top: 1px solid rgba(255,255,255,0.05);
-  backdrop-filter: blur(2px);
+  margin: 8px -10px -9px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.10);
+  border-top: 1px solid rgba(255,255,255,0.18);
 }
 .cell-status {
   font-family: var(--font-he);
@@ -481,19 +470,20 @@ body {
 .cell-open {
   font-family: var(--font-he);
   font-size: 10.5px;
-  font-weight: 600;
-  color: var(--type-c, var(--accent-cyan));
-  background: rgba(255,255,255,0.05);
-  border: 1px solid color-mix(in srgb, var(--type-c, #67E8F9) 35%, transparent);
-  padding: 3px 11px;
+  font-weight: 700;
+  color: #0B1220;
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 3px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
 }
 .cell-open:hover {
-  background: color-mix(in srgb, var(--type-c, #67E8F9) 25%, transparent);
+  background: var(--type-c, #67E8F9);
   border-color: var(--type-c, #67E8F9);
+  color: #0B1220;
 }
 
 /* (item-card legacy CSS removed - cell IS the card now) */
@@ -941,7 +931,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="1">פתח ←</button>
+          <button class="cell-open" data-num="1">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-05-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ה׳</div></div>
@@ -956,7 +946,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="2">פתח ←</button>
+          <button class="cell-open" data-num="2">צפייה ←</button>
         </div></div>
     </div><div class="cell friday holiday has-content type-post" data-iso="2026-05-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ו׳</div><div class="cell-hol">ערב שבועות</div></div>
@@ -971,7 +961,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="3">פתח ←</button>
+          <button class="cell-open" data-num="3">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday holiday has-content type-post" data-iso="2026-05-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ז׳</div><div class="cell-hol">חג שבועות</div></div>
@@ -986,7 +976,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="4">פתח ←</button>
+          <button class="cell-open" data-num="4">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ח׳</div></div>
@@ -1001,7 +991,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="5">פתח ←</button>
+          <button class="cell-open" data-num="5">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-05-25">
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">ט׳</div></div>
@@ -1016,7 +1006,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="6">פתח ←</button>
+          <button class="cell-open" data-num="6">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-05-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י׳</div></div>
@@ -1031,7 +1021,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="7">פתח ←</button>
+          <button class="cell-open" data-num="7">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-05-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
@@ -1049,7 +1039,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="8">פתח ←</button>
+          <button class="cell-open" data-num="8">צפייה ←</button>
         </div></div>
     </div><div class="cell friday" data-iso="2026-05-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ג</div></div>
@@ -1067,7 +1057,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="9">פתח ←</button>
+          <button class="cell-open" data-num="9">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-05-31">
       <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
@@ -1082,7 +1072,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="10">פתח ←</button>
+          <button class="cell-open" data-num="10">צפייה ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-06-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
@@ -1123,7 +1113,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="11" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="11">פתח ←</button>
+          <button class="cell-open" data-num="11">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-02">
       <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
@@ -1138,7 +1128,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="12" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="12">פתח ←</button>
+          <button class="cell-open" data-num="12">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-03">
       <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
@@ -1156,7 +1146,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="13" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="13">פתח ←</button>
+          <button class="cell-open" data-num="13">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-05">
       <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
@@ -1171,7 +1161,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="14" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="14">פתח ←</button>
+          <button class="cell-open" data-num="14">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-06">
       <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
@@ -1186,7 +1176,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="15" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="15">פתח ←</button>
+          <button class="cell-open" data-num="15">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-07">
       <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
@@ -1201,7 +1191,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="16" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="16">פתח ←</button>
+          <button class="cell-open" data-num="16">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-08">
       <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
@@ -1216,7 +1206,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="17" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="17">פתח ←</button>
+          <button class="cell-open" data-num="17">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-09">
       <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
@@ -1234,7 +1224,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="18" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="18">פתח ←</button>
+          <button class="cell-open" data-num="18">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-06-11">
       <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
@@ -1249,7 +1239,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="19" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="19">פתח ←</button>
+          <button class="cell-open" data-num="19">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-12">
       <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
@@ -1264,7 +1254,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="20" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="20">פתח ←</button>
+          <button class="cell-open" data-num="20">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-13">
       <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
@@ -1279,7 +1269,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="21" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="21">פתח ←</button>
+          <button class="cell-open" data-num="21">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell has-content type-post" data-iso="2026-06-14">
       <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
@@ -1294,7 +1284,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="22" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="22">פתח ←</button>
+          <button class="cell-open" data-num="22">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-15">
       <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
@@ -1312,7 +1302,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="23" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="23">פתח ←</button>
+          <button class="cell-open" data-num="23">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-17">
       <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
@@ -1327,7 +1317,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="24" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="24">פתח ←</button>
+          <button class="cell-open" data-num="24">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-reel" data-iso="2026-06-18">
       <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
@@ -1342,7 +1332,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="25" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="25">פתח ←</button>
+          <button class="cell-open" data-num="25">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-19">
       <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
@@ -1357,7 +1347,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="26" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="26">פתח ←</button>
+          <button class="cell-open" data-num="26">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday has-content type-post" data-iso="2026-06-20">
       <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
@@ -1372,7 +1362,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="27" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="27">פתח ←</button>
+          <button class="cell-open" data-num="27">צפייה ←</button>
         </div></div>
     </div></div><div class="week"><div class="cell holiday has-content type-post" data-iso="2026-06-21">
       <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div><div class="cell-hol">יום אבא</div></div>
@@ -1387,7 +1377,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="28" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="28">פתח ←</button>
+          <button class="cell-open" data-num="28">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-22">
       <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
@@ -1402,7 +1392,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="29" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="29">פתח ←</button>
+          <button class="cell-open" data-num="29">צפייה ←</button>
         </div></div>
     </div><div class="cell has-content type-post" data-iso="2026-06-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
@@ -1417,7 +1407,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="30" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="30">פתח ←</button>
+          <button class="cell-open" data-num="30">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
@@ -1435,7 +1425,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="31" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="31">פתח ←</button>
+          <button class="cell-open" data-num="31">צפייה ←</button>
         </div></div>
     </div><div class="cell friday has-content type-post" data-iso="2026-06-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
@@ -1450,7 +1440,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="32" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="32">פתח ←</button>
+          <button class="cell-open" data-num="32">צפייה ←</button>
         </div></div>
     </div><div class="cell saturday" data-iso="2026-06-27">
       <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
@@ -1468,7 +1458,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="33" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="33">פתח ←</button>
+          <button class="cell-open" data-num="33">צפייה ←</button>
         </div></div>
     </div><div class="cell" data-iso="2026-06-29">
       <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
@@ -1486,7 +1476,7 @@ details.collapsible > .pair {
           <select class="cell-status" data-num="34" aria-label="סטטוס" onclick="event.stopPropagation()">
             <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
           </select>
-          <button class="cell-open" data-num="34">פתח ←</button>
+          <button class="cell-open" data-num="34">צפייה ←</button>
         </div></div>
     </div><div class="cell outside" data-iso="2026-07-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
