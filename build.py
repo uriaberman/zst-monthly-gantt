@@ -496,16 +496,17 @@ body {
 .cell.has-content {
   cursor: pointer;
 }
-/* Truly LIT-UP content cells - illuminated tiles standing out on the dark grid. */
+/* Truly LIT-UP content cells - illuminated CYAN tiles on the dark grid.
+   Uniform cyan glow across all content types - differentiation comes from the chip. */
 .cell.has-content {
   background:
-    linear-gradient(155deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.16) 55%, rgba(255,255,255,0.08) 100%);
-  border-color: rgba(255,255,255,0.5);
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.08),
-    0 0 28px rgba(255,255,255,0.06),
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
     0 8px 28px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.18);
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
 /* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
 .cell.type-post     { --type-c: #67E8F9; }
@@ -677,14 +678,15 @@ body {
 .cell-status-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 .cell-status-label {
   font-family: var(--font-he);
-  font-size: 9.5px;
-  font-weight: 600;
-  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
   letter-spacing: 0.02em;
+  text-transform: none;
 }
 .cell-status {
   font-family: var(--font-he);
