@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>שליחות הוראה | גאנט יוני 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Slate dark base */
+  --bg:        #07101F;
+  --paper:     #0F1A2E;
+  --paper-2:   #14223A;
+  --paper-3:   #0C1828;
+  --paper-4:   #18253F;
+  --ink:       #F1F5F9;
+  --ink-soft:  #94A3B8;
+  --ink-faint: #475569;
+  --ink-mute:  #64748B;
+  --border:    #1E2D45;
+  --border-soft: #182338;
+  --accent-cyan: #67E8F9;
+  --gold:      #FBBF24;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+
+  /* Fonts - Hebrew = Rubik, English/digits = Inter (different family, complements Rubik) */
+  --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
+  --font-en: 'Inter', system-ui, -apple-system, sans-serif;
+  /* Inter first → Latin/digits picked from Inter, Hebrew falls through to Rubik */
+  --font: 'Inter', 'Rubik', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; }
+body {
+  font-family: var(--font);
+  direction: rtl;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 24px 32px 36px;
+}
+
+/* COMPACT HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  filter: invert(1) hue-rotate(180deg) brightness(1.05);
+}
+.header img.logo {
+  height: 46px;
+  width: auto;
+  display: block;
+}
+.header-titles {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.header-titles h1 {
+  margin: 0;
+  font-family: var(--font-he);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.h1-label {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 18px;
+}
+.h1-sep {
+  color: var(--ink-faint);
+  font-weight: 300;
+  font-size: 20px;
+}
+.h1-client { color: var(--ink); }
+.header-titles .period {
+  font-family: var(--font-en);
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.header-titles .hint {
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.01em;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(103,232,249,0.10);
+  border: 1px solid rgba(103,232,249,0.35);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.share-btn:hover {
+  background: rgba(103,232,249,0.20);
+  border-color: var(--accent-cyan);
+}
+.share-btn.copied {
+  background: rgba(34,197,94,0.18);
+  border-color: #22C55E;
+  color: #22C55E;
+}
+/* In view-mode: hide share button + edit hint, show view-mode badge instead */
+body.view-mode .share-btn,
+body.view-mode .header-actions .hint { display: none; }
+body.view-mode .header-actions::before {
+  content: 'מצב צפייה · ללא עריכה';
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+/* In view-mode: hide status dropdown in cells, show as static pill */
+body.view-mode .cell-status {
+  pointer-events: none;
+  appearance: none;
+  background-image: none;
+  padding-left: 9px;
+}
+
+/* CONTROLS ROW: tabs + legend in one compact line */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+}
+.tab {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.tab .tab-year {
+  font-family: var(--font-en);
+  font-weight: 400;
+  color: var(--ink-mute);
+  margin-inline-start: 6px;
+}
+.tab:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+.tab.active {
+  background: var(--accent-cyan);
+  color: var(--bg);
+}
+.tab.active .tab-year {
+  color: var(--bg);
+  opacity: 0.7;
+}
+
+/* LEGEND */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 8px 16px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.legend-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+.legend-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.legend-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  background: rgba(148,163,184,0.08);
+  border-radius: 8px;
+  text-transform: none;
+}
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink);
+}
+.legend-chip .sw {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+.legend-chip .sw.round { border-radius: 50%; }
+
+/* MONTH (one at a time via tabs) */
+.month {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px 20px;
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+.month.active { display: block; }
+
+/* WEEKDAY HEADER */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.wd {
+  text-align: center;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 4px 0 6px;
+  letter-spacing: 0.04em;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* CELL - whole cell is the content card. Type color tints the whole cell. */
+.cell {
+  position: relative;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 158px;
+  padding: 10px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+.cell:hover {
+  border-color: rgba(148,163,184,0.4);
+  transform: translateY(-1px);
+}
+
+/* Type-tinted cells (content present) */
+.cell.has-content {
+  cursor: pointer;
+}
+/* Truly LIT-UP content cells - illuminated CYAN tiles on the dark grid.
+   Uniform cyan glow across all content types - differentiation comes from the chip. */
+.cell.has-content {
+  background:
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+}
+/* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
+.cell.has-content:hover {
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
+    0 16px 40px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+
+.cell.friday:not(.has-content) {
+  background: var(--paper-3);
+}
+.cell.saturday:not(.has-content) {
+  background: rgba(251,191,36,0.03);
+  border-color: rgba(251,191,36,0.14);
+}
+.cell.outside {
+  background: transparent !important;
+  border-color: var(--border-soft) !important;
+}
+.cell.outside .cell-head { opacity: 0.35; }
+.cell.outside .cell-body { display: none; }
+.cell.outside .cell-num,
+.cell.outside .cell-heb { color: var(--ink-faint); }
+
+.cell.holiday::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 14px 14px 0 0;
+  border-color: var(--gold) transparent transparent transparent;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Today indicator - glowing gold ring */
+.cell.is-today {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  animation: today-pulse 2.5s ease-in-out infinite;
+}
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
+  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+}
+.cell.is-today .cell-num {
+  color: var(--gold);
+}
+
+/* CELL HEAD: numbers, dates */
+.cell-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.1);
+  min-height: 28px;
+}
+.cell-num {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.cell-heb {
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.cell-hol {
+  width: 100%;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+.cell-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding-top: 4px;
+}
+
+.cell-type-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.cell-type-chip {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--type-c);
+  border: none;
+  padding: 3px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
+}
+.cell-warning {
+  font-size: 11px;
+  color: #FBBF24;
+  cursor: help;
+}
+.cell-title {
+  font-family: var(--font-he);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+  text-align: center;
+  padding: 6px 4px 4px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bottom action zone - LIGHT tray, stacked: status row + button row below */
+.cell-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 8px -10px -9px;
+  padding: 9px 10px;
+  background: rgba(255,255,255,0.12);
+  border-top: 1px solid rgba(255,255,255,0.22);
+}
+.cell-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+}
+.cell-status-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.cell-status {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 18px 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  transition: all 0.15s ease;
+}
+.cell-status:focus { outline: none; }
+.cell-status option { background: var(--paper); color: var(--ink); }
+
+.cell-open {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: #0B1220;
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+  width: 100%;
+  text-align: center;
+}
+.cell-open:hover {
+  background: var(--type-c, #67E8F9);
+  border-color: var(--type-c, #67E8F9);
+  color: #0B1220;
+}
+
+/* (item-card legacy CSS removed - cell IS the card now) */
+
+/* MODAL */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 16, 31, 0.78);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 40px 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  direction: rtl;
+}
+.modal-head {
+  padding: 26px 32px 22px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+.modal-head-left .modal-pill {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.modal-head-left h2 {
+  margin: 0;
+  font-family: var(--font-he);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.modal-head-left .date-row {
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.modal-head-left .date-row .dot {
+  width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
+}
+.modal-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 4px 28px 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+.status-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.modal-close {
+  background: rgba(148,163,184,0.08);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: rgba(148,163,184,0.18);
+  color: var(--ink);
+}
+
+.modal-body { padding: 22px 32px 32px; }
+
+/* ONE-LINE explanation + source row */
+.modal-explainline {
+  font-family: var(--font-he);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 8px;
+  padding: 14px 18px;
+  background: rgba(103,232,249,0.06);
+  border-right: 3px solid rgba(103,232,249,0.6);
+  border-radius: 8px;
+}
+.modal-source {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  padding: 0 4px;
+  direction: rtl;
+  text-align: right;
+}
+.modal-source-label {
+  color: var(--ink-mute);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.status-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* PRIMARY ROW: image dropzone (left) + accompanying copy (right) */
+.modal-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+@media (max-width: 820px) { .modal-primary { grid-template-columns: 1fr; } }
+
+.dropzone {
+  background: var(--paper-2);
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+.dropzone:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.04);
+}
+.dropzone.has-image { padding: 0; border-style: solid; }
+.dropzone img.uploaded {
+  max-width: 100%;
+  max-height: 380px;
+  border-radius: 12px;
+  display: block;
+}
+.dropzone .dz-icon {
+  width: 44px; height: 44px;
+  color: var(--ink-mute);
+}
+.dropzone .dz-text {
+  font-family: var(--font-he);
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  font-weight: 500;
+}
+.dropzone .dz-sub {
+  font-family: var(--font);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+}
+.dropzone input[type="file"] { display: none; }
+.dz-remove {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  border-radius: 999px;
+  font-size: 11px;
+  padding: 4px 12px;
+  cursor: pointer;
+  display: none;
+}
+.dropzone.has-image .dz-remove { display: block; }
+
+.copy-area {
+  display: flex;
+  flex-direction: column;
+}
+.copy-area label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.copy-area textarea {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 18px;
+  resize: none;
+  flex: 1;
+  min-height: 280px;
+  direction: rtl;
+  text-align: right;
+  transition: border-color 0.15s ease;
+}
+.copy-area textarea:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+}
+.copy-area textarea::placeholder { color: var(--ink-faint); }
+.copy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.copy-save-btn {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.copy-save-btn:hover {
+  background: #38BDF8;
+  border-color: #38BDF8;
+}
+.copy-save-btn.is-dirty {
+  background: #FBBF24;
+  border-color: #FBBF24;
+  color: #0B1220;
+}
+.copy-save-btn.saved-flash {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #0B1220;
+}
+.copy-saved {
+  font-family: var(--font-he);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  text-align: left;
+  min-height: 14px;
+}
+
+/* View-mode read-only copy area */
+.copy-view {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 280px;
+  white-space: pre-wrap;
+  direction: rtl;
+  text-align: right;
+}
+.dz-empty {
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+/* SECONDARY: original explanation + 2x3 options collapsible */
+.modal-section {
+  margin-bottom: 22px;
+}
+.modal-section:last-child { margin-bottom: 0; }
+.modal-section > h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.explanation {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+}
+
+details.collapsible {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--paper-2);
+  margin-bottom: 12px;
+}
+details.collapsible > summary {
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+details.collapsible > summary::-webkit-details-marker { display: none; }
+details.collapsible > summary::after {
+  content: '+';
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+details.collapsible[open] > summary::after { content: '−'; }
+details.collapsible > .pair {
+  padding: 0 18px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 700px) { details.collapsible > .pair { grid-template-columns: 1fr; } }
+.pair-item {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.pair-item .pair-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.pair-item .pair-text {
+  font-family: var(--font-he);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+
+.footer {
+  margin-top: 28px;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-brand {
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 6px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="header">
+    <div class="header-brand">
+      <img class="logo" src="data:image/png;base64,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" alt="Zeliger Shomron" />
+    </div>
+    <div class="header-titles">
+      <h1><span class="h1-label">גאנט</span><span class="h1-sep">|</span><span class="h1-client">שליחות הוראה</span></h1>
+      <div class="period">יוני 2026</div>
+      <div class="header-actions">
+        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>שתף עם לקוח</span>
+        </button>
+        <span class="hint">לחץ על קוביה לפרטים ועריכה</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="controls">
+    
+    
+    <div class="legend">
+      <div class="legend-group">
+        <span class="legend-label">סוג תוכן</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
+      </div>
+      <div class="legend-divider"></div>
+      <div class="legend-group">
+        <span class="legend-label">סטטוס</span>
+        <span class="legend-chip"><span class="sw round" style="background:#3B82F6; box-shadow:0 0 6px #3B82F680;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span>
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="months-container">
+    
+    <section class="month active" data-month="2026-06">
+      <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-05-31">
+      <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">הראיון של נעמה קלר</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="1">צפייה ←</button>
+        </div></div>
+    </div><div class="cell has-content type-story" data-iso="2026-06-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">סטורי</span>
+          
+        </div>
+        <div class="cell-title">פעימת סטוריז מההכשרה</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="2">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">חששות ושאלות השליחים</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="3">צפייה ←</button>
+        </div></div>
+    </div><div class="cell friday" data-iso="2026-06-05">
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-06">
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-07">
+      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-08">
+      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">איך המשפחה והסביבה הגיבה?</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="4">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-09">
+      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel" data-iso="2026-06-10">
+      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">קרוסלה</span>
+          
+        </div>
+        <div class="cell-title">3 דברים שאתגעגע אליהם בחופש הגדול</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="5">צפייה ←</button>
+        </div></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-11">
+      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">מה למדתי השנה - סרטוני שליחים</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="6">צפייה ←</button>
+        </div></div>
+    </div><div class="cell friday" data-iso="2026-06-12">
+      <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-13">
+      <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-14">
+      <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-15">
+      <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">חידון ישראלי - תלמידים מהעולם</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="7">צפייה ←</button>
+        </div></div>
+    </div><div class="cell holiday" data-iso="2026-06-16">
+      <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">א׳</div><div class="cell-hol">ראש חודש תמוז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-17">
+      <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">Tell me without telling me - שליח מישראל</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="8">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-18">
+      <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-19">
+      <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-20">
+      <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell holiday" data-iso="2026-06-21">
+      <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div><div class="cell-hol">יום אבא</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-22">
+      <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">POV של תלמידים - השבוע האחרון</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="9">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-23">
+      <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-24">
+      <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-25">
+      <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-26">
+      <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-27">
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-carousel" data-iso="2026-06-28">
+      <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ג</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">קרוסלה</span>
+          
+        </div>
+        <div class="cell-title">Best 5 Moments of the Year</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="10">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-29">
+      <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-30">
+      <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside friday" data-iso="2026-07-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside saturday" data-iso="2026-07-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div></div></div>
+    </section>
+    
+  </div>
+
+  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Zeliger Shomron</span></div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+const ITEMS_DATA = [{"num": 1, "date": "2026-06-01", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "הראיון של נעמה קלר", "short_explanation": "ראיון של נעמה קלר מתוך יום ההכשרה במוזיאון אנו - פתיחת חודש שמסכמת שנת שליחות.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 2, "date": "2026-06-02", "day": "ג'", "type_key": "story", "type_label": "סטורי", "type_accent": "#C4B5FD", "type_soft": "rgba(196,181,253,0.14)", "title": "פעימת סטוריז מההכשרה", "short_explanation": "פעימת סטוריז עם תמונות אותנטיות מתוך יום ההכשרה - שיתוף רגעים אינטימיים מהיום.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 3, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חששות ושאלות השליחים", "short_explanation": "רילס מתוך יום ההכשרה - חששות ושאלות אמיתיות של שליחים לפני יציאתם, וגם 3 הדברים שיתגעגעו אליהם.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 4, "date": "2026-06-08", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "איך המשפחה והסביבה הגיבה?", "short_explanation": "רילס שמראה איך תגובות המשפחה והסביבה השפיעו על השליחים לפני שיצאו לדרך.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 5, "date": "2026-06-10", "day": "ד'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "3 דברים שאתגעגע אליהם בחופש הגדול", "short_explanation": "קרוסלה עם כמה שליחים שמראים 3 דברים שיתגעגעו אליהם מהשליחות בחופש הגדול - אישי, חם, אנושי.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מה למדתי השנה - סרטוני שליחים", "short_explanation": "סרטוני סלפי של שליחים שמשתפים מה הם עצמם למדו השנה - היפוך כיוון משמעותי שמייצר עומק.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-06-15", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חידון ישראלי - תלמידים מהעולם", "short_explanation": "חידון ישראלי מצולם בין שתי קבוצות תלמידים מהעולם - שאלות על ישראל, יהדות וזהות, באווירה מגניבה וקלילה.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-06-17", "day": "ד'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "Tell me without telling me - שליח מישראל", "short_explanation": "טרנד מוכר 'Tell me without telling me' - ילדים מראים בלי לומר שהיה להם שליח מישראל. הומור עדין שיתאהבו בו.", "source": "", "status": "בעבודה"}, {"num": 9, "date": "2026-06-22", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "POV של תלמידים - השבוע האחרון", "short_explanation": "תלמידים מצלמים בעצמם את השבוע האחרון עם השליחים שלהם - POV אותנטי שמראה את הקשר האישי שנוצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-06-28", "day": "א'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "Best 5 Moments of the Year", "short_explanation": "קרוסלה מסכמת: תלמידים, מורים, הורים ואנשים מהקהילה בוחרים את 5 הרגעים הכי בלתי נשכחים מהשנה.", "source": "", "status": "בעבודה"}];
+const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
+const CLIENT_KEY = 'שליחות_הוראה';
+
+const STATUS_COLORS = {
+  'בעבודה': '#3B82F6',
+  'בעיצוב': '#F97316',
+  'ממתין לאישור': '#EAB308',
+  'אושר': '#22C55E',
+};
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
+
+/* ---------- localStorage helpers (per-client, per-item) ---------- */
+function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
+function getLocal(num, field, fallback) {
+  try { return localStorage.getItem(lsKey(num, field)) ?? fallback; } catch (e) { return fallback; }
+}
+function setLocal(num, field, value) {
+  try { localStorage.setItem(lsKey(num, field), value); } catch (e) {}
+}
+
+/* ---------- View mode (URL ?mode=view) ---------- */
+function isViewMode() {
+  return new URLSearchParams(window.location.search).get('mode') === 'view';
+}
+if (isViewMode()) document.body.classList.add('view-mode');
+
+/* Share with client = copy ?mode=view link */
+window.shareView = function(btn) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('mode', 'view');
+  url.hash = '';
+  navigator.clipboard.writeText(url.toString()).then(() => {
+    const orig = btn.querySelector('span').textContent;
+    btn.querySelector('span').textContent = '✓ הקישור הועתק';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.querySelector('span').textContent = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    prompt('העתק את הקישור הבא ושלח ללקוח:', url.toString());
+  });
+};
+
+/* ---------- Status decoration on cells (read from localStorage) ---------- */
+function paintStatus(selectEl) {
+  const status = selectEl.value;
+  const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
+  selectEl.style.color = c;
+  selectEl.style.borderColor = c;
+  selectEl.style.background = `color-mix(in srgb, ${c} 14%, transparent)`;
+}
+
+function applyStatusToCells() {
+  document.querySelectorAll('.cell-status').forEach(sel => {
+    const num = parseInt(sel.dataset.num);
+    const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
+    sel.value = status;
+    paintStatus(sel);
+  });
+}
+
+/* Wire cell-status changes */
+document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('cell-status')) {
+    const sel = e.target;
+    const num = parseInt(sel.dataset.num);
+    setLocal(num, 'status', sel.value);
+    paintStatus(sel);
+  }
+});
+
+/* ---------- Today highlight ---------- */
+function highlightToday() {
+  const now = new Date();
+  const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const m = tab.dataset.month;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
+  });
+});
+/* Restore last active month */
+try {
+  const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
+  if (saved) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.month === saved));
+    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+  }
+} catch (e) {}
+
+/* ---------- Modal ---------- */
+function openModal(num) {
+  const it = itemsByNum[num];
+  if (!it) return;
+
+  const status = getLocal(num, 'status', it.status || 'בעבודה');
+  const savedCopy = getLocal(num, 'copy', '');
+  const savedImg = getLocal(num, 'img', '');
+
+  const statusOpts = STATUS_ORDER.map(s =>
+    `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
+  ).join('');
+
+  const modal = document.getElementById('modal');
+  const inner = document.getElementById('modal-inner');
+
+  const isView = isViewMode();
+  inner.innerHTML = `
+    <div class="modal-head">
+      <div class="modal-head-left">
+        <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
+        <h2>${escapeHtml(it.title)}</h2>
+        <div class="date-row">
+          <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
+          <span class="dot"></span>
+          <span class="modal-status">
+            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; box-shadow:0 0 8px ${STATUS_COLORS[status]};"></span>
+            ${isView
+              ? `<span class="status-text">${escapeHtml(status)}</span>`
+              : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
+            }
+          </span>
+        </div>
+      </div>
+      <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      ${it.short_explanation ? `<div class="modal-explainline">${escapeHtml(it.short_explanation)}</div>` : ''}
+      ${it.source ? `<div class="modal-source"><span class="modal-source-label">מקור:</span> ${escapeHtml(it.source)}</div>` : ''}
+
+      <div class="modal-primary">
+        <div class="copy-area">
+          <label>קופי נלווה ${isView ? '' : '(ניתן לעריכה)'}</label>
+          ${isView
+            ? `<div class="copy-view">${escapeHtml(savedCopy || '— טרם נכתב קופי —')}</div>`
+            : `<textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+               <div class="copy-actions">
+                 <button class="copy-save-btn" id="copySaveBtn">שמור קופי</button>
+                 <span class="copy-saved" id="copySaved"></span>
+               </div>`
+          }
+        </div>
+        <div class="dropzone ${savedImg ? 'has-image' : ''} ${isView ? 'view-mode' : ''}" id="dropzone" data-num="${num}">
+          ${!isView ? `<input type="file" id="fileInput" accept="image/*">` : ''}
+          ${savedImg
+            ? `<img class="uploaded" src="${savedImg}" alt="ויזואל" />${!isView ? `<button class="dz-remove" onclick="event.stopPropagation(); removeImage(${num})">הסר</button>` : ''}`
+            : (isView
+                ? `<div class="dz-text dz-empty">— אין עדיין תמונה —</div>`
+                : `<svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                   <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
+                   <div class="dz-sub">PNG · JPG · WebP</div>`)
+          }
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // View mode = no interactivity, exit early
+  if (isViewMode()) return;
+
+  // Wire up status select
+  const sel = document.getElementById('statusSelect');
+  const dot = document.getElementById('statusDot');
+  if (sel) {
+    sel.addEventListener('change', () => {
+      const v = sel.value;
+      setLocal(num, 'status', v);
+      const c = STATUS_COLORS[v] || '#94A3B8';
+      dot.style.background = c;
+      dot.style.boxShadow = `0 0 8px ${c}`;
+      applyStatusToCells();
+    });
+  }
+
+  // Wire up copy editor with explicit SAVE button (no more silent autosave)
+  const ta = document.getElementById('copyArea');
+  const saveBtn = document.getElementById('copySaveBtn');
+  const savedHint = document.getElementById('copySaved');
+  if (ta && saveBtn) {
+    let dirty = false;
+    ta.addEventListener('input', () => {
+      dirty = true;
+      saveBtn.classList.add('is-dirty');
+      saveBtn.textContent = 'שמור קופי *';
+      savedHint.textContent = '';
+    });
+    saveBtn.addEventListener('click', () => {
+      setLocal(num, 'copy', ta.value);
+      dirty = false;
+      saveBtn.classList.remove('is-dirty');
+      saveBtn.classList.add('saved-flash');
+      saveBtn.textContent = '✓ נשמר';
+      savedHint.textContent = '';
+      setTimeout(() => {
+        saveBtn.classList.remove('saved-flash');
+        saveBtn.textContent = 'שמור קופי';
+      }, 1800);
+    });
+    // Ctrl/Cmd+S to save
+    ta.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveBtn.click();
+      }
+    });
+  }
+
+  // Wire up dropzone
+  setupDropzone(num);
+}
+
+function setupDropzone(num) {
+  const dz = document.getElementById('dropzone');
+  const fi = document.getElementById('fileInput');
+  if (!dz || !fi) return;
+  dz.addEventListener('click', (e) => {
+    if (e.target.classList.contains('dz-remove')) return;
+    fi.click();
+  });
+  fi.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (f) handleImage(num, f);
+  });
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.style.borderColor = '#67E8F9'; });
+  dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dz.style.borderColor = '';
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImage(num, f);
+  });
+}
+
+function handleImage(num, file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    setLocal(num, 'img', dataUrl);
+    openModal(num);
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(num) {
+  try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
+  openModal(num);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatDateHe(iso) {
+  const [y, m, d] = iso.split('-');
+  return `${parseInt(d)}.${parseInt(m)}.${y.slice(2)}`;
+}
+
+document.addEventListener('click', (e) => {
+  // Don't open modal if user clicked the inline status select
+  if (e.target.closest('.cell-status')) return;
+  // Explicit open button
+  const openBtn = e.target.closest('.cell-open');
+  if (openBtn) {
+    e.stopPropagation();
+    const num = parseInt(openBtn.dataset.num);
+    if (num) openModal(num);
+    return;
+  }
+  // Clicking anywhere else on a content cell opens modal
+  const cell = e.target.closest('.cell.has-content');
+  if (cell) {
+    const firstItem = cell.querySelector('[data-num]');
+    if (firstItem) {
+      const num = parseInt(firstItem.dataset.num);
+      if (num) openModal(num);
+    }
+    return;
+  }
+  if (e.target.classList.contains('modal-bg')) closeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+highlightToday();
+applyStatusToCells();
+</script>
+</body>
+</html>
