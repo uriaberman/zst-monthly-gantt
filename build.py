@@ -212,12 +212,9 @@ def render_modal_data(items: list) -> str:
             'type_label': tc['label'],
             'type_accent': tc['accent'],
             'type_soft': tc['soft'],
-            'pillar_label': it.get('pillar_label', ''),
             'title': it['title'],
-            'explanation': it['explanation'],
-            'visuals': it['visuals'],
-            'copy_on_visual': it['copy_on_visual'],
-            'captions': it['captions'],
+            'short_explanation': it.get('short_explanation', ''),
+            'source': it.get('source', ''),
             'status': it['status'],
         })
     return json.dumps(slim, ensure_ascii=False)
@@ -333,7 +330,57 @@ body {
   font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
-  margin-top: 4px;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(103,232,249,0.10);
+  border: 1px solid rgba(103,232,249,0.35);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.share-btn:hover {
+  background: rgba(103,232,249,0.20);
+  border-color: var(--accent-cyan);
+}
+.share-btn.copied {
+  background: rgba(34,197,94,0.18);
+  border-color: #22C55E;
+  color: #22C55E;
+}
+/* In view-mode: hide share button + edit hint, show view-mode badge instead */
+body.view-mode .share-btn,
+body.view-mode .header-actions .hint { display: none; }
+body.view-mode .header-actions::before {
+  content: 'מצב צפייה · ללא עריכה';
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+/* In view-mode: hide status dropdown in cells, show as static pill */
+body.view-mode .cell-status {
+  pointer-events: none;
+  appearance: none;
+  background-image: none;
+  padding-left: 9px;
 }
 
 /* CONTROLS ROW: tabs + legend in one compact line */
@@ -771,12 +818,6 @@ body {
   color: var(--ink);
   letter-spacing: -0.015em;
 }
-.modal-head-left .pillar-name {
-  font-family: var(--font-he);
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-top: 4px;
-}
 .modal-head-left .date-row {
   margin-top: 10px;
   font-family: var(--font);
@@ -836,7 +877,41 @@ body {
   color: var(--ink);
 }
 
-.modal-body { padding: 26px 32px 32px; }
+.modal-body { padding: 22px 32px 32px; }
+
+/* ONE-LINE explanation + source row */
+.modal-explainline {
+  font-family: var(--font-he);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 8px;
+  padding: 14px 18px;
+  background: rgba(103,232,249,0.06);
+  border-right: 3px solid rgba(103,232,249,0.6);
+  border-radius: 8px;
+}
+.modal-source {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  padding: 0 4px;
+  direction: rtl;
+  text-align: right;
+}
+.modal-source-label {
+  color: var(--ink-mute);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.status-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
 
 /* PRIMARY ROW: image dropzone (left) + accompanying copy (right) */
 .modal-primary {
@@ -937,13 +1012,66 @@ body {
   border-color: var(--accent-cyan);
 }
 .copy-area textarea::placeholder { color: var(--ink-faint); }
+.copy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.copy-save-btn {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.copy-save-btn:hover {
+  background: #38BDF8;
+  border-color: #38BDF8;
+}
+.copy-save-btn.is-dirty {
+  background: #FBBF24;
+  border-color: #FBBF24;
+  color: #0B1220;
+}
+.copy-save-btn.saved-flash {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #0B1220;
+}
 .copy-saved {
   font-family: var(--font-he);
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--ink-mute);
-  margin-top: 6px;
   text-align: left;
   min-height: 14px;
+}
+
+/* View-mode read-only copy area */
+.copy-view {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 280px;
+  white-space: pre-wrap;
+  direction: rtl;
+  text-align: right;
+}
+.dz-empty {
+  color: var(--ink-mute);
+  font-style: italic;
 }
 
 /* SECONDARY: original explanation + 2x3 options collapsible */
@@ -1065,6 +1193,30 @@ function setLocal(num, field, value) {
   try { localStorage.setItem(lsKey(num, field), value); } catch (e) {}
 }
 
+/* ---------- View mode (URL ?mode=view) ---------- */
+function isViewMode() {
+  return new URLSearchParams(window.location.search).get('mode') === 'view';
+}
+if (isViewMode()) document.body.classList.add('view-mode');
+
+/* Share with client = copy ?mode=view link */
+window.shareView = function(btn) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('mode', 'view');
+  url.hash = '';
+  navigator.clipboard.writeText(url.toString()).then(() => {
+    const orig = btn.querySelector('span').textContent;
+    btn.querySelector('span').textContent = '✓ הקישור הועתק';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.querySelector('span').textContent = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    prompt('העתק את הקישור הבא ושלח ללקוח:', url.toString());
+  });
+};
+
 /* ---------- Status decoration on cells (read from localStorage) ---------- */
 function paintStatus(selectEl) {
   const status = selectEl.value;
@@ -1134,102 +1286,109 @@ function openModal(num) {
   const modal = document.getElementById('modal');
   const inner = document.getElementById('modal-inner');
 
+  const isView = isViewMode();
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
         <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
-        <div class="pillar-name">${escapeHtml(it.pillar_label || '')}</div>
         <div class="date-row">
-          <span>רעיון #${it.num}</span>
-          <span class="dot"></span>
           <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
           <span class="dot"></span>
           <span class="modal-status">
-            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; color:${STATUS_COLORS[status]};"></span>
-            <select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>
+            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; box-shadow:0 0 8px ${STATUS_COLORS[status]};"></span>
+            ${isView
+              ? `<span class="status-text">${escapeHtml(status)}</span>`
+              : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
+            }
           </span>
         </div>
       </div>
       <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
+      ${it.short_explanation ? `<div class="modal-explainline">${escapeHtml(it.short_explanation)}</div>` : ''}
+      ${it.source ? `<div class="modal-source"><span class="modal-source-label">מקור:</span> ${escapeHtml(it.source)}</div>` : ''}
+
       <div class="modal-primary">
         <div class="copy-area">
-          <label>קופי נלווה (ניתן לעריכה)</label>
-          <textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
-          <div class="copy-saved" id="copySaved"></div>
+          <label>קופי נלווה ${isView ? '' : '(ניתן לעריכה)'}</label>
+          ${isView
+            ? `<div class="copy-view">${escapeHtml(savedCopy || '— טרם נכתב קופי —')}</div>`
+            : `<textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+               <div class="copy-actions">
+                 <button class="copy-save-btn" id="copySaveBtn">שמור קופי</button>
+                 <span class="copy-saved" id="copySaved"></span>
+               </div>`
+          }
         </div>
-        <div class="dropzone ${savedImg ? 'has-image' : ''}" id="dropzone" data-num="${num}">
-          <input type="file" id="fileInput" accept="image/*">
+        <div class="dropzone ${savedImg ? 'has-image' : ''} ${isView ? 'view-mode' : ''}" id="dropzone" data-num="${num}">
+          ${!isView ? `<input type="file" id="fileInput" accept="image/*">` : ''}
           ${savedImg
-            ? `<img class="uploaded" src="${savedImg}" alt="ויזואל" /><button class="dz-remove" onclick="event.stopPropagation(); removeImage(${num})">הסר</button>`
-            : `<svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-               <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
-               <div class="dz-sub">PNG · JPG · WebP</div>`
+            ? `<img class="uploaded" src="${savedImg}" alt="ויזואל" />${!isView ? `<button class="dz-remove" onclick="event.stopPropagation(); removeImage(${num})">הסר</button>` : ''}`
+            : (isView
+                ? `<div class="dz-text dz-empty">— אין עדיין תמונה —</div>`
+                : `<svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                   <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
+                   <div class="dz-sub">PNG · JPG · WebP</div>`)
           }
         </div>
       </div>
-
-      ${it.explanation ? `<div class="modal-section">
-        <h3>הסבר לרעיון</h3>
-        <div class="explanation">${escapeHtml(it.explanation)}</div>
-      </div>` : ''}
-
-      <details class="collapsible">
-        <summary>2 הצעות ויזואל</summary>
-        <div class="pair">
-          <div class="pair-item"><div class="pair-label">ויזואל א'</div><div class="pair-text">${escapeHtml(it.visuals.a || '—')}</div></div>
-          <div class="pair-item"><div class="pair-label">ויזואל ב'</div><div class="pair-text">${escapeHtml(it.visuals.b || '—')}</div></div>
-        </div>
-      </details>
-
-      <details class="collapsible">
-        <summary>2 הצעות קופי על ויזואל</summary>
-        <div class="pair">
-          <div class="pair-item"><div class="pair-label">קופי א'</div><div class="pair-text">${escapeHtml(it.copy_on_visual.a || '—')}</div></div>
-          <div class="pair-item"><div class="pair-label">קופי ב'</div><div class="pair-text">${escapeHtml(it.copy_on_visual.b || '—')}</div></div>
-        </div>
-      </details>
-
-      <details class="collapsible">
-        <summary>2 הצעות קפשן</summary>
-        <div class="pair">
-          <div class="pair-item"><div class="pair-label">קפשן א'</div><div class="pair-text">${escapeHtml(it.captions.a || '—')}</div></div>
-          <div class="pair-item"><div class="pair-label">קפשן ב'</div><div class="pair-text">${escapeHtml(it.captions.b || '—')}</div></div>
-        </div>
-      </details>
     </div>
   `;
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
 
+  // View mode = no interactivity, exit early
+  if (isViewMode()) return;
+
   // Wire up status select
   const sel = document.getElementById('statusSelect');
   const dot = document.getElementById('statusDot');
-  sel.addEventListener('change', () => {
-    const v = sel.value;
-    setLocal(num, 'status', v);
-    const c = STATUS_COLORS[v] || '#94A3B8';
-    dot.style.background = c;
-    dot.style.color = c;
-    applyStatusToCells();
-  });
+  if (sel) {
+    sel.addEventListener('change', () => {
+      const v = sel.value;
+      setLocal(num, 'status', v);
+      const c = STATUS_COLORS[v] || '#94A3B8';
+      dot.style.background = c;
+      dot.style.boxShadow = `0 0 8px ${c}`;
+      applyStatusToCells();
+    });
+  }
 
-  // Wire up copy editor (debounced save)
+  // Wire up copy editor with explicit SAVE button (no more silent autosave)
   const ta = document.getElementById('copyArea');
+  const saveBtn = document.getElementById('copySaveBtn');
   const savedHint = document.getElementById('copySaved');
-  let saveTimer;
-  ta.addEventListener('input', () => {
-    clearTimeout(saveTimer);
-    savedHint.textContent = 'מקליד...';
-    saveTimer = setTimeout(() => {
+  if (ta && saveBtn) {
+    let dirty = false;
+    ta.addEventListener('input', () => {
+      dirty = true;
+      saveBtn.classList.add('is-dirty');
+      saveBtn.textContent = 'שמור קופי *';
+      savedHint.textContent = '';
+    });
+    saveBtn.addEventListener('click', () => {
       setLocal(num, 'copy', ta.value);
-      savedHint.textContent = '✓ נשמר אוטומטית';
-      setTimeout(() => savedHint.textContent = '', 1800);
-    }, 400);
-  });
+      dirty = false;
+      saveBtn.classList.remove('is-dirty');
+      saveBtn.classList.add('saved-flash');
+      saveBtn.textContent = '✓ נשמר';
+      savedHint.textContent = '';
+      setTimeout(() => {
+        saveBtn.classList.remove('saved-flash');
+        saveBtn.textContent = 'שמור קופי';
+      }, 1800);
+    });
+    // Ctrl/Cmd+S to save
+    ta.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveBtn.click();
+      }
+    });
+  }
 
   // Wire up dropzone
   setupDropzone(num);
@@ -1366,7 +1525,7 @@ def render_html(data: dict, logo_b64: str) -> str:
 
     js_filled = JS.replace('__ITEMS_JSON__', items_json).replace('__CLIENT_KEY__', client_key)
 
-    logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="זליגר שומרון" />'
+    logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
 
     return f'''<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -1388,7 +1547,13 @@ def render_html(data: dict, logo_b64: str) -> str:
     <div class="header-titles">
       <h1><span class="h1-label">גאנט</span><span class="h1-sep">|</span><span class="h1-client">{html.escape(client)}</span></h1>
       <div class="period">{html.escape(period)}</div>
-      <div class="hint">לחץ על קוביה לפרטים ועריכה</div>
+      <div class="header-actions">
+        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>שתף עם לקוח</span>
+        </button>
+        <span class="hint">לחץ על קוביה לפרטים ועריכה</span>
+      </div>
     </div>
   </header>
 
@@ -1401,7 +1566,7 @@ def render_html(data: dict, logo_b64: str) -> str:
     {''.join(months_html_parts)}
   </div>
 
-  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Seliger Shomron</span></div>
+  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Zeliger Shomron</span></div>
 </div>
 
 <div class="modal-bg" id="modal">

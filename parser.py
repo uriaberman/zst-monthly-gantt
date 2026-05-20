@@ -167,6 +167,69 @@ def classify_type(raw: str) -> str:
     return 'post'
 
 
+# Patterns that indicate a "meta" intro sentence (skip if leading)
+META_INTRO_PREFIXES = (
+    'פתיחת הסדרה', 'סגירת הסדרה', 'פינה חדשה', 'הרייל הראשון',
+    'הרייל ה', 'הפוסט הראשון', 'פוסט אדווקסי', 'פתיחת ה',
+)
+
+def extract_short_and_source(full_explanation: str) -> tuple[str, str]:
+    """Return (short_explanation, source) from the long docx explanation.
+    Strategy:
+      - Source = last line starting with 'מקור:' (cleaned)
+      - Short = first 1-2 sentences from the FIRST paragraph (skipping meta intros)
+    """
+    if not full_explanation:
+        return '', ''
+
+    text = full_explanation.strip()
+
+    # Extract source line(s)
+    source = ''
+    src_lines = []
+    cleaned_lines = []
+    for line in text.split('\n'):
+        ls = line.strip()
+        if ls.startswith('מקור:') or ls.startswith('מקורות:'):
+            src_lines.append(ls.split(':', 1)[1].strip() if ':' in ls else ls)
+        else:
+            cleaned_lines.append(line)
+    if src_lines:
+        source = ' | '.join(src_lines)
+
+    body = '\n'.join(cleaned_lines).strip()
+    if not body:
+        return '', source
+
+    # Take the first paragraph (until the first blank line)
+    first_para = body.split('\n\n')[0].strip()
+
+    # Split into sentences (on period followed by space/newline, or by exclamation/question marks)
+    import re
+    sentences = re.split(r'(?<=[.!?])\s+', first_para)
+    sentences = [s.strip() for s in sentences if s.strip()]
+    if not sentences:
+        return '', source
+
+    # Skip leading meta intros
+    skip = 0
+    while skip < len(sentences) and any(sentences[skip].startswith(p) for p in META_INTRO_PREFIXES):
+        skip += 1
+
+    if skip >= len(sentences):
+        skip = 0  # fall back to first sentence if all skipped
+
+    # Take 1-2 sentences (up to ~180 chars)
+    short = sentences[skip]
+    if skip + 1 < len(sentences) and len(short) < 100:
+        short = (short + ' ' + sentences[skip + 1]).strip()
+
+    if len(short) > 200:
+        short = short[:197].rstrip() + '...'
+
+    return short, source
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('docx')
@@ -178,12 +241,13 @@ def main():
     items = parse_docx(Path(args.docx))
     for it in items:
         it['date_iso'] = normalize_date(it['date'])
-        # Original pillar name (e.g. "מאחורי המספרים #1") stays as the readable label.
-        # type_key drives color only - 3 buckets: post / story / reel.
         it['type_key'] = classify_type(it['pillar'])
         it['type_label'] = TYPE_LABEL[it['type_key']]
-        # Pillar label cleaned (drop trailing "#N" if exists)
         it['pillar_label'] = it['pillar'].rsplit('#', 1)[0].strip().rstrip('-').strip() or it['pillar']
+        # Short explanation (1-2 sentences) + source extracted from long explanation
+        short, source = extract_short_and_source(it.get('explanation', ''))
+        it['short_explanation'] = short
+        it['source'] = source
 
     out = {
         'client': args.client,
