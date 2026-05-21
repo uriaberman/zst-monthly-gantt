@@ -132,7 +132,8 @@ def render_cell(cell: dict) -> str:
           <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
         </div>''')
 
-    return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}">
+    draggable_attr = 'draggable="true"' if cell['items'] and not cell['is_outside'] else ''
+    return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}" {draggable_attr}>
       <div class="cell-head">{''.join(header_parts)}</div>
       <div class="cell-body">{''.join(body_parts)}</div>
     </div>'''
@@ -361,6 +362,29 @@ body {
   border-color: #22C55E;
   color: #22C55E;
 }
+.restore-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: #FBBF24;
+  background: rgba(251,191,36,0.10);
+  border: 1px solid rgba(251,191,36,0.35);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.restore-btn.visible { display: inline-flex; }
+.restore-btn:hover {
+  background: rgba(251,191,36,0.20);
+  border-color: #FBBF24;
+}
+body.view-mode .restore-btn { display: none !important; }
+body.view-mode .cell.has-content { cursor: pointer; }
+body.view-mode .cell[draggable] { -webkit-user-drag: none; }
 /* In view-mode: hide share button + edit hint, show view-mode badge instead */
 body.view-mode .share-btn,
 body.view-mode .header-actions .hint { display: none; }
@@ -569,6 +593,44 @@ body.view-mode .cell-status {
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
+}
+.cell.has-content { cursor: grab; }
+.cell.has-content:active { cursor: grabbing; }
+.cell.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+.cell.drop-target {
+  border-color: var(--accent-cyan) !important;
+  background: rgba(103,232,249,0.20) !important;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 26px rgba(103,232,249,0.5) !important;
+  transform: scale(1.03);
+}
+.cell.drop-target.saturday,
+.cell.drop-target.holiday {
+  border-color: #FBBF24 !important;
+  box-shadow: 0 0 0 2px #FBBF24, 0 0 26px rgba(251,191,36,0.5) !important;
+}
+.cell.drop-target::after {
+  content: '↓ שחרר כאן';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--accent-cyan);
+  padding: 6px 14px;
+  border-radius: 999px;
+  z-index: 10;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.cell.drop-target.saturday::after,
+.cell.drop-target.holiday::after {
+  content: '⚠ שבת/חג - שחרר אם בכוונה';
+  background: #FBBF24;
 }
 
 .cell.friday:not(.has-content) {
@@ -1252,6 +1314,158 @@ function highlightToday() {
   document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
 }
 
+/* ---------- Drag & Drop ---------- */
+let dragSourceCell = null;
+
+function isViewModeStrict() { return document.body.classList.contains('view-mode'); }
+
+function setupDragAndDrop() {
+  if (isViewModeStrict()) return;  // No drag in view mode
+
+  document.addEventListener('dragstart', (e) => {
+    const cell = e.target.closest('.cell.has-content');
+    if (!cell) return;
+    dragSourceCell = cell;
+    cell.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    const item = cell.querySelector('[data-num]');
+    if (item) {
+      e.dataTransfer.setData('application/json', JSON.stringify({
+        num: parseInt(item.dataset.num),
+        iso: cell.dataset.iso
+      }));
+    }
+  });
+
+  document.addEventListener('dragend', () => {
+    document.querySelectorAll('.dragging').forEach(c => c.classList.remove('dragging'));
+    document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+    dragSourceCell = null;
+  });
+
+  document.addEventListener('dragover', (e) => {
+    const cell = e.target.closest('.cell:not(.outside)');
+    if (!cell || cell === dragSourceCell) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.drop-target').forEach(c => {
+      if (c !== cell) c.classList.remove('drop-target');
+    });
+    cell.classList.add('drop-target');
+  });
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.cell:not(.outside)');
+    if (!target || target === dragSourceCell) {
+      document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+      return;
+    }
+
+    let data;
+    try { data = JSON.parse(e.dataTransfer.getData('application/json')); }
+    catch (err) { return; }
+
+    const srcNum = data.num;
+    const tgtIso = target.dataset.iso;
+
+    // Warn if dropping on Shabbat or holiday
+    if (target.classList.contains('saturday') || target.classList.contains('holiday')) {
+      const where = target.classList.contains('holiday') ? 'חג' : 'שבת';
+      if (!confirm(`היעד הוא ${where}. בטוח שלהעביר תוכן ליום הזה?`)) {
+        target.classList.remove('drop-target');
+        return;
+      }
+    }
+
+    // Check if target has content - swap dates
+    const tgtItem = target.querySelector('[data-num]');
+    setLocal(srcNum, 'date_override', tgtIso);
+    if (tgtItem) {
+      const tgtNum = parseInt(tgtItem.dataset.num);
+      setLocal(tgtNum, 'date_override', data.iso);
+    }
+
+    // Reload to re-apply all overrides cleanly
+    location.reload();
+  });
+}
+
+/* ---------- Apply date overrides on page load ---------- */
+function applyDateOverrides() {
+  let movedAny = false;
+  // Build map: desiredIso → array of item nums
+  const moves = [];
+  ITEMS_DATA.forEach(item => {
+    const override = getLocal(item.num, 'date_override', null);
+    if (override && override !== item.date) {
+      moves.push({ num: item.num, fromIso: item.date, toIso: override });
+    }
+  });
+
+  // Show restore button if any overrides
+  if (moves.length > 0) {
+    document.getElementById('restoreBtn')?.classList.add('visible');
+    movedAny = true;
+  }
+
+  // Apply moves - extract content from origin cells, swap or place in target
+  moves.forEach(({ num, fromIso, toIso }) => {
+    const sourceItem = document.querySelector(`.cell[data-iso="${fromIso}"] [data-num="${num}"]`);
+    if (!sourceItem) return;
+    const sourceCell = sourceItem.closest('.cell');
+    const targetCell = document.querySelector(`.cell[data-iso="${toIso}"]:not(.outside)`);
+    if (!sourceCell || !targetCell || sourceCell === targetCell) return;
+
+    // Move entire body content
+    const sourceBody = sourceCell.querySelector('.cell-body');
+    const targetBody = targetCell.querySelector('.cell-body');
+    if (!sourceBody || !targetBody) return;
+
+    // Capture content + type class
+    const sourceContent = sourceBody.innerHTML;
+    const sourceTypeClass = Array.from(sourceCell.classList).find(c => c.startsWith('type-'));
+    const targetContent = targetBody.innerHTML;
+    const targetTypeClass = Array.from(targetCell.classList).find(c => c.startsWith('type-'));
+
+    // Move source content to target (swap if both had content)
+    targetBody.innerHTML = sourceContent;
+    sourceBody.innerHTML = targetContent;
+
+    // Clear ALL type classes from both cells before re-adding
+    ['type-post', 'type-carousel', 'type-story', 'type-reel'].forEach(c => {
+      sourceCell.classList.remove(c);
+      targetCell.classList.remove(c);
+    });
+
+    // Target now holds source's content - apply source's type
+    targetCell.classList.add('has-content');
+    if (sourceTypeClass) targetCell.classList.add(sourceTypeClass);
+    targetCell.setAttribute('draggable', 'true');
+
+    if (targetContent.trim()) {
+      // Source now holds target's old content - apply target's type
+      sourceCell.classList.add('has-content');
+      if (targetTypeClass) sourceCell.classList.add(targetTypeClass);
+      sourceCell.setAttribute('draggable', 'true');
+    } else {
+      // Source is now empty
+      sourceCell.classList.remove('has-content');
+      sourceCell.setAttribute('draggable', 'false');
+    }
+  });
+
+  if (movedAny) applyStatusToCells();  // Reapply status after DOM shuffle
+}
+
+window.restoreOriginal = function() {
+  if (!confirm('להחזיר את כל התכנים למיקומם המקורי?')) return;
+  ITEMS_DATA.forEach(item => {
+    try { localStorage.removeItem(lsKey(item.num, 'date_override')); } catch (e) {}
+  });
+  location.reload();
+};
+
 /* ---------- Tabs ---------- */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -1480,7 +1694,9 @@ document.addEventListener('keydown', (e) => {
 });
 
 highlightToday();
+applyDateOverrides();
 applyStatusToCells();
+setupDragAndDrop();
 '''
 
 
@@ -1552,7 +1768,10 @@ def render_html(data: dict, logo_b64: str) -> str:
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
           <span>שתף עם לקוח</span>
         </button>
-        <span class="hint">לחץ על קוביה לפרטים ועריכה</span>
+        <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
+          <span>↺ החזר למקור</span>
+        </button>
+        <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
       </div>
     </div>
   </header>
