@@ -263,9 +263,9 @@ body {
 }
 
 .page {
-  max-width: 1600px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 14px 24px 18px;
+  padding: 24px 32px 36px;
 }
 
 /* COMPACT HEADER */
@@ -273,12 +273,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 18px;
+  padding: 16px 24px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 .header-brand {
   display: flex;
@@ -286,7 +286,7 @@ body {
   filter: invert(1) hue-rotate(180deg) brightness(1.05);
 }
 .header img.logo {
-  height: 34px;
+  height: 46px;
   width: auto;
   display: block;
 }
@@ -294,49 +294,49 @@ body {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 19px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.015em;
   line-height: 1.1;
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 .h1-label {
   color: var(--accent-cyan);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
 }
 .h1-sep {
   color: var(--ink-faint);
   font-weight: 300;
-  font-size: 16px;
+  font-size: 20px;
 }
 .h1-client { color: var(--ink); }
 .header-titles .period {
   font-family: var(--font-en);
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--ink-soft);
   font-weight: 400;
   letter-spacing: 0.02em;
 }
 .header-titles .hint {
-  font-size: 10.5px;
+  font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.01em;
 }
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 14px;
+  margin-top: 8px;
 }
 .share-btn {
   display: inline-flex;
@@ -412,29 +412,29 @@ body.view-mode .cell-status {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 16px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 /* TABS */
 .tabs {
   display: flex;
-  gap: 3px;
+  gap: 4px;
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 3px;
+  border-radius: 10px;
+  padding: 4px;
 }
 .tab {
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
   background: transparent;
   border: none;
-  padding: 5px 13px;
-  border-radius: 6px;
+  padding: 7px 16px;
+  border-radius: 7px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
@@ -463,8 +463,8 @@ body.view-mode .cell-status {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 12px;
-  padding: 5px 14px;
+  gap: 8px 14px;
+  padding: 8px 16px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -508,8 +508,8 @@ body.view-mode .cell-status {
 .month {
   background: var(--paper);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 12px 12px;
+  border-radius: 14px;
+  padding: 16px 18px 20px;
   box-shadow: var(--shadow-md);
   display: none;
 }
@@ -519,28 +519,28 @@ body.view-mode .cell-status {
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 3px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 .wd {
   text-align: center;
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-soft);
-  padding: 2px 0 4px;
+  padding: 4px 0 6px;
   letter-spacing: 0.04em;
 }
 
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .week {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 6px;
 }
 
 /* CELL - whole cell is the content card. Type color tints the whole cell. */
@@ -548,12 +548,12 @@ body.view-mode .cell-status {
   position: relative;
   background: var(--paper-2);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  min-height: 96px;
-  padding: 5px 6px 4px;
+  border-radius: 10px;
+  min-height: 158px;
+  padding: 10px 10px 9px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 4px;
   overflow: hidden;
   transition: all 0.15s ease;
 }
@@ -681,14 +681,14 @@ body.view-mode .cell-status {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 4px;
-  padding-bottom: 3px;
+  gap: 6px;
+  padding-bottom: 6px;
   border-bottom: 1px solid rgba(148,163,184,0.1);
-  min-height: 18px;
+  min-height: 28px;
 }
 .cell-num {
   font-family: var(--font-en);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--ink);
   line-height: 1;
@@ -696,18 +696,18 @@ body.view-mode .cell-status {
 }
 .cell-heb {
   font-family: var(--font-he);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-soft);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 .cell-hol {
   width: 100%;
   font-family: var(--font-he);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--gold);
-  margin-top: 1px;
+  margin-top: 2px;
   letter-spacing: 0.01em;
 }
 
@@ -715,9 +715,9 @@ body.view-mode .cell-status {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
-  padding-top: 2px;
+  padding-top: 4px;
 }
 
 .cell-type-row {
@@ -729,15 +729,15 @@ body.view-mode .cell-status {
 }
 .cell-type-chip {
   font-family: var(--font-he);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   color: #0B1220;
   background: var(--type-c);
   border: none;
-  padding: 2px 9px;
+  padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
-  box-shadow: 0 1px 4px color-mix(in srgb, var(--type-c) 35%, transparent);
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
 }
 .cell-warning {
   font-size: 11px;
@@ -746,12 +746,12 @@ body.view-mode .cell-status {
 }
 .cell-title {
   font-family: var(--font-he);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--ink);
-  line-height: 1.25;
+  line-height: 1.35;
   text-align: center;
-  padding: 3px 2px 2px;
+  padding: 6px 4px 4px;
   overflow: hidden;
   flex: 1;
   display: flex;
@@ -763,9 +763,9 @@ body.view-mode .cell-status {
 .cell-footer {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin: 3px -7px -5px;
-  padding: 4px 7px 5px;
+  gap: 7px;
+  margin: 8px -10px -9px;
+  padding: 9px 10px;
   background: rgba(255,255,255,0.12);
   border-top: 1px solid rgba(255,255,255,0.22);
 }
@@ -773,22 +773,22 @@ body.view-mode .cell-status {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: 6px;
   width: 100%;
 }
 .cell-status-label {
   font-family: var(--font-he);
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--ink);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   text-transform: none;
 }
 .cell-status {
   font-family: var(--font-he);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 1px 15px 1px 7px;
+  padding: 3px 18px 3px 9px;
   border-radius: 999px;
   cursor: pointer;
   appearance: none;
@@ -806,13 +806,13 @@ body.view-mode .cell-status {
 
 .cell-open {
   font-family: var(--font-he);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   color: #0B1220;
   background: #FFFFFF;
   border: 1px solid #FFFFFF;
-  padding: 3px 10px;
-  border-radius: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   letter-spacing: 0.01em;
@@ -1217,10 +1217,10 @@ details.collapsible > .pair {
 }
 
 .footer {
-  margin-top: 12px;
+  margin-top: 28px;
   text-align: center;
   font-family: var(--font-en);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--ink-mute);
   letter-spacing: 0.08em;
   text-transform: uppercase;
