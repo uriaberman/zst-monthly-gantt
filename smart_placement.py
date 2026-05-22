@@ -27,6 +27,27 @@ HEB_MONTHS = {
     'אוקטובר': 10, 'נובמבר': 11, 'דצמבר': 12,
 }
 
+# Keywords that hint a content item is related to a specific holiday.
+# When placing an item with a matching keyword, prefer dates near the holiday.
+HOLIDAY_KEYWORDS = {
+    'יום השואה':   ['שואה', 'הנצחה', 'גטו', 'אנטישמיות', 'ניצולי'],
+    'יום הזיכרון': ['זיכרון', 'חללים', 'נופלים', 'משפחות שכולות'],
+    'יום העצמאות': ['עצמאות', 'מדינה', 'דגל', 'תקומה', '78', '77', 'יום העצמאות'],
+    'יום ירושלים': ['ירושלים', 'מאוחדת', 'כותל', 'עיר הקודש'],
+    'יום המשפחה':  ['יום המשפחה', 'יום האם', 'אמהות', 'יום האב', 'אבהות'],
+    'פסח':         ['פסח', 'סדר', 'הגדה', 'יציאת מצרים', 'מצה'],
+    'שבועות':      ['שבועות', 'מתן תורה', 'ביכורים', 'הר סיני'],
+    'ראש השנה':    ['ראש השנה', 'שנה טובה', 'שופר', 'דבש', 'תפוח'],
+    'יום כיפור':   ['יום כיפור', 'כיפורים', 'תשובה', 'סליחה'],
+    'סוכות':       ['סוכות', 'סוכה', 'ארבעת המינים', 'לולב', 'אתרוג'],
+    'שמיני עצרת':  ['שמחת תורה', 'שמיני עצרת', 'הקפות'],
+    'חנוכה':       ['חנוכה', 'חנוכייה', 'סופגנייה', 'לביבה', 'מכבים'],
+    'פורים':       ['פורים', 'מגילה', 'מסיכה', 'תחפושת', 'משלוח מנות'],
+    'ט״ו בשבט':    ['ט"ו בשבט', 'ראש השנה לאילנות', 'נטיעה', 'עץ'],
+    'ל״ג בעומר':   ['ל"ג בעומר', 'מדורה', 'בר יוחאי'],
+    'ט׳ באב':      ['תשעה באב', 'חורבן', 'בית המקדש'],
+}
+
 HEB_DOW = ['ב', 'ג', 'ד', 'ה', 'ו', 'ש', 'א']  # Mon=0..Sun=6 → Hebrew letters
 HEB_DOW_NAMES = ['שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת', 'ראשון']
 
@@ -99,68 +120,122 @@ def score_day(d: date, type_key: str) -> int:
     return DOW_SCORES.get(type_key, DOW_SCORES['post']).get(d.weekday(), 5)
 
 
-def propose_placement(items: list[dict], start: date, end: date) -> list[dict]:
-    """Assign date_iso + day to items missing them. Returns mutated items."""
+def detect_holiday_anchor(item: dict, holidays_in_period: dict[str, str]) -> str | None:
+    """If the item's title/explanation/pillar mentions a holiday that exists in the period,
+    return the ISO date of that holiday for anchoring."""
+    text = ' '.join(filter(None, [
+        item.get('title', ''),
+        item.get('pillar', ''),
+        item.get('explanation', ''),
+        item.get('short_explanation', ''),
+    ])).lower()
+    if not text:
+        return None
+
+    # Build inverse map: keyword → holiday_name
+    for holiday_name, keywords in HOLIDAY_KEYWORDS.items():
+        for kw in keywords:
+            if kw.lower() in text:
+                # Find this holiday in the period
+                for iso, name in holidays_in_period.items():
+                    if holiday_name in name or name in holiday_name:
+                        return iso
+                break
+    return None
+
+
+def propose_placement(items: list[dict], start: date, end: date,
+                      holidays_in_period: dict[str, str] | None = None) -> list[dict]:
+    """Assign date_iso + day to items missing them. Returns mutated items.
+
+    If holidays_in_period is provided, items mentioning a holiday in the period
+    will be anchored near that holiday (within 3 days before/after)."""
     pending = [it for it in items if not it.get('date_iso')]
     if not pending:
         return items
 
+    holidays_in_period = holidays_in_period or {}
     eligible = eligible_days(start, end)
     if len(eligible) < len(pending):
         print(f"⚠ Only {len(eligible)} eligible days for {len(pending)} items - some will share days")
 
-    # Sort pending by item num to preserve user order
     pending.sort(key=lambda x: x['num'])
-
-    # Step 1: Greedy assignment - for each item, find the best eligible day
-    # that's closest to its target slot (item_index / total * range_length)
     used_days = set(it['date_iso'] for it in items if it.get('date_iso'))
     n = len(pending)
 
-    for i, item in enumerate(pending):
-        # Target position in the date range
-        target_idx = int((i + 0.5) / n * len(eligible))
-        target_idx = min(target_idx, len(eligible) - 1)
+    # Step 1: Anchor items with holiday keywords FIRST
+    anchored = {}
+    leftover = []
+    for item in pending:
+        anchor_iso = detect_holiday_anchor(item, holidays_in_period)
+        if anchor_iso:
+            anchored[item['num']] = (item, anchor_iso)
+        else:
+            leftover.append(item)
 
-        # Search window: ±3 days around target
+    # Place anchored items - find best eligible day within ±3 of the anchor (before the holiday preferred)
+    for num, (item, anchor_iso) in anchored.items():
+        anchor_date = date.fromisoformat(anchor_iso)
         candidates = []
-        for offset in range(-3, 4):
-            j = target_idx + offset
-            if 0 <= j < len(eligible):
-                d = eligible[j]
-                if d.isoformat() in used_days:
-                    continue
-                score = score_day(d, item.get('type_key', 'post'))
-                # Bonus for being close to target
-                distance_penalty = abs(offset)
-                candidates.append((score - distance_penalty, j, d))
+        # Prefer day BEFORE the holiday (so content publishes prior to the event)
+        for offset in [-2, -1, -3, 1, 2, 0]:
+            target = anchor_date + timedelta(days=offset)
+            if not (start <= target <= end):
+                continue
+            if target.weekday() in (4, 5):  # skip Fri/Sat
+                continue
+            if target.isoformat() in used_days:
+                continue
+            if target.isoformat() in holidays_in_period and offset == 0:
+                continue  # don't place ON the holiday itself
+            score = score_day(target, item.get('type_key', 'post'))
+            candidates.append((score, target))
+        if candidates:
+            candidates.sort(key=lambda x: -x[0])
+            chosen = candidates[0][1]
+            used_days.add(chosen.isoformat())
+            _assign_date(item, chosen)
+        else:
+            leftover.append(item)
 
-        if not candidates:
-            # Fall back to any unused day
-            for j, d in enumerate(eligible):
-                if d.isoformat() not in used_days:
-                    candidates.append((0, j, d))
-                    break
-
-        if not candidates:
-            # Last resort: just use the target day even if used
-            d = eligible[target_idx]
-            candidates = [(0, target_idx, d)]
-
-        # Pick highest-scoring candidate
-        candidates.sort(key=lambda x: -x[0])
-        chosen_score, chosen_idx, chosen_day = candidates[0]
-        used_days.add(chosen_day.isoformat())
-
-        # Hebrew day letter
-        wd = chosen_day.weekday()
-        day_letter = HEB_DOW[wd]
-
-        item['date'] = f"{chosen_day.day}.{chosen_day.month}.{chosen_day.year % 100:02d}"
-        item['date_iso'] = chosen_day.isoformat()
-        item['day'] = day_letter + "'"
+    # Step 2: Distribute leftover items evenly across remaining eligible days
+    remaining_eligible = [d for d in eligible if d.isoformat() not in used_days]
+    if remaining_eligible and leftover:
+        m = len(leftover)
+        for i, item in enumerate(leftover):
+            target_idx = int((i + 0.5) / m * len(remaining_eligible))
+            target_idx = min(target_idx, len(remaining_eligible) - 1)
+            candidates = []
+            for offset in range(-3, 4):
+                j = target_idx + offset
+                if 0 <= j < len(remaining_eligible):
+                    d = remaining_eligible[j]
+                    if d.isoformat() in used_days:
+                        continue
+                    score = score_day(d, item.get('type_key', 'post'))
+                    distance_penalty = abs(offset)
+                    candidates.append((score - distance_penalty, d))
+            if not candidates:
+                for d in remaining_eligible:
+                    if d.isoformat() not in used_days:
+                        candidates.append((0, d))
+                        break
+            if not candidates:
+                candidates = [(0, eligible[0])]
+            candidates.sort(key=lambda x: -x[0])
+            chosen = candidates[0][1]
+            used_days.add(chosen.isoformat())
+            _assign_date(item, chosen)
 
     return items
+
+
+def _assign_date(item: dict, chosen_day: date) -> None:
+    wd = chosen_day.weekday()
+    day_letter = HEB_DOW[wd]
+    item['date'] = f"{chosen_day.day}.{chosen_day.month}.{chosen_day.year % 100:02d}"
+    item['date_iso'] = chosen_day.isoformat()
+    item['day'] = day_letter + "'"
 
 
 def render_markdown_table(items: list[dict]) -> str:
@@ -192,7 +267,19 @@ def main():
     n_missing = sum(1 for it in items if not it.get('date_iso'))
     print(f"Items needing placement: {n_missing} / {len(items)}")
 
-    propose_placement(items, start, end)
+    # Pull Israeli holidays in the period - used for context-aware anchoring
+    try:
+        from israeli_holidays import get_israeli_holidays
+        from datetime import timedelta
+        ext_start = (start - timedelta(days=3)).isoformat()
+        ext_end = (end + timedelta(days=3)).isoformat()
+        holidays_in_period = get_israeli_holidays(ext_start, ext_end)
+        print(f"Holidays in period: {len(holidays_in_period)}")
+    except Exception as e:
+        holidays_in_period = {}
+        print(f"⚠ Could not load holidays: {e}")
+
+    propose_placement(items, start, end, holidays_in_period)
 
     data['needs_placement'] = sum(1 for it in items if not it.get('date_iso'))
     Path(args.data).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')

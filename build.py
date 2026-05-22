@@ -42,12 +42,9 @@ HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','ש
 HEB_GREG_MONTHS = ['','ינואר','פברואר','מרץ','אפריל','מאי','יוני',
                    'יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
 
-HOLIDAYS_2026 = {
-    '2026-05-22': 'ערב שבועות',
-    '2026-05-23': 'חג שבועות',
-    '2026-06-16': 'ראש חודש תמוז',
-    '2026-06-21': 'יום אבא',
-}
+# Holidays are computed dynamically per period via israeli_holidays.get_israeli_holidays()
+# This dict is populated at build time in main()
+HOLIDAYS_2026 = {}
 
 
 def heb_date(d: date) -> tuple[str, str]:
@@ -1761,8 +1758,8 @@ def render_html(data: dict, logo_b64: str) -> str:
       {logo_tag}
     </div>
     <div class="header-titles">
-      <h1><span class="h1-label">גאנט</span><span class="h1-sep">|</span><span class="h1-client">{html.escape(client)}</span></h1>
-      <div class="period">{html.escape(period)}</div>
+      <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">{html.escape(client)}</span></h1>
+      <div class="period">{html.escape(period)}{f' · {data.get("_heb_month","")} {data.get("_heb_year","")}' if data.get('_heb_month') else ''}</div>
       <div class="header-actions">
         <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
@@ -1808,9 +1805,30 @@ def main():
     data = json.loads(Path(args.data).read_text(encoding='utf-8'))
     logo_b64 = base64.b64encode(Path(args.logo).read_bytes()).decode('ascii')
 
+    # Compute Israeli holidays for the period of the data
+    dates = sorted([it['date_iso'] for it in data['items'] if it.get('date_iso')])
+    if dates:
+        from israeli_holidays import get_israeli_holidays, hebrew_month_for_gregorian, hebrew_year_for_gregorian
+        # Expand range by 7 days each side to catch nearby holidays
+        from datetime import date, timedelta
+        first = date.fromisoformat(dates[0])
+        last = date.fromisoformat(dates[-1])
+        start_ext = (first - timedelta(days=7)).isoformat()
+        end_ext = (last + timedelta(days=7)).isoformat()
+        holidays = get_israeli_holidays(start_ext, end_ext)
+        # Populate the module-level dict that render_cell uses
+        HOLIDAYS_2026.update(holidays)
+        # Compute Hebrew month for the title
+        heb_month = hebrew_month_for_gregorian(first.year, first.month)
+        heb_year = hebrew_year_for_gregorian(first.year, first.month)
+        data['_heb_month'] = heb_month
+        data['_heb_year'] = heb_year
+
     out_html = render_html(data, logo_b64)
     Path(args.out).write_text(out_html, encoding='utf-8')
     print(f'WROTE {args.out} ({len(out_html):,} chars)')
+    if HOLIDAYS_2026:
+        print(f'  Israeli holidays detected in period: {len(HOLIDAYS_2026)}')
 
 
 if __name__ == '__main__':
