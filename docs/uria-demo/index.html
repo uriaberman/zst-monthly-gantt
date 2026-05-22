@@ -1,430 +1,38 @@
-# -*- coding: utf-8 -*-
-"""
-Build V4: data.json -> index.html.
-
-Premium dark mode monthly Gantt viewer for Seliger Shomron clients.
-- One month per view, tabs between months
-- 3 content types only (post / story / reel) drive color
-- Rubik (Hebrew) + Inter (English/digits)
-- Generous breathing room
-- Modal: editable copy (right) + image dropzone (left), localStorage persistence
-- Status dropdown per cell with localStorage persistence
-"""
-import sys, io, json, html, argparse, base64, calendar
-from datetime import date
-from pathlib import Path
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
-from pyluach.dates import GregorianDate
-
-
-# 4 content types - cool family (cyan/teal/lavender/rose)
-TYPE_COLORS = {
-    'post':     {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
-    'carousel': {'accent': '#5EEAD4', 'soft': 'rgba(94,234,212,0.14)',  'label': 'קרוסלה'},
-    'story':    {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
-    'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>שליחות הוראה | גאנט יוני 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Theme: uria */
+  --bg:        #FAFAFA;
+  --paper:     #FFFFFF;
+  --paper-2:   #F5F5F5;
+  --paper-3:   #F8F3FE;
+  --paper-4:   #FFF0E8;
+  --ink:       #0A0A0A;
+  --ink-soft:  #4A4A4A;
+  --ink-faint: #9A9A9A;
+  --ink-mute:  #6A6A6A;
+  --border:    #E5E5E5;
+  --border-soft: #F0F0F0;
+  --accent-cyan: #4C1D95;
+  --accent-primary: #4C1D95;
+  --accent-secondary: #0EA5BB;
+  --accent-warm: #FF6B35;
+  --gold:      #FF6B35;
+  --shadow-sm: 0 1px 2px rgba(76,29,149,0.06);
+  --shadow-md: 0 4px 20px rgba(76,29,149,0.10);
+  --shadow-lg: 0 20px 60px rgba(76,29,149,0.18);
+  --font-he: 'Rubik', 'Heebo', sans-serif;
+  --font-en: 'Plus Jakarta Sans', sans-serif;
+  --font: 'Plus Jakarta Sans', 'Rubik', sans-serif;
 }
-
-# Statuses - distinct hues that stay visible on light tray
-STATUS_COLORS = {
-    'בעבודה':       '#3B82F6',  # blue (active / in-progress)
-    'בעיצוב':       '#F97316',  # orange (in design)
-    'ממתין לאישור': '#EAB308',  # yellow (waiting)
-    'אושר':          '#22C55E',  # green (approved)
-}
-
-STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר']
-
-HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
-
-# Hebrew names for Gregorian months
-HEB_GREG_MONTHS = ['','ינואר','פברואר','מרץ','אפריל','מאי','יוני',
-                   'יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר']
-
-# Holidays are computed dynamically per period via israeli_holidays.get_israeli_holidays()
-# This dict is populated at build time in main()
-HOLIDAYS_2026 = {}
-
-
-def heb_date(d: date) -> tuple[str, str]:
-    gd = GregorianDate(d.year, d.month, d.day)
-    hd = gd.to_heb()
-    full = hd.hebrew_date_string()
-    parts = full.split()
-    return parts[0], full
-
-
-def build_month_grid(year: int, month: int, items_by_date: dict) -> list:
-    cal = calendar.Calendar(firstweekday=6)
-    weeks = []
-    for week_dates in cal.monthdatescalendar(year, month):
-        row = []
-        for d in week_dates:
-            heb_short, heb_full = heb_date(d)
-            iso = d.isoformat()
-            cell = {
-                'iso': iso,
-                'day_num': d.day,
-                'weekday': d.weekday(),
-                'heb_short': heb_short,
-                'heb_full': heb_full,
-                'is_outside': d.month != month,
-                'is_friday': d.weekday() == 4,
-                'is_saturday': d.weekday() == 5,
-                'holiday': HOLIDAYS_2026.get(iso, ''),
-                'items': items_by_date.get(iso, []),
-            }
-            row.append(cell)
-        weeks.append(row)
-    return weeks
-
-
-def render_cell(cell: dict) -> str:
-    classes = ['cell']
-    if cell['is_outside']:
-        classes.append('outside')
-        cell = {**cell, 'items': [], 'holiday': ''}
-    if cell['is_friday']:
-        classes.append('friday')
-    if cell['is_saturday']:
-        classes.append('saturday')
-    if cell['holiday']:
-        classes.append('holiday')
-    if cell['items']:
-        classes.append('has-content')
-        primary = cell['items'][0]
-        classes.append(f"type-{primary['type_key']}")
-
-    header_parts = [
-        f'<div class="cell-num">{cell["day_num"]}</div>',
-        f'<div class="cell-heb">{html.escape(cell["heb_short"])}</div>',
-    ]
-    if cell['holiday']:
-        header_parts.append(f'<div class="cell-hol">{html.escape(cell["holiday"])}</div>')
-
-    body_parts = []
-    for it in cell['items']:
-        tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
-        pillar = html.escape(it.get('pillar_label', ''))
-        title = html.escape(it['title'])
-        type_label = html.escape(tc['label'])
-        # Warning if content placed on Shabbat or holiday
-        warning = ''
-        if cell.get('is_saturday') or cell.get('holiday'):
-            warning = '<span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>'
-        body_parts.append(f'''
-        <div class="cell-type-row">
-          <span class="cell-type-chip">{type_label}</span>
-          {warning}
-        </div>
-        <div class="cell-title">{title}</div>
-        <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
-            <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
-              __STATUS_OPTS_{it['num']}__
-            </select>
-          </div>
-          <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
-        </div>''')
-
-    draggable_attr = 'draggable="true"' if cell['items'] and not cell['is_outside'] else ''
-    return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}" {draggable_attr}>
-      <div class="cell-head">{''.join(header_parts)}</div>
-      <div class="cell-body">{''.join(body_parts)}</div>
-    </div>'''
-
-
-def render_month(year: int, month: int, items_by_date: dict, is_active: bool) -> str:
-    weeks = build_month_grid(year, month, items_by_date)
-    head_cells = ''.join(f'<div class="wd">{wd}</div>' for wd in HEB_WEEKDAYS)
-    rows_html = []
-    for week in weeks:
-        rows_html.append('<div class="week">' + ''.join(render_cell(c) for c in week) + '</div>')
-    active_cls = ' active' if is_active else ''
-    return f'''
-    <section class="month{active_cls}" data-month="{year}-{month:02d}">
-      <div class="weekdays">{head_cells}</div>
-      <div class="grid">{''.join(rows_html)}</div>
-    </section>
-    '''
-
-
-def render_status_opts_for_items(html_str: str, items: list) -> str:
-    """Inject <option> sets per item into the rendered cell HTML."""
-    for it in items:
-        status = it.get('status', 'בעבודה')
-        opts = ''.join(
-            f'<option value="{html.escape(s)}"{" selected" if s == status else ""}>{html.escape(s)}</option>'
-            for s in STATUS_ORDER
-        )
-        html_str = html_str.replace(f"__STATUS_OPTS_{it['num']}__", opts)
-    return html_str
-
-
-def render_legend() -> str:
-    type_chips = ''.join(
-        f'<span class="legend-chip"><span class="sw" style="background:{v["accent"]};"></span>{html.escape(v["label"])}</span>'
-        for v in TYPE_COLORS.values()
-    )
-    status_chips = ''.join(
-        f'<span class="legend-chip"><span class="sw round" style="background:{c}; box-shadow:0 0 6px {c}80;"></span>{html.escape(s)}</span>'
-        for s, c in STATUS_COLORS.items()
-    )
-    return f'''
-    <div class="legend">
-      <div class="legend-group">
-        <span class="legend-label">סוג תוכן</span>
-        {type_chips}
-      </div>
-      <div class="legend-divider"></div>
-      <div class="legend-group">
-        <span class="legend-label">סטטוס</span>
-        {status_chips}
-      </div>
-    </div>
-    '''
-
-
-def render_tabs(months: list) -> str:
-    if len(months) <= 1:
-        return ''
-    btns = []
-    for i, (y, m) in enumerate(months):
-        title = f'{HEB_GREG_MONTHS[m]} <span class="tab-year">{y}</span>'
-        active = ' active' if i == 0 else ''
-        btns.append(f'<button class="tab{active}" data-month="{y}-{m:02d}">{title}</button>')
-    return f'<div class="tabs">{"".join(btns)}</div>'
-
-
-def render_modal_data(items: list) -> str:
-    slim = []
-    for it in items:
-        tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
-        slim.append({
-            'num': it['num'],
-            'date': it['date_iso'],
-            'day': it['day'],
-            'type_key': it['type_key'],
-            'type_label': tc['label'],
-            'type_accent': tc['accent'],
-            'type_soft': tc['soft'],
-            'title': it['title'],
-            'short_explanation': it.get('short_explanation', ''),
-            'source': it.get('source', ''),
-            'status': it['status'],
-        })
-    return json.dumps(slim, ensure_ascii=False)
-
-
-THEME_TOKENS = {
-    'zeliger': {
-        'bg': '#07101F', 'paper': '#0F1A2E', 'paper-2': '#14223A',
-        'paper-3': '#0C1828', 'paper-4': '#18253F',
-        'ink': '#F1F5F9', 'ink-soft': '#94A3B8', 'ink-faint': '#475569', 'ink-mute': '#64748B',
-        'border': '#1E2D45', 'border-soft': '#182338',
-        'accent-primary': '#67E8F9', 'accent-secondary': '#A78BFA', 'accent-warm': '#FB7185',
-        'gold': '#FBBF24',
-        'shadow-sm': '0 1px 2px rgba(0,0,0,0.3)',
-        'shadow-md': '0 4px 20px rgba(0,0,0,0.35)',
-        'shadow-lg': '0 20px 60px rgba(0,0,0,0.5)',
-        'font-he': "'Rubik', system-ui, -apple-system, sans-serif",
-        'font-en': "'Inter', system-ui, -apple-system, sans-serif",
-        'font': "'Inter', 'Rubik', system-ui, sans-serif",
-    },
-    'uria': {
-        # Uria Berman brand kit - LIGHT editorial premium
-        'bg': '#FAFAFA',         # Paper
-        'paper': '#FFFFFF',
-        'paper-2': '#F5F5F5',
-        'paper-3': '#F8F3FE',    # Light aubergine wash
-        'paper-4': '#FFF0E8',    # Light tangerine wash
-        'ink': '#0A0A0A',
-        'ink-soft': '#4A4A4A',
-        'ink-faint': '#9A9A9A',
-        'ink-mute': '#6A6A6A',
-        'border': '#E5E5E5',
-        'border-soft': '#F0F0F0',
-        'accent-primary': '#4C1D95',    # Aubergine
-        'accent-secondary': '#0EA5BB',  # Teal
-        'accent-warm': '#FF6B35',       # Tangerine
-        'gold': '#FF6B35',              # Tangerine replaces gold for holidays
-        'shadow-sm': '0 1px 2px rgba(76,29,149,0.06)',
-        'shadow-md': '0 4px 20px rgba(76,29,149,0.10)',
-        'shadow-lg': '0 20px 60px rgba(76,29,149,0.18)',
-        'font-he': "'Rubik', 'Heebo', sans-serif",
-        'font-en': "'Plus Jakarta Sans', sans-serif",
-        'font': "'Plus Jakarta Sans', 'Rubik', sans-serif",
-    },
-}
-
-
-def render_theme_root(mode: str) -> str:
-    """Build the :root { ... } CSS block for the chosen mode."""
-    t = THEME_TOKENS.get(mode, THEME_TOKENS['zeliger'])
-    lines = ['  /* Theme: ' + mode + ' */']
-    lines.append(f"  --bg:        {t['bg']};")
-    lines.append(f"  --paper:     {t['paper']};")
-    lines.append(f"  --paper-2:   {t['paper-2']};")
-    lines.append(f"  --paper-3:   {t['paper-3']};")
-    lines.append(f"  --paper-4:   {t['paper-4']};")
-    lines.append(f"  --ink:       {t['ink']};")
-    lines.append(f"  --ink-soft:  {t['ink-soft']};")
-    lines.append(f"  --ink-faint: {t['ink-faint']};")
-    lines.append(f"  --ink-mute:  {t['ink-mute']};")
-    lines.append(f"  --border:    {t['border']};")
-    lines.append(f"  --border-soft: {t['border-soft']};")
-    lines.append(f"  --accent-cyan: {t['accent-primary']};")
-    lines.append(f"  --accent-primary: {t['accent-primary']};")
-    lines.append(f"  --accent-secondary: {t['accent-secondary']};")
-    lines.append(f"  --accent-warm: {t['accent-warm']};")
-    lines.append(f"  --gold:      {t['gold']};")
-    lines.append(f"  --shadow-sm: {t['shadow-sm']};")
-    lines.append(f"  --shadow-md: {t['shadow-md']};")
-    lines.append(f"  --shadow-lg: {t['shadow-lg']};")
-    lines.append(f"  --font-he: {t['font-he']};")
-    lines.append(f"  --font-en: {t['font-en']};")
-    lines.append(f"  --font: {t['font']};")
-    return ':root {\n' + '\n'.join(lines) + '\n}'
-
-
-# Uria-mode overrides: light-theme specific rules that flip the dark-mode hardcoded overlays
-URIA_OVERRIDES = '''
-/* Uria brand overrides - flip white overlays to aubergine tints */
-body.theme-uria .cell.has-content {
-  background: linear-gradient(155deg, rgba(76,29,149,0.10) 0%, rgba(76,29,149,0.04) 55%, rgba(76,29,149,0.02) 100%) !important;
-  border-color: rgba(76,29,149,0.25) !important;
-  box-shadow:
-    0 1px 0 rgba(76,29,149,0.04) inset,
-    0 4px 16px rgba(76,29,149,0.10),
-    0 0 18px rgba(76,29,149,0.05) !important;
-}
-body.theme-uria .cell.has-content:hover {
-  background: linear-gradient(155deg, rgba(76,29,149,0.16) 0%, rgba(76,29,149,0.08) 55%, rgba(76,29,149,0.04) 100%) !important;
-  border-color: rgba(76,29,149,0.45) !important;
-}
-body.theme-uria .cell-footer {
-  background: rgba(76,29,149,0.05) !important;
-  border-top: 1px solid rgba(76,29,149,0.12) !important;
-}
-body.theme-uria .cell-open {
-  background: #4C1D95 !important;
-  border-color: #4C1D95 !important;
-  color: #FAFAFA !important;
-}
-body.theme-uria .cell-open:hover {
-  background: #0EA5BB !important;
-  border-color: #0EA5BB !important;
-}
-body.theme-uria .cell.is-today {
-  border-color: #FF6B35 !important;
-  box-shadow: 0 0 0 1px #FF6B35, 0 0 18px rgba(255,107,53,0.3) !important;
-}
-body.theme-uria .cell.is-today .cell-num { color: #FF6B35; }
-body.theme-uria .cell.holiday::before {
-  border-color: #FF6B35 transparent transparent transparent;
-}
-body.theme-uria .cell-status-label { color: #0A0A0A; }
-body.theme-uria .header-brand { filter: none; }
-body.theme-uria .modal {
-  background: #FFFFFF;
-  border-color: #E5E5E5;
-}
-body.theme-uria .modal-bg { background: rgba(76,29,149,0.35); }
-body.theme-uria .modal-explainline {
-  background: rgba(14,165,187,0.06);
-  border-right: 3px solid #0EA5BB;
-}
-body.theme-uria .copy-area textarea {
-  background: #FAFAFA;
-  border-color: #E5E5E5;
-  color: #0A0A0A;
-}
-body.theme-uria .copy-area textarea:focus { border-color: #4C1D95; }
-body.theme-uria .dropzone {
-  background: #FAFAFA;
-  border-color: #E5E5E5;
-}
-body.theme-uria .dropzone:hover {
-  border-color: #4C1D95;
-  background: rgba(76,29,149,0.04);
-}
-body.theme-uria .copy-save-btn {
-  background: #0EA5BB;
-  border-color: #0EA5BB;
-  color: #FFFFFF;
-}
-body.theme-uria .copy-save-btn:hover { background: #0987A0; }
-body.theme-uria .copy-save-btn.saved-flash { background: #4C1D95; border-color: #4C1D95; }
-body.theme-uria .copy-save-btn.is-dirty { background: #FF6B35; border-color: #FF6B35; }
-body.theme-uria .pair-item {
-  background: #F5F5F5;
-  border-color: #E5E5E5;
-}
-body.theme-uria .modal-close {
-  background: rgba(76,29,149,0.08);
-  border-color: #E5E5E5;
-  color: #4A4A4A;
-}
-body.theme-uria .modal-close:hover {
-  background: rgba(76,29,149,0.18);
-  color: #4C1D95;
-}
-body.theme-uria .tab.active {
-  background: #4C1D95;
-  color: #FFFFFF;
-}
-body.theme-uria .share-btn {
-  color: #4C1D95;
-  background: rgba(76,29,149,0.06);
-  border-color: rgba(76,29,149,0.25);
-}
-body.theme-uria .share-btn:hover { background: rgba(76,29,149,0.14); border-color: #4C1D95; }
-body.theme-uria .h1-label { color: #4C1D95; }
-body.theme-uria .header-titles .count-pill {
-  color: #4C1D95;
-  background: rgba(76,29,149,0.08);
-  border-color: rgba(76,29,149,0.25);
-}
-body.theme-uria .cell.friday { background: #FFF8F0; }
-body.theme-uria .cell.saturday {
-  background: #FFF8F0;
-  border-color: rgba(255,107,53,0.15);
-}
-body.theme-uria .cell-type-chip {
-  /* Uria mode: type chips keep type colors but with light styling */
-  color: #FFFFFF !important;
-}
-body.theme-uria .uria-x-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-body.theme-uria .uria-x-logo .x-mark {
-  width: 38px; height: 38px;
-  background: #0EA5BB;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 0;
-  color: #FFFFFF;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 26px;
-  font-weight: 900;
-  line-height: 1;
-}
-body.theme-uria .uria-x-logo .x-tagline {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #0A0A0A;
-}
-'''
-
-
-CSS = '''
-__THEME_ROOT__
 
 * { box-sizing: border-box; }
 html, body { margin:0; padding:0; }
@@ -1408,13 +1016,442 @@ details.collapsible > .pair {
   font-weight: 600;
   margin-inline-start: 6px;
 }
-'''
 
+/* Uria brand overrides - flip white overlays to aubergine tints */
+body.theme-uria .cell.has-content {
+  background: linear-gradient(155deg, rgba(76,29,149,0.10) 0%, rgba(76,29,149,0.04) 55%, rgba(76,29,149,0.02) 100%) !important;
+  border-color: rgba(76,29,149,0.25) !important;
+  box-shadow:
+    0 1px 0 rgba(76,29,149,0.04) inset,
+    0 4px 16px rgba(76,29,149,0.10),
+    0 0 18px rgba(76,29,149,0.05) !important;
+}
+body.theme-uria .cell.has-content:hover {
+  background: linear-gradient(155deg, rgba(76,29,149,0.16) 0%, rgba(76,29,149,0.08) 55%, rgba(76,29,149,0.04) 100%) !important;
+  border-color: rgba(76,29,149,0.45) !important;
+}
+body.theme-uria .cell-footer {
+  background: rgba(76,29,149,0.05) !important;
+  border-top: 1px solid rgba(76,29,149,0.12) !important;
+}
+body.theme-uria .cell-open {
+  background: #4C1D95 !important;
+  border-color: #4C1D95 !important;
+  color: #FAFAFA !important;
+}
+body.theme-uria .cell-open:hover {
+  background: #0EA5BB !important;
+  border-color: #0EA5BB !important;
+}
+body.theme-uria .cell.is-today {
+  border-color: #FF6B35 !important;
+  box-shadow: 0 0 0 1px #FF6B35, 0 0 18px rgba(255,107,53,0.3) !important;
+}
+body.theme-uria .cell.is-today .cell-num { color: #FF6B35; }
+body.theme-uria .cell.holiday::before {
+  border-color: #FF6B35 transparent transparent transparent;
+}
+body.theme-uria .cell-status-label { color: #0A0A0A; }
+body.theme-uria .header-brand { filter: none; }
+body.theme-uria .modal {
+  background: #FFFFFF;
+  border-color: #E5E5E5;
+}
+body.theme-uria .modal-bg { background: rgba(76,29,149,0.35); }
+body.theme-uria .modal-explainline {
+  background: rgba(14,165,187,0.06);
+  border-right: 3px solid #0EA5BB;
+}
+body.theme-uria .copy-area textarea {
+  background: #FAFAFA;
+  border-color: #E5E5E5;
+  color: #0A0A0A;
+}
+body.theme-uria .copy-area textarea:focus { border-color: #4C1D95; }
+body.theme-uria .dropzone {
+  background: #FAFAFA;
+  border-color: #E5E5E5;
+}
+body.theme-uria .dropzone:hover {
+  border-color: #4C1D95;
+  background: rgba(76,29,149,0.04);
+}
+body.theme-uria .copy-save-btn {
+  background: #0EA5BB;
+  border-color: #0EA5BB;
+  color: #FFFFFF;
+}
+body.theme-uria .copy-save-btn:hover { background: #0987A0; }
+body.theme-uria .copy-save-btn.saved-flash { background: #4C1D95; border-color: #4C1D95; }
+body.theme-uria .copy-save-btn.is-dirty { background: #FF6B35; border-color: #FF6B35; }
+body.theme-uria .pair-item {
+  background: #F5F5F5;
+  border-color: #E5E5E5;
+}
+body.theme-uria .modal-close {
+  background: rgba(76,29,149,0.08);
+  border-color: #E5E5E5;
+  color: #4A4A4A;
+}
+body.theme-uria .modal-close:hover {
+  background: rgba(76,29,149,0.18);
+  color: #4C1D95;
+}
+body.theme-uria .tab.active {
+  background: #4C1D95;
+  color: #FFFFFF;
+}
+body.theme-uria .share-btn {
+  color: #4C1D95;
+  background: rgba(76,29,149,0.06);
+  border-color: rgba(76,29,149,0.25);
+}
+body.theme-uria .share-btn:hover { background: rgba(76,29,149,0.14); border-color: #4C1D95; }
+body.theme-uria .h1-label { color: #4C1D95; }
+body.theme-uria .header-titles .count-pill {
+  color: #4C1D95;
+  background: rgba(76,29,149,0.08);
+  border-color: rgba(76,29,149,0.25);
+}
+body.theme-uria .cell.friday { background: #FFF8F0; }
+body.theme-uria .cell.saturday {
+  background: #FFF8F0;
+  border-color: rgba(255,107,53,0.15);
+}
+body.theme-uria .cell-type-chip {
+  /* Uria mode: type chips keep type colors but with light styling */
+  color: #FFFFFF !important;
+}
+body.theme-uria .uria-x-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+body.theme-uria .uria-x-logo .x-mark {
+  width: 38px; height: 38px;
+  background: #0EA5BB;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 0;
+  color: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+body.theme-uria .uria-x-logo .x-tagline {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0A0A0A;
+}
+</style>
+</head>
+<body class="theme-uria">
+<div class="page">
+  <header class="header">
+    <div class="header-brand">
+      <div class="uria-x-logo"><span class="x-mark">×</span><span class="x-tagline">Strategy · Creative · Digital · AI</span></div>
+    </div>
+    <div class="header-titles">
+      <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">שליחות הוראה</span></h1>
+      <div class="period">יוני 2026 · סיון תשפ״ו</div>
+      <div class="header-actions">
+        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          <span>שתף עם לקוח</span>
+        </button>
+        <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
+          <span>↺ החזר למקור</span>
+        </button>
+        <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+      </div>
+    </div>
+  </header>
 
-JS = '''
-const ITEMS_DATA = __ITEMS_JSON__;
+  <div class="controls">
+    
+    
+    <div class="legend">
+      <div class="legend-group">
+        <span class="legend-label">סוג תוכן</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
+      </div>
+      <div class="legend-divider"></div>
+      <div class="legend-group">
+        <span class="legend-label">סטטוס</span>
+        <span class="legend-chip"><span class="sw round" style="background:#3B82F6; box-shadow:0 0 6px #3B82F680;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span>
+      </div>
+    </div>
+    
+  </div>
+
+  <div class="months-container">
+    
+    <section class="month active" data-month="2026-06">
+      <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-05-31" >
+      <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-01" draggable="true">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">הראיון של נעמה קלר</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="1">צפייה ←</button>
+        </div></div>
+    </div><div class="cell has-content type-story" data-iso="2026-06-02" draggable="true">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">סטורי</span>
+          
+        </div>
+        <div class="cell-title">פעימת סטוריז מההכשרה</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="2">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-03" >
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-04" draggable="true">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">חששות ושאלות השליחים</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="3">צפייה ←</button>
+        </div></div>
+    </div><div class="cell friday" data-iso="2026-06-05" >
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-06" >
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-07" >
+      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-08" draggable="true">
+      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">איך המשפחה והסביבה הגיבה?</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="4">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-09" >
+      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel" data-iso="2026-06-10" draggable="true">
+      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">קרוסלה</span>
+          
+        </div>
+        <div class="cell-title">3 דברים שאתגעגע אליהם בחופש הגדול</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="5">צפייה ←</button>
+        </div></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-11" draggable="true">
+      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">מה למדתי השנה - סרטוני שליחים</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="6">צפייה ←</button>
+        </div></div>
+    </div><div class="cell friday" data-iso="2026-06-12" >
+      <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-13" >
+      <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-14" >
+      <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-15" draggable="true">
+      <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">חידון ישראלי - תלמידים מהעולם</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="7">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-16" >
+      <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">א׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-17" draggable="true">
+      <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">Tell me without telling me - שליח מישראל</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="8">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-18" >
+      <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-19" >
+      <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-20" >
+      <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-21" >
+      <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-reel" data-iso="2026-06-22" draggable="true">
+      <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">רילס</span>
+          
+        </div>
+        <div class="cell-title">POV של תלמידים - השבוע האחרון</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="9">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-23" >
+      <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-24" >
+      <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-25" >
+      <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-26" >
+      <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-27" >
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-carousel" data-iso="2026-06-28" draggable="true">
+      <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ג</div></div>
+      <div class="cell-body">
+        <div class="cell-type-row">
+          <span class="cell-type-chip">קרוסלה</span>
+          
+        </div>
+        <div class="cell-title">Best 5 Moments of the Year</div>
+        <div class="cell-footer">
+          <div class="cell-status-row">
+            <span class="cell-status-label">סטטוס:</span>
+            <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+            </select>
+          </div>
+          <button class="cell-open" data-num="10">צפייה ←</button>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-29" >
+      <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-30" >
+      <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-01" >
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-02" >
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside friday" data-iso="2026-07-03" >
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside saturday" data-iso="2026-07-04" >
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div></div></div>
+    </section>
+    
+  </div>
+
+  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Zeliger Shomron</span></div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+const ITEMS_DATA = [{"num": 1, "date": "2026-06-01", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "הראיון של נעמה קלר", "short_explanation": "ראיון של נעמה קלר מתוך יום ההכשרה במוזיאון אנו - פתיחת חודש שמסכמת שנת שליחות.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 2, "date": "2026-06-02", "day": "ג'", "type_key": "story", "type_label": "סטורי", "type_accent": "#C4B5FD", "type_soft": "rgba(196,181,253,0.14)", "title": "פעימת סטוריז מההכשרה", "short_explanation": "פעימת סטוריז עם תמונות אותנטיות מתוך יום ההכשרה - שיתוף רגעים אינטימיים מהיום.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 3, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חששות ושאלות השליחים", "short_explanation": "רילס מתוך יום ההכשרה - חששות ושאלות אמיתיות של שליחים לפני יציאתם, וגם 3 הדברים שיתגעגעו אליהם.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 4, "date": "2026-06-08", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "איך המשפחה והסביבה הגיבה?", "short_explanation": "רילס שמראה איך תגובות המשפחה והסביבה השפיעו על השליחים לפני שיצאו לדרך.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 5, "date": "2026-06-10", "day": "ד'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "3 דברים שאתגעגע אליהם בחופש הגדול", "short_explanation": "קרוסלה עם כמה שליחים שמראים 3 דברים שיתגעגעו אליהם מהשליחות בחופש הגדול - אישי, חם, אנושי.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מה למדתי השנה - סרטוני שליחים", "short_explanation": "סרטוני סלפי של שליחים שמשתפים מה הם עצמם למדו השנה - היפוך כיוון משמעותי שמייצר עומק.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-06-15", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חידון ישראלי - תלמידים מהעולם", "short_explanation": "חידון ישראלי מצולם בין שתי קבוצות תלמידים מהעולם - שאלות על ישראל, יהדות וזהות, באווירה מגניבה וקלילה.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-06-17", "day": "ד'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "Tell me without telling me - שליח מישראל", "short_explanation": "טרנד מוכר 'Tell me without telling me' - ילדים מראים בלי לומר שהיה להם שליח מישראל. הומור עדין שיתאהבו בו.", "source": "", "status": "בעבודה"}, {"num": 9, "date": "2026-06-22", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "POV של תלמידים - השבוע האחרון", "short_explanation": "תלמידים מצלמים בעצמם את השבוע האחרון עם השליחים שלהם - POV אותנטי שמראה את הקשר האישי שנוצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-06-28", "day": "א'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "Best 5 Moments of the Year", "short_explanation": "קרוסלה מסכמת: תלמידים, מורים, הורים ואנשים מהקהילה בוחרים את 5 הרגעים הכי בלתי נשכחים מהשנה.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
-const CLIENT_KEY = '__CLIENT_KEY__';
+const CLIENT_KEY = 'שליחות_הוראה';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -1875,157 +1912,6 @@ highlightToday();
 applyDateOverrides();
 applyStatusToCells();
 setupDragAndDrop();
-'''
-
-
-def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
-    items = data['items']
-    items_by_date = {}
-    for it in items:
-        items_by_date.setdefault(it['date_iso'], []).append(it)
-
-    client = data['client']
-    period = data['period']
-    count = data['count']
-
-    dates = sorted(it['date_iso'] for it in items)
-    first = dates[0]
-    last = dates[-1]
-    year_a, month_a = int(first[:4]), int(first[5:7])
-    year_b, month_b = int(last[:4]), int(last[5:7])
-
-    # Collect ordered list of months
-    months = []
-    cur_y, cur_m = year_a, month_a
-    while (cur_y, cur_m) <= (year_b, month_b):
-        months.append((cur_y, cur_m))
-        cur_m += 1
-        if cur_m > 12:
-            cur_m = 1
-            cur_y += 1
-
-    months_html_parts = []
-    for i, (y, m) in enumerate(months):
-        month_html = render_month(y, m, items_by_date, is_active=(i == 0))
-        month_html = render_status_opts_for_items(month_html, items)
-        months_html_parts.append(month_html)
-
-    tabs_html = render_tabs(months)
-    legend_html = render_legend()
-    items_json = render_modal_data(items)
-
-    # Client key for localStorage scoping (slug-ish)
-    client_key = ''.join(c if c.isalnum() else '_' for c in client) or 'client'
-
-    js_filled = JS.replace('__ITEMS_JSON__', items_json).replace('__CLIENT_KEY__', client_key)
-
-    if mode == 'uria':
-        logo_tag = '<div class="uria-x-logo"><span class="x-mark">×</span><span class="x-tagline">Strategy · Creative · Digital · AI</span></div>'
-    else:
-        logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
-
-    css_with_theme = CSS.replace('__THEME_ROOT__', render_theme_root(mode))
-    if mode == 'uria':
-        css_with_theme += URIA_OVERRIDES
-
-    # Font links: load both Inter (Zeliger) and Plus Jakarta Sans (Uria)
-    font_links = ('<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">')
-
-    body_class = f'theme-{mode}'
-
-    return f'''<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-<title>{html.escape(client)} | גאנט {html.escape(period)}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-{font_links}
-<style>{css_with_theme}</style>
-</head>
-<body class="{body_class}">
-<div class="page">
-  <header class="header">
-    <div class="header-brand">
-      {logo_tag}
-    </div>
-    <div class="header-titles">
-      <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">{html.escape(client)}</span></h1>
-      <div class="period">{html.escape(period)}{f' · {data.get("_heb_month","")} {data.get("_heb_year","")}' if data.get('_heb_month') else ''}</div>
-      <div class="header-actions">
-        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-          <span>שתף עם לקוח</span>
-        </button>
-        <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-          <span>↺ החזר למקור</span>
-        </button>
-        <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
-      </div>
-    </div>
-  </header>
-
-  <div class="controls">
-    {tabs_html}
-    {legend_html}
-  </div>
-
-  <div class="months-container">
-    {''.join(months_html_parts)}
-  </div>
-
-  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Zeliger Shomron</span></div>
-</div>
-
-<div class="modal-bg" id="modal">
-  <div class="modal" id="modal-inner"></div>
-</div>
-
-<script>{js_filled}</script>
+</script>
 </body>
 </html>
-'''
-
-
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--data', required=True)
-    ap.add_argument('--logo', required=True)
-    ap.add_argument('--out', required=True)
-    ap.add_argument('--mode', choices=['zeliger', 'uria'], default='zeliger',
-                    help='Brand mode: zeliger (default, dark) or uria (light, brand kit)')
-    args = ap.parse_args()
-
-    data = json.loads(Path(args.data).read_text(encoding='utf-8'))
-    logo_b64 = base64.b64encode(Path(args.logo).read_bytes()).decode('ascii')
-
-    # Compute Israeli holidays for the period of the data
-    dates = sorted([it['date_iso'] for it in data['items'] if it.get('date_iso')])
-    if dates:
-        from israeli_holidays import get_israeli_holidays, hebrew_month_for_gregorian, hebrew_year_for_gregorian
-        # Expand range by 7 days each side to catch nearby holidays
-        from datetime import date, timedelta
-        first = date.fromisoformat(dates[0])
-        last = date.fromisoformat(dates[-1])
-        start_ext = (first - timedelta(days=7)).isoformat()
-        end_ext = (last + timedelta(days=7)).isoformat()
-        holidays = get_israeli_holidays(start_ext, end_ext)
-        # Populate the module-level dict that render_cell uses
-        HOLIDAYS_2026.update(holidays)
-        # Compute Hebrew month for the title
-        heb_month = hebrew_month_for_gregorian(first.year, first.month)
-        heb_year = hebrew_year_for_gregorian(first.year, first.month)
-        data['_heb_month'] = heb_month
-        data['_heb_year'] = heb_year
-
-    out_html = render_html(data, logo_b64, mode=args.mode)
-    Path(args.out).write_text(out_html, encoding='utf-8')
-    print(f'WROTE {args.out} ({len(out_html):,} chars)')
-    print(f'  Mode: {args.mode}')
-    if HOLIDAYS_2026:
-        print(f'  Israeli holidays detected in period: {len(HOLIDAYS_2026)}')
-
-
-if __name__ == '__main__':
-    main()
