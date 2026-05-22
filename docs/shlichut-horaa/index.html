@@ -448,33 +448,39 @@ body.view-mode .cell-status {
   z-index: 1;
 }
 
-/* Today indicator - bright cyan ring (different from gold holiday corner) */
+/* Today indicator - distinct from cell type colors. Default = amber-yellow for Zeliger.
+   Badge appears AS A FLOATING TAB above the cell (doesn't overlap Hebrew date). */
 .cell.is-today {
-  border-color: var(--accent-cyan) !important;
-  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 28px color-mix(in srgb, var(--accent-cyan) 50%, transparent) !important;
+  border-color: #FACC15 !important;
+  box-shadow: 0 0 0 2px #FACC15, 0 0 32px rgba(250,204,21,0.5) !important;
   animation: today-pulse 2.5s ease-in-out infinite;
+  overflow: visible !important;
 }
 @keyframes today-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 22px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
-  50% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 36px color-mix(in srgb, var(--accent-cyan) 70%, transparent); }
+  0%, 100% { box-shadow: 0 0 0 2px #FACC15, 0 0 24px rgba(250,204,21,0.4); }
+  50% { box-shadow: 0 0 0 2px #FACC15, 0 0 40px rgba(250,204,21,0.7); }
 }
 .cell.is-today .cell-num {
-  color: var(--accent-cyan);
+  color: #FACC15;
   font-weight: 700;
 }
 .cell.is-today::after {
   content: 'היום';
   position: absolute;
-  top: 4px; left: 4px;
-  background: var(--accent-cyan);
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FACC15;
   color: #0B1220;
   font-family: var(--font-he);
-  font-size: 9px;
-  font-weight: 700;
-  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 12px;
   border-radius: 999px;
-  letter-spacing: 0.04em;
-  z-index: 2;
+  letter-spacing: 0.05em;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(250,204,21,0.45);
+  white-space: nowrap;
 }
 
 /* CELL HEAD: numbers, dates */

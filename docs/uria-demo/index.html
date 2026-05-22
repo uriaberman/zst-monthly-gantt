@@ -448,33 +448,39 @@ body.view-mode .cell-status {
   z-index: 1;
 }
 
-/* Today indicator - bright cyan ring (different from gold holiday corner) */
+/* Today indicator - distinct from cell type colors. Default = amber-yellow for Zeliger.
+   Badge appears AS A FLOATING TAB above the cell (doesn't overlap Hebrew date). */
 .cell.is-today {
-  border-color: var(--accent-cyan) !important;
-  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 28px color-mix(in srgb, var(--accent-cyan) 50%, transparent) !important;
+  border-color: #FACC15 !important;
+  box-shadow: 0 0 0 2px #FACC15, 0 0 32px rgba(250,204,21,0.5) !important;
   animation: today-pulse 2.5s ease-in-out infinite;
+  overflow: visible !important;
 }
 @keyframes today-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 22px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
-  50% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 36px color-mix(in srgb, var(--accent-cyan) 70%, transparent); }
+  0%, 100% { box-shadow: 0 0 0 2px #FACC15, 0 0 24px rgba(250,204,21,0.4); }
+  50% { box-shadow: 0 0 0 2px #FACC15, 0 0 40px rgba(250,204,21,0.7); }
 }
 .cell.is-today .cell-num {
-  color: var(--accent-cyan);
+  color: #FACC15;
   font-weight: 700;
 }
 .cell.is-today::after {
   content: 'היום';
   position: absolute;
-  top: 4px; left: 4px;
-  background: var(--accent-cyan);
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FACC15;
   color: #0B1220;
   font-family: var(--font-he);
-  font-size: 9px;
-  font-weight: 700;
-  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 12px;
   border-radius: 999px;
-  letter-spacing: 0.04em;
-  z-index: 2;
+  letter-spacing: 0.05em;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(250,204,21,0.45);
+  white-space: nowrap;
 }
 
 /* CELL HEAD: numbers, dates */
@@ -1050,24 +1056,30 @@ body.theme-uria .cell-footer {
   border-top: 1px solid rgba(76,29,149,0.12) !important;
 }
 body.theme-uria .cell-open {
-  background: #4C1D95 !important;
-  border-color: #4C1D95 !important;
-  color: #FAFAFA !important;
+  background: #0EA5BB !important;     /* Teal - secondary brand, used for all action buttons */
+  border-color: #0EA5BB !important;
+  color: #FFFFFF !important;
 }
 body.theme-uria .cell-open:hover {
-  background: #0EA5BB !important;
-  border-color: #0EA5BB !important;
+  background: #FF6B35 !important;     /* Tangerine on hover - warm accent */
+  border-color: #FF6B35 !important;
 }
-/* Uria today: Aubergine ring (tangerine is reserved for holidays) */
+/* Uria today: TEAL ring (the brand's secondary, distinct from holiday tangerine and post aubergine) */
 body.theme-uria .cell.is-today {
-  border-color: #4C1D95 !important;
-  box-shadow: 0 0 0 2px #4C1D95, 0 0 28px rgba(76,29,149,0.45) !important;
+  border-color: #0EA5BB !important;
+  box-shadow: 0 0 0 2px #0EA5BB, 0 0 32px rgba(14,165,187,0.45) !important;
 }
-body.theme-uria .cell.is-today .cell-num { color: #4C1D95; }
+body.theme-uria .cell.is-today .cell-num { color: #0EA5BB !important; }
 body.theme-uria .cell.is-today::after {
-  background: #4C1D95;
+  background: #0EA5BB;
   color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(14,165,187,0.4);
 }
+@keyframes uria-today-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px #0EA5BB, 0 0 24px rgba(14,165,187,0.4); }
+  50% { box-shadow: 0 0 0 2px #0EA5BB, 0 0 40px rgba(14,165,187,0.7); }
+}
+body.theme-uria .cell.is-today { animation: uria-today-pulse 2.5s ease-in-out infinite; }
 body.theme-uria .cell.holiday::before {
   border-color: #FF6B35 transparent transparent transparent;
 }
@@ -1174,56 +1186,239 @@ body.theme-uria .cell.type-reel {
   border-color: rgba(59,22,117,0.30) !important;
 }
 
-/* Uria logo block - bigger, includes URIA BERMAN name + tagline */
+/* Uria logo block - Logo 08b (two-block) - matching brand kit final-3.html exactly */
 body.theme-uria .uria-x-logo {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
-body.theme-uria .uria-x-logo .x-mark {
-  width: 54px; height: 54px;
+body.theme-uria .uria-x-logo .logo-two-block {
+  display: inline-flex;
+  align-items: stretch;
+  height: 42px;
+  box-shadow: 0 2px 8px rgba(76,29,149,0.15);
+}
+body.theme-uria .uria-x-logo .lb-name {
   background: #0EA5BB;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 0;
-  color: #FFFFFF;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 40px;
-  font-weight: 900;
-  line-height: 1;
-}
-body.theme-uria .uria-x-logo .x-text {
+  color: #FAFAFA;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  padding: 0 14px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: -0.01em;
 }
-body.theme-uria .uria-x-logo .x-name {
+body.theme-uria .uria-x-logo .lb-ub {
+  background: #0A0A0A;
+  color: #FAFAFA;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #0A0A0A;
-  line-height: 1;
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 0.02em;
 }
-body.theme-uria .uria-x-logo .x-tagline {
+body.theme-uria .uria-x-logo .logo-tag-strip {
+  display: inline-flex;
+  align-items: center;
+  background: #0A0A0A;
+  padding: 4px 10px;
+  margin-top: 6px;
+}
+body.theme-uria .uria-x-logo .logo-tag-strip-text {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #FAFAFA;
+}
+body.theme-uria .uria-x-logo .logo-tag-strip-text .tag-accent { color: #FF6B35; }
+body.theme-uria .uria-x-logo .x-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Uria header strip - matching brand kit doc-strip-top pattern */
+body.theme-uria .header {
+  position: relative;
+  border: none;
+  background: #FAFAFA;
+  box-shadow: 0 4px 14px rgba(76,29,149,0.08);
+  padding-top: 8px;
+  border-top: 4px solid #4C1D95;
+}
+body.theme-uria .header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #4C1D95 0%, #4C1D95 40%, #0EA5BB 70%, #FF6B35 100%);
+}
+body.theme-uria .header-titles h1 {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+body.theme-uria .h1-label {
+  background: #4C1D95;
+  color: #FAFAFA;
+  padding: 1px 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+body.theme-uria .h1-sep { display: none; }
+body.theme-uria .h1-client {
+  color: #0A0A0A;
+  font-weight: 900;
+  margin-right: 8px;
+}
+
+/* Uria footer - doc-strip-bottom pattern */
+body.theme-uria .footer {
+  background: #4C1D95;
+  color: #FAFAFA;
+  padding: 14px 22px;
+  margin-top: 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  position: relative;
+}
+body.theme-uria .footer-brand {
+  color: #FAFAFA;
+  font-weight: 900;
+  margin-inline-start: 8px;
+  letter-spacing: 0.06em;
+}
+body.theme-uria .footer-brand-mark {
+  display: inline-flex;
+  background: #0EA5BB;
+  color: #FAFAFA;
+  padding: 1px 6px;
+  margin-inline-start: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* Uria tabs - matching brand kit section-title style */
+body.theme-uria .tabs {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #4C1D95;
+  border-radius: 0;
+  padding: 0;
+}
+body.theme-uria .tab {
+  border-radius: 0;
+  font-family: 'Rubik', sans-serif;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  padding: 8px 18px;
+}
+body.theme-uria .tab.active {
+  background: #4C1D95;
+  color: #FAFAFA;
+}
+body.theme-uria .tab .tab-year {
+  color: #6A6A6A;
+}
+body.theme-uria .tab.active .tab-year {
+  color: #FAFAFA;
+  opacity: 0.7;
+}
+
+/* Type chips Uria - stronger, more brand-aligned */
+body.theme-uria .cell-type-chip {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 900 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-radius: 0 !important;
+  padding: 3px 8px !important;
+  box-shadow: none !important;
+}
+
+/* Title text in cells - more contrast */
+body.theme-uria .cell-title {
+  color: #0A0A0A !important;
+  font-weight: 700 !important;
+}
+
+/* Status label more prominent */
+body.theme-uria .cell-status-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-size: 9px;
+  color: #4A4A4A;
+}
+
+/* Legend strip Uria */
+body.theme-uria .legend {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+body.theme-uria .legend-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 9px;
+  color: #4C1D95;
+  background: rgba(76,29,149,0.08);
+}
+body.theme-uria .legend-divider { background: #4C1D95; }
+body.theme-uria .legend-chip {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+}
+
+/* Weekday headers stronger */
+body.theme-uria .wd {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #4C1D95;
 }
 
-/* Footer in Uria mode - own branding */
-body.theme-uria .footer { color: #6A6A6A; }
-body.theme-uria .footer-brand { color: #4C1D95; font-weight: 800; }
+/* Month wrap */
+body.theme-uria .month {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 0;
+  box-shadow: 0 4px 18px rgba(76,29,149,0.06);
+}
+
+/* Cell number stronger */
+body.theme-uria .cell-num {
+  color: #0A0A0A !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+}
+body.theme-uria .cell-heb {
+  color: #4C1D95 !important;
+  font-weight: 700;
+}
 </style>
 </head>
 <body class="theme-uria">
 <div class="page">
   <header class="header">
     <div class="header-brand">
-      <div class="uria-x-logo"><span class="x-mark">×</span><div class="x-text"><span class="x-name">URIA BERMAN</span><span class="x-tagline">Strategy · Creative · Digital · AI</span></div></div>
+      <div class="uria-x-logo"><div class="x-block"><div class="logo-two-block"><div class="lb-name">אוריה ברמן</div><div class="lb-ub">UB</div></div><div class="logo-tag-strip"><span class="logo-tag-strip-text">Strategy · Creative · Digital · <span class="tag-accent">AI</span></span></div></div></div>
     </div>
     <div class="header-titles">
       <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">שליחות הוראה</span></h1>
@@ -1512,7 +1707,7 @@ body.theme-uria .footer-brand { color: #4C1D95; font-weight: 800; }
     
   </div>
 
-  <div class="footer" dir="ltr">Built by <span class="footer-brand">URIA BERMAN</span></div>
+  <div class="footer" dir="ltr">Built by <span class="footer-brand">אוריה ברמן</span><span class="footer-brand-mark">UB</span></div>
 </div>
 
 <div class="modal-bg" id="modal">
