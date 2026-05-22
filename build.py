@@ -317,11 +317,16 @@ body.theme-uria .cell-open:hover {
   background: #0EA5BB !important;
   border-color: #0EA5BB !important;
 }
+/* Uria today: Aubergine ring (tangerine is reserved for holidays) */
 body.theme-uria .cell.is-today {
-  border-color: #FF6B35 !important;
-  box-shadow: 0 0 0 1px #FF6B35, 0 0 18px rgba(255,107,53,0.3) !important;
+  border-color: #4C1D95 !important;
+  box-shadow: 0 0 0 2px #4C1D95, 0 0 28px rgba(76,29,149,0.45) !important;
 }
-body.theme-uria .cell.is-today .cell-num { color: #FF6B35; }
+body.theme-uria .cell.is-today .cell-num { color: #4C1D95; }
+body.theme-uria .cell.is-today::after {
+  background: #4C1D95;
+  color: #FFFFFF;
+}
 body.theme-uria .cell.holiday::before {
   border-color: #FF6B35 transparent transparent transparent;
 }
@@ -392,34 +397,85 @@ body.theme-uria .cell.saturday {
   background: #FFF8F0;
   border-color: rgba(255,107,53,0.15);
 }
-body.theme-uria .cell-type-chip {
-  /* Uria mode: type chips keep type colors but with light styling */
+/* Uria mode: type chips ride the Brand Kit palette (aubergine/teal/tangerine/aubergine-deep) */
+body.theme-uria .cell.type-post .cell-type-chip {
+  background: #4C1D95 !important;  /* Aubergine */
   color: #FFFFFF !important;
 }
+body.theme-uria .cell.type-carousel .cell-type-chip {
+  background: #0EA5BB !important;  /* Teal */
+  color: #FFFFFF !important;
+}
+body.theme-uria .cell.type-story .cell-type-chip {
+  background: #FF6B35 !important;  /* Tangerine */
+  color: #FFFFFF !important;
+}
+body.theme-uria .cell.type-reel .cell-type-chip {
+  background: #3B1675 !important;  /* Aubergine Deep */
+  color: #FFFFFF !important;
+}
+
+/* Uria mode: cell tints follow type accents (subtle backgrounds) */
+body.theme-uria .cell.type-post {
+  background: linear-gradient(155deg, rgba(76,29,149,0.10) 0%, rgba(76,29,149,0.04) 60%, rgba(76,29,149,0.02) 100%) !important;
+  border-color: rgba(76,29,149,0.30) !important;
+}
+body.theme-uria .cell.type-carousel {
+  background: linear-gradient(155deg, rgba(14,165,187,0.10) 0%, rgba(14,165,187,0.04) 60%, rgba(14,165,187,0.02) 100%) !important;
+  border-color: rgba(14,165,187,0.30) !important;
+}
+body.theme-uria .cell.type-story {
+  background: linear-gradient(155deg, rgba(255,107,53,0.10) 0%, rgba(255,107,53,0.04) 60%, rgba(255,107,53,0.02) 100%) !important;
+  border-color: rgba(255,107,53,0.30) !important;
+}
+body.theme-uria .cell.type-reel {
+  background: linear-gradient(155deg, rgba(59,22,117,0.10) 0%, rgba(59,22,117,0.04) 60%, rgba(59,22,117,0.02) 100%) !important;
+  border-color: rgba(59,22,117,0.30) !important;
+}
+
+/* Uria logo block - bigger, includes URIA BERMAN name + tagline */
 body.theme-uria .uria-x-logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 body.theme-uria .uria-x-logo .x-mark {
-  width: 38px; height: 38px;
+  width: 54px; height: 54px;
   background: #0EA5BB;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 0;
   color: #FFFFFF;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 26px;
+  font-size: 40px;
   font-weight: 900;
+  line-height: 1;
+}
+body.theme-uria .uria-x-logo .x-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+body.theme-uria .uria-x-logo .x-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0A0A0A;
   line-height: 1;
 }
 body.theme-uria .uria-x-logo .x-tagline {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #0A0A0A;
+  color: #4C1D95;
 }
+
+/* Footer in Uria mode - own branding */
+body.theme-uria .footer { color: #6A6A6A; }
+body.theme-uria .footer-brand { color: #4C1D95; font-weight: 800; }
 '''
 
 
@@ -840,18 +896,33 @@ body.view-mode .cell-status {
   z-index: 1;
 }
 
-/* Today indicator - glowing gold ring */
+/* Today indicator - bright cyan ring (different from gold holiday corner) */
 .cell.is-today {
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 28px color-mix(in srgb, var(--accent-cyan) 50%, transparent) !important;
   animation: today-pulse 2.5s ease-in-out infinite;
 }
 @keyframes today-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
-  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 22px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
+  50% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 36px color-mix(in srgb, var(--accent-cyan) 70%, transparent); }
 }
 .cell.is-today .cell-num {
-  color: var(--gold);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+.cell.is-today::after {
+  content: 'היום';
+  position: absolute;
+  top: 4px; left: 4px;
+  background: var(--accent-cyan);
+  color: #0B1220;
+  font-family: var(--font-he);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  z-index: 2;
 }
 
 /* CELL HEAD: numbers, dates */
@@ -1920,9 +1991,19 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     js_filled = JS.replace('__ITEMS_JSON__', items_json).replace('__CLIENT_KEY__', client_key)
 
     if mode == 'uria':
-        logo_tag = '<div class="uria-x-logo"><span class="x-mark">×</span><span class="x-tagline">Strategy · Creative · Digital · AI</span></div>'
+        logo_tag = (
+            '<div class="uria-x-logo">'
+            '<span class="x-mark">×</span>'
+            '<div class="x-text">'
+            '<span class="x-name">URIA BERMAN</span>'
+            '<span class="x-tagline">Strategy · Creative · Digital · AI</span>'
+            '</div>'
+            '</div>'
+        )
+        footer_text = 'Built by <span class="footer-brand">URIA BERMAN</span>'
     else:
         logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
+        footer_text = 'Built by <span class="footer-brand">Social @ Zeliger Shomron</span>'
 
     css_with_theme = CSS.replace('__THEME_ROOT__', render_theme_root(mode))
     if mode == 'uria':
@@ -1975,7 +2056,7 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     {''.join(months_html_parts)}
   </div>
 
-  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social @ Zeliger Shomron</span></div>
+  <div class="footer" dir="ltr">{footer_text}</div>
 </div>
 
 <div class="modal-bg" id="modal">

@@ -6,10 +6,10 @@
 <title>עמותת אדוות | גאנט 20.5 - 30.6.2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Slate dark base */
+  /* Theme: zeliger */
   --bg:        #07101F;
   --paper:     #0F1A2E;
   --paper-2:   #14223A;
@@ -22,15 +22,15 @@
   --border:    #1E2D45;
   --border-soft: #182338;
   --accent-cyan: #67E8F9;
+  --accent-primary: #67E8F9;
+  --accent-secondary: #A78BFA;
+  --accent-warm: #FB7185;
   --gold:      #FBBF24;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
-
-  /* Fonts - Hebrew = Rubik, English/digits = Inter (different family, complements Rubik) */
   --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
   --font-en: 'Inter', system-ui, -apple-system, sans-serif;
-  /* Inter first → Latin/digits picked from Inter, Hebrew falls through to Rubik */
   --font: 'Inter', 'Rubik', system-ui, sans-serif;
 }
 
@@ -448,18 +448,33 @@ body.view-mode .cell-status {
   z-index: 1;
 }
 
-/* Today indicator - glowing gold ring */
+/* Today indicator - bright cyan ring (different from gold holiday corner) */
 .cell.is-today {
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 28px color-mix(in srgb, var(--accent-cyan) 50%, transparent) !important;
   animation: today-pulse 2.5s ease-in-out infinite;
 }
 @keyframes today-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
-  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 22px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
+  50% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 36px color-mix(in srgb, var(--accent-cyan) 70%, transparent); }
 }
 .cell.is-today .cell-num {
-  color: var(--gold);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+.cell.is-today::after {
+  content: 'היום';
+  position: absolute;
+  top: 4px; left: 4px;
+  background: var(--accent-cyan);
+  color: #0B1220;
+  font-family: var(--font-he);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  z-index: 2;
 }
 
 /* CELL HEAD: numbers, dates */
@@ -1018,7 +1033,7 @@ details.collapsible > .pair {
 }
 </style>
 </head>
-<body>
+<body class="theme-zeliger">
 <div class="page">
   <header class="header">
     <div class="header-brand">

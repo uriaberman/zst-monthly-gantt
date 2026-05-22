@@ -448,18 +448,33 @@ body.view-mode .cell-status {
   z-index: 1;
 }
 
-/* Today indicator - glowing gold ring */
+/* Today indicator - bright cyan ring (different from gold holiday corner) */
 .cell.is-today {
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 28px color-mix(in srgb, var(--accent-cyan) 50%, transparent) !important;
   animation: today-pulse 2.5s ease-in-out infinite;
 }
 @keyframes today-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 0 16px rgba(251,191,36,0.25); }
-  50% { box-shadow: 0 0 0 1px var(--gold), 0 0 26px rgba(251,191,36,0.5); }
+  0%, 100% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 22px color-mix(in srgb, var(--accent-cyan) 40%, transparent); }
+  50% { box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 36px color-mix(in srgb, var(--accent-cyan) 70%, transparent); }
 }
 .cell.is-today .cell-num {
-  color: var(--gold);
+  color: var(--accent-cyan);
+  font-weight: 700;
+}
+.cell.is-today::after {
+  content: 'היום';
+  position: absolute;
+  top: 4px; left: 4px;
+  background: var(--accent-cyan);
+  color: #0B1220;
+  font-family: var(--font-he);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  z-index: 2;
 }
 
 /* CELL HEAD: numbers, dates */
