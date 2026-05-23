@@ -188,14 +188,23 @@ def render_legend() -> str:
 
 
 def render_tabs(months: list) -> str:
-    if len(months) <= 1:
+    """Render month picker as a left-side dropdown (kept name for compatibility).
+    Default = first month (chronological). Arrow indicates dropdown.
+    """
+    if not months:
         return ''
-    btns = []
+    opts = []
     for i, (y, m) in enumerate(months):
-        title = f'{HEB_GREG_MONTHS[m]} <span class="tab-year">{y}</span>'
-        active = ' active' if i == 0 else ''
-        btns.append(f'<button class="tab{active}" data-month="{y}-{m:02d}">{title}</button>')
-    return f'<div class="tabs">{"".join(btns)}</div>'
+        title = f'{HEB_GREG_MONTHS[m]} {y}'
+        selected = ' selected' if i == 0 else ''
+        opts.append(f'<option value="{y}-{m:02d}"{selected}>{title}</option>')
+    return (
+        '<div class="month-picker">'
+        '<span class="month-picker-label">חודש</span>'
+        f'<select class="month-select" aria-label="בחר חודש">{"".join(opts)}</select>'
+        '<svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+        '</div>'
+    )
 
 
 def render_modal_data(items: list) -> str:
@@ -419,10 +428,19 @@ body.theme-uria details.collapsible {
 body.theme-uria details.collapsible > summary { color: #FAFAFA; }
 body.theme-uria details.collapsible > summary::after { color: #C4B5FD; }
 body.theme-uria .pair-label { color: #C4B5FD; }
-body.theme-uria .tab.active {
-  background: #A78BFA;
-  color: #0A0418;
+/* Uria month-picker (dark) */
+body.theme-uria .month-picker {
+  background: rgba(34,211,238,0.06);
+  border: 1px solid rgba(34,211,238,0.30);
 }
+body.theme-uria .month-picker:hover {
+  border-color: #22D3EE;
+  box-shadow: 0 0 0 1px #22D3EE, 0 0 18px rgba(34,211,238,0.25);
+}
+body.theme-uria .month-picker-label { color: #C4B5FD; }
+body.theme-uria .month-select { color: #FAFAFA; }
+body.theme-uria .month-select option { background: #160730; color: #FAFAFA; }
+body.theme-uria .month-picker-arrow { color: #22D3EE; }
 body.theme-uria .share-btn {
   color: #22D3EE;                         /* Uria secondary: teal */
   background: rgba(34,211,238,0.10);
@@ -529,33 +547,10 @@ body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
 body.theme-uria .header {
   position: relative;
   border: none;
-  background: linear-gradient(135deg, #160730 0%, #0A0418 60%, #050210 100%);
+  background: #0A0418;            /* Solid dark aubergine — no per-side gradient */
   box-shadow: 0 4px 18px rgba(0,0,0,0.55);
   color: #FAFAFA;
   overflow: hidden;
-}
-body.theme-uria .header::before {
-  content: '×';
-  position: absolute;
-  top: -50px;
-  left: -25px;
-  font-size: 220px;
-  font-family: 'Plus Jakarta Sans';
-  font-weight: 900;
-  color: rgba(255,107,53,0.14);   /* Tangerine × backdrop, much stronger */
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: -0.04em;
-}
-body.theme-uria .header::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 8% 30%, rgba(34,211,238,0.06), transparent 40%),
-    radial-gradient(circle at 92% 80%, rgba(255,107,53,0.05), transparent 40%);
-  pointer-events: none;
 }
 body.theme-uria .header-titles h1 {
   font-family: 'Rubik', 'Heebo', sans-serif;
@@ -576,19 +571,21 @@ body.theme-uria .h1-sep {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  margin: 0 6px !important;
 }
 body.theme-uria .h1-sep .x-box-mini {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  background: #FF6B35;        /* Tangerine × box (brand kit signature) */
-  color: #0A0418;
+  display: inline-block;
+  background: transparent;
+  color: #FF6B35;             /* Plain tangerine × (no box) */
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1;
+  letter-spacing: 0;
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -631,17 +628,14 @@ body.theme-uria .footer-built {
   letter-spacing: 0.18em;
 }
 body.theme-uria .footer-x {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  background: #FF6B35;
-  color: #0A0418;
+  display: inline-block;
+  background: transparent;
+  color: #FF6B35;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1;
+  margin: 0 2px;
 }
 body.theme-uria .footer-brand {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -658,36 +652,11 @@ body.theme-uria .footer-period {
   font-weight: 900;
   font-size: 18px;
   line-height: 0.6;
-  margin-right: 2px;
+  margin-left: -10px;            /* Pull the dot snug to "Berman" — fix wide gap */
+  margin-right: 0;
 }
 
-/* Uria tabs */
-body.theme-uria .tabs {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid #4C1D95;
-  border-radius: 0;
-  padding: 0;
-}
-body.theme-uria .tab {
-  border-radius: 0;
-  font-family: 'Rubik', sans-serif;  /* "מאי 2026" = Hebrew month = Rubik */
-  font-weight: 700;
-  padding: 8px 18px;
-  color: #4A4A4A;
-}
-body.theme-uria .tab.active {
-  background: #4C1D95;
-  color: #FAFAFA;
-}
-body.theme-uria .tab .tab-year {
-  font-family: 'Plus Jakarta Sans', sans-serif;  /* "2026" = number = Plus Jakarta */
-  color: #6A6A6A;
-}
-body.theme-uria .tab.active .tab-year {
-  color: #FAFAFA;
-  opacity: 0.75;
-}
+/* (Uria month-picker overrides defined earlier in this file) */
 
 /* Type chips Uria - HEBREW text = Rubik. NOT Plus Jakarta. */
 body.theme-uria .cell-type-chip {
@@ -851,17 +820,40 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* COMPACT HEADER */
+/* TV-DASHBOARD STYLE HEADER (Zeliger): glass panel with cyan accent strip */
 .header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--paper);
+  padding: 18px 26px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
   margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
+}
+.header-meta-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  opacity: 0.85;
 }
 .header-brand {
   display: flex;
@@ -887,7 +879,14 @@ body.theme-uria .header-brand { filter: none; }
   text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;       /* In RTL, flex-start = visual RIGHT — but we override per-child below */
   gap: 2px;
+  flex: 1;
+}
+.header-titles h1,
+.header-titles .period,
+.header-titles .header-actions {
+  direction: ltr;                /* Render the title row LTR so it visually anchors LEFT */
 }
 .header-titles h1 {
   margin: 0;
@@ -899,8 +898,15 @@ body.theme-uria .header-brand { filter: none; }
   line-height: 1.1;
   display: flex;
   align-items: center;
+  justify-content: flex-start;   /* Stick left in this LTR row */
   gap: 12px;
   flex-wrap: wrap;
+  width: 100%;
+}
+.header-titles h1 .h1-label,
+.header-titles h1 .h1-client {
+  direction: rtl;                /* But Hebrew text inside stays RTL */
+  unicode-bidi: isolate;
 }
 .h1-label {
   color: var(--accent-cyan);
@@ -940,7 +946,9 @@ body.theme-uria .header-brand { filter: none; }
   width: 100%;
   gap: 14px;
   margin-top: 8px;
+  flex-direction: row-reverse;   /* In LTR row, reverse so hint sits visually right */
 }
+.header-actions .hint { direction: rtl; unicode-bidi: isolate; }
 .share-btn {
   display: inline-flex;
   align-items: center;
@@ -1058,45 +1066,56 @@ body.view-mode .cell-status {
   flex-wrap: wrap;
 }
 
-/* TABS */
-.tabs {
-  display: flex;
-  gap: 4px;
+/* MONTH PICKER (dropdown, left side) */
+.month-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 4px;
-}
-.tab {
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  background: transparent;
-  border: none;
-  padding: 7px 16px;
-  border-radius: 7px;
+  padding: 6px 12px 6px 14px;
   cursor: pointer;
   transition: all 0.15s ease;
-  letter-spacing: 0.01em;
 }
-.tab .tab-year {
-  font-family: var(--font-en);
-  font-weight: 400;
+.month-picker:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(103,232,249,0.18);
+}
+.month-picker-label {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-mute);
-  margin-inline-start: 6px;
 }
-.tab:hover {
+.month-select {
+  font-family: var(--font-he);
+  font-size: 14px;
+  font-weight: 700;
   color: var(--ink);
-  background: var(--paper-2);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 4px 4px 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  direction: rtl;
+  text-align: right;
+  min-width: 110px;
 }
-.tab.active {
-  background: var(--accent-cyan);
-  color: var(--bg);
+.month-select option {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-he);
 }
-.tab.active .tab-year {
-  color: var(--bg);
-  opacity: 0.7;
+.month-picker-arrow {
+  color: var(--accent-cyan);
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 /* LEGEND */
@@ -2140,23 +2159,22 @@ window.restoreOriginal = function() {
   location.reload();
 };
 
-/* ---------- Tabs ---------- */
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const m = tab.dataset.month;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+/* ---------- Month picker (dropdown) ---------- */
+const monthSelect = document.querySelector('.month-select');
+if (monthSelect) {
+  monthSelect.addEventListener('change', () => {
+    const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
-});
-/* Restore last active month */
-try {
-  const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
-  if (saved) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.month === saved));
-    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
-  }
-} catch (e) {}
+  try {
+    const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
+    if (saved && [...monthSelect.options].some(o => o.value === saved)) {
+      monthSelect.value = saved;
+      document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+    }
+  } catch (e) {}
+}
 
 /* ---------- Modal ---------- */
 function openModal(num) {
@@ -2492,8 +2510,8 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
   </header>
 
   <div class="controls">
-    {tabs_html}
     {legend_html}
+    {tabs_html}
   </div>
 
   <div class="months-container">

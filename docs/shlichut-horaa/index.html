@@ -54,17 +54,40 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* COMPACT HEADER */
+/* TV-DASHBOARD STYLE HEADER (Zeliger): glass panel with cyan accent strip */
 .header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--paper);
+  padding: 18px 26px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
   margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
+}
+.header-meta-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  opacity: 0.85;
 }
 .header-brand {
   display: flex;
@@ -90,7 +113,14 @@ body.theme-uria .header-brand { filter: none; }
   text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;       /* In RTL, flex-start = visual RIGHT — but we override per-child below */
   gap: 2px;
+  flex: 1;
+}
+.header-titles h1,
+.header-titles .period,
+.header-titles .header-actions {
+  direction: ltr;                /* Render the title row LTR so it visually anchors LEFT */
 }
 .header-titles h1 {
   margin: 0;
@@ -102,8 +132,15 @@ body.theme-uria .header-brand { filter: none; }
   line-height: 1.1;
   display: flex;
   align-items: center;
+  justify-content: flex-start;   /* Stick left in this LTR row */
   gap: 12px;
   flex-wrap: wrap;
+  width: 100%;
+}
+.header-titles h1 .h1-label,
+.header-titles h1 .h1-client {
+  direction: rtl;                /* But Hebrew text inside stays RTL */
+  unicode-bidi: isolate;
 }
 .h1-label {
   color: var(--accent-cyan);
@@ -143,7 +180,9 @@ body.theme-uria .header-brand { filter: none; }
   width: 100%;
   gap: 14px;
   margin-top: 8px;
+  flex-direction: row-reverse;   /* In LTR row, reverse so hint sits visually right */
 }
+.header-actions .hint { direction: rtl; unicode-bidi: isolate; }
 .share-btn {
   display: inline-flex;
   align-items: center;
@@ -261,45 +300,56 @@ body.view-mode .cell-status {
   flex-wrap: wrap;
 }
 
-/* TABS */
-.tabs {
-  display: flex;
-  gap: 4px;
+/* MONTH PICKER (dropdown, left side) */
+.month-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--paper);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 4px;
-}
-.tab {
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  background: transparent;
-  border: none;
-  padding: 7px 16px;
-  border-radius: 7px;
+  padding: 6px 12px 6px 14px;
   cursor: pointer;
   transition: all 0.15s ease;
-  letter-spacing: 0.01em;
 }
-.tab .tab-year {
-  font-family: var(--font-en);
-  font-weight: 400;
+.month-picker:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(103,232,249,0.18);
+}
+.month-picker-label {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--ink-mute);
-  margin-inline-start: 6px;
 }
-.tab:hover {
+.month-select {
+  font-family: var(--font-he);
+  font-size: 14px;
+  font-weight: 700;
   color: var(--ink);
-  background: var(--paper-2);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 4px 4px 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  direction: rtl;
+  text-align: right;
+  min-width: 110px;
 }
-.tab.active {
-  background: var(--accent-cyan);
-  color: var(--bg);
+.month-select option {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-he);
 }
-.tab.active .tab-year {
-  color: var(--bg);
-  opacity: 0.7;
+.month-picker-arrow {
+  color: var(--accent-cyan);
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
 /* LEGEND */
@@ -1131,7 +1181,6 @@ details.collapsible > .pair {
 
   <div class="controls">
     
-    
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
@@ -1144,6 +1193,7 @@ details.collapsible > .pair {
       </div>
     </div>
     
+    <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-06" selected>יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
   </div>
 
   <div class="months-container">
@@ -1648,23 +1698,22 @@ window.restoreOriginal = function() {
   location.reload();
 };
 
-/* ---------- Tabs ---------- */
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const m = tab.dataset.month;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+/* ---------- Month picker (dropdown) ---------- */
+const monthSelect = document.querySelector('.month-select');
+if (monthSelect) {
+  monthSelect.addEventListener('change', () => {
+    const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
-});
-/* Restore last active month */
-try {
-  const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
-  if (saved) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.month === saved));
-    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
-  }
-} catch (e) {}
+  try {
+    const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
+    if (saved && [...monthSelect.options].some(o => o.value === saved)) {
+      monthSelect.value = saved;
+      document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+    }
+  } catch (e) {}
+}
 
 /* ---------- Modal ---------- */
 function openModal(num) {
