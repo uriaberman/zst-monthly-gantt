@@ -1462,6 +1462,24 @@ details.collapsible > .pair {
   cursor: pointer;
 }
 .draft-bar-discard:hover { background: rgba(250,204,21,0.10); }
+.draft-bar.publish-busy {
+  background: rgba(103,232,249,0.10); border-color: rgba(103,232,249,0.45); color: var(--accent-cyan);
+}
+.draft-bar.publish-busy .draft-bar-publish {
+  background: var(--accent-cyan); color: var(--bg); cursor: progress; opacity: 0.7;
+}
+.draft-bar.publish-success {
+  background: rgba(52,211,153,0.10); border-color: rgba(52,211,153,0.45); color: #34D399;
+}
+.draft-bar.publish-success .draft-bar-publish {
+  background: #34D399; color: var(--bg);
+}
+.draft-bar.publish-error {
+  background: rgba(239,68,68,0.10); border-color: rgba(239,68,68,0.45); color: #EF4444;
+}
+.draft-bar.publish-error .draft-bar-publish {
+  background: #EF4444; color: #FFFFFF;
+}
 body.theme-uria .draft-bar { background: rgba(255,107,53,0.10); border-color: rgba(255,107,53,0.45); color: #FF8A65; }
 body.theme-uria .draft-bar-publish { background: #FF6B35; color: #FAFAFA; }
 body.theme-uria .draft-bar-publish:hover { background: #FF8A65; }
@@ -2874,7 +2892,7 @@ body.theme-uria .modal-section h3 {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">23.05.26, 19:55</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">23.05.26, 22:59</span></span>
     <span class="view-mode-badge">מצב עריכה</span>
   </div>
   <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%2C%20%D7%A7%D7%95%D7%A8%D7%95%D7%AA%20%D7%94%D7%97%D7%99%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9A%20-%20%D7%95%D7%95%D7%90%D7%95%21%20%D7%91%D7%90%20%D7%9C%D7%99%20%D7%A9%D7%A0%D7%A2%D7%A9%D7%94%20%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%9E%D7%A2%D7%A0%D7%99%D7%99%D7%A0%D7%99%D7%9D%20%D7%99%D7%97%D7%93." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
@@ -2891,7 +2909,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot-uria/view/';
-const LAST_UPDATED = '23.05.26, 19:55';
+const LAST_UPDATED = '23.05.26, 22:59';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2922,14 +2940,17 @@ window.downloadPDF = function() {
   window.print();
 };
 
-/* Share with client = copy the dedicated Viewer URL (different file, frozen, read-only) */
+/* Share with client = copy the dedicated Viewer URL (different file, frozen, read-only).
+   Adds ?v=<unix-time> cache-buster so the client always lands on the freshly published HTML
+   (without it, GitHub Pages CDN can serve a stale copy for up to ~10 minutes). */
 window.shareView = function(btn) {
-  // VIEWER_URL is baked at build time. Falls back to current URL+view path if unset.
   let url = VIEWER_URL;
   if (!url) {
     const base = window.location.href.replace(/[/]?(view[/]?)?(\?.*)?(#.*)?$/, '/');
     url = base + 'view/';
   }
+  const sep = url.includes('?') ? '&' : '?';
+  url = `${url}${sep}v=${Date.now()}`;
   navigator.clipboard.writeText(url).then(() => {
     const orig = btn.querySelector('span').textContent;
     btn.querySelector('span').textContent = '✓ הקישור הועתק';
@@ -2943,30 +2964,185 @@ window.shareView = function(btn) {
   });
 };
 
-/* Publish workflow — the Editor packages localStorage changes as a JSON blob and
-   prompts the user to either (a) copy the blob to paste back to Claude in chat, or
-   (b) download as a file. Claude then calls the publish CLI which merges into data.json,
-   rebuilds Editor + Viewer, and pushes to GitHub Pages. */
-window.requestPublish = function() {
-  const changes = collectDraftChanges();
-  if (!changes || Object.keys(changes.items).length === 0) {
+/* ===========================================================================
+   PUBLISH WORKFLOW — one-click via GitHub API
+   ===========================================================================
+   When user clicks "פרסם שינויים":
+     1. Collect draft changes from localStorage
+     2. Get GitHub PAT from localStorage (prompt one-time if missing)
+     3. Fetch current data.json from GitHub
+     4. Merge changes into data.json
+     5. Commit via GitHub API (single API call, ~1 second)
+     6. GitHub Action auto-rebuilds HTMLs (~60-90 seconds)
+     7. Pages redeploys
+
+   The user never leaves the Editor URL. Status indicator shows progress.
+   If anything fails: clear error + user can bring the issue to chat. */
+
+const GITHUB_REPO  = 'uriaberman/zst-monthly-gantt';
+const GITHUB_BRANCH = 'main';
+const PAT_STORAGE_KEY = 'gantt:github-pat';
+
+function getStoredPAT() {
+  try { return localStorage.getItem(PAT_STORAGE_KEY) || ''; } catch (e) { return ''; }
+}
+
+function setStoredPAT(token) {
+  try { localStorage.setItem(PAT_STORAGE_KEY, token); } catch (e) {}
+}
+
+function clearStoredPAT() {
+  try { localStorage.removeItem(PAT_STORAGE_KEY); } catch (e) {}
+}
+
+function promptForPAT() {
+  const instructions = (
+    'נדרש GitHub Personal Access Token חד-פעמי.\n\n' +
+    '1. פתח: https://github.com/settings/tokens?type=beta\n' +
+    '2. "Generate new token (fine-grained)"\n' +
+    '3. Repository access: רק zst-monthly-gantt\n' +
+    '4. Permissions: Contents: Read & write\n' +
+    '5. העתק את הטוקן והדבק כאן:'
+  );
+  const token = prompt(instructions, '');
+  if (token && token.trim().length > 10) {
+    setStoredPAT(token.trim());
+    return token.trim();
+  }
+  return null;
+}
+
+async function ghApiRequest(path, opts = {}) {
+  const token = getStoredPAT();
+  if (!token) throw new Error('NO_TOKEN');
+  const r = await fetch(`https://api.github.com${path}`, {
+    ...opts,
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `Bearer ${token}`,
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...(opts.headers || {}),
+    },
+  });
+  if (r.status === 401) { clearStoredPAT(); throw new Error('BAD_TOKEN'); }
+  if (!r.ok) throw new Error(`GH_API_${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */) {
+  const bar = document.getElementById('draftBar');
+  if (!bar) return;
+  const text = bar.querySelector('.draft-bar-text');
+  const publishBtn = bar.querySelector('.draft-bar-publish');
+  if (text) text.textContent = stateText;
+  if (publishBtn) {
+    publishBtn.disabled = kind === 'busy';
+    if (kind === 'busy')        publishBtn.textContent = '⏳ מפרסם…';
+    else if (kind === 'success') publishBtn.textContent = '✅ פורסם';
+    else if (kind === 'error')   publishBtn.textContent = '↻ נסה שוב';
+    else                         publishBtn.textContent = '📤 פרסם שינויים';
+  }
+  bar.classList.toggle('publish-busy',    kind === 'busy');
+  bar.classList.toggle('publish-success', kind === 'success');
+  bar.classList.toggle('publish-error',   kind === 'error');
+}
+
+/* Apply browser draft to the data.json structure that GitHub stores */
+function mergeChangesIntoData(serverData, drafts) {
+  const out = JSON.parse(JSON.stringify(serverData));
+  const byNum = {};
+  out.items.forEach(it => { byNum[String(it.num)] = it; });
+  for (const [numStr, draft] of Object.entries(drafts)) {
+    const it = byNum[numStr];
+    if (!it) continue;
+    if (draft.date)   it.date_iso     = draft.date;
+    if (draft.status) it.status       = draft.status;
+    if (draft.copy)   it.copy_final   = draft.copy;
+  }
+  return out;
+}
+
+window.requestPublish = async function() {
+  const draftChanges = collectDraftChanges();
+  if (Object.keys(draftChanges.items).length === 0) {
     alert('אין שינויים בטיוטה לפרסום.');
     return;
   }
-  const payload = {
-    client_key: CLIENT_KEY,
-    generated_at: new Date().toISOString(),
-    changes: changes,
-  };
-  const blob = JSON.stringify(payload, null, 2);
-  const dl = document.createElement('a');
-  dl.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(blob);
-  dl.download = 'gantt-publish-' + CLIENT_KEY + '-' + Date.now() + '.json';
-  document.body.appendChild(dl);
-  dl.click();
-  document.body.removeChild(dl);
-  alert('הטיוטה הורדה כקובץ JSON.\n\nגרור אותו לצ\'אט של Claude עם ההודעה:\n"פרסם שינויים לגאנט של ' + CLIENT_KEY + '"\n\nClaude יחיל את השינויים, יבנה מחדש את שני ה-URLs וידחוף לאוויר.');
+
+  // 1. Ensure we have a PAT
+  let token = getStoredPAT();
+  if (!token) {
+    token = promptForPAT();
+    if (!token) {
+      alert('פרסום בוטל — אין טוקן.');
+      return;
+    }
+  }
+
+  setPublishStatus('שולח שינויים ל-GitHub…', 'busy');
+
+  try {
+    // 2. Identify which data file we're updating (depends on slug & CLIENT_KEY)
+    //    For now, derive from the URL: /<slug>/ → pilots/<slug>/data.json
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    // pathParts is like ['zst-monthly-gantt', 'shlichut-horaa'] or similar; the slug is the last segment
+    const slug = pathParts[pathParts.length - 1];
+    const dataPath = `pilots/${slug}/data.json`;
+
+    // 3. Fetch current data.json from GitHub (need its SHA to update)
+    const fileMeta = await ghApiRequest(`/repos/${GITHUB_REPO}/contents/${encodeURIComponent(dataPath)}?ref=${GITHUB_BRANCH}`);
+    const currentB64 = fileMeta.content.replace(/\n/g, '');
+    const currentBytes = atob(currentB64);
+    const currentText = decodeURIComponent(escape(currentBytes));
+    const currentData = JSON.parse(currentText);
+
+    // 4. Apply local drafts
+    const newData = mergeChangesIntoData(currentData, draftChanges.items);
+    const newText = JSON.stringify(newData, null, 2);
+    // Base64-encode the UTF-8 text
+    const newB64 = btoa(unescape(encodeURIComponent(newText)));
+
+    // 5. Commit the new data.json
+    const summary = Object.entries(draftChanges.items)
+      .map(([num, d]) => `#${num}: ${Object.keys(d).join('+')}`)
+      .join(', ');
+    await ghApiRequest(`/repos/${GITHUB_REPO}/contents/${encodeURIComponent(dataPath)}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: `${slug}: publish draft (${summary})`,
+        content: newB64,
+        sha: fileMeta.sha,
+        branch: GITHUB_BRANCH,
+      }),
+    });
+
+    // 6. Success — clear local drafts (they're now in the source of truth)
+    discardLocalDraftsSilent();
+    setPublishStatus('✅ פורסם בהצלחה — GitHub Action בונה מחדש (~60 שניות)', 'success');
+
+    // Poll the build until the new HTML lands (best-effort, optional)
+    setTimeout(() => {
+      setPublishStatus('הגאנט חי. רענן את הדף לראות את התוצאה.', 'success');
+    }, 60000);
+
+  } catch (err) {
+    console.error(err);
+    let msg = 'שגיאה בפרסום.';
+    if (err.message === 'NO_TOKEN')   msg = 'הפרסום בוטל — לא הוזן טוקן.';
+    else if (err.message === 'BAD_TOKEN') msg = 'הטוקן פג / נדחה. נסה שוב.';
+    else if (err.message.startsWith('GH_API_')) msg = 'GitHub API החזיר שגיאה: ' + err.message;
+    setPublishStatus(msg + ' לעזרה — חזור לצ\'אט עם Claude.', 'error');
+  }
 };
+
+/* Clear local drafts without confirmation (called after successful publish) */
+function discardLocalDraftsSilent() {
+  ITEMS_DATA.forEach(it => {
+    try { localStorage.removeItem(lsKey(it.num, 'date_override')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
+  });
+}
 
 window.discardDraft = function() {
   if (!confirm('לבטל את כל השינויים שטרם פורסמו?')) return;

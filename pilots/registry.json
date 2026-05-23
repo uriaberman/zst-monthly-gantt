@@ -1,0 +1,30 @@
+{
+  "_description": "Build targets — each entry maps a slug (= docs subfolder) to its source data.json + brand mode. The GitHub Action rebuilds every entry whenever any pilots/*/data.json changes.",
+  "_schema_version": 1,
+  "targets": {
+    "shlichut-horaa": {
+      "data":   "pilots/shlichut-horaa/data.json",
+      "out":    "docs/shlichut-horaa/index.html",
+      "mode":   "zeliger",
+      "client": "שליחות הוראה"
+    },
+    "adavot": {
+      "data":   "pilots/adavot/data.json",
+      "out":    "docs/adavot/index.html",
+      "mode":   "zeliger",
+      "client": "עמותת אדוות"
+    },
+    "uria-demo": {
+      "data":   "pilots/shlichut-horaa/data.json",
+      "out":    "docs/uria-demo/index.html",
+      "mode":   "uria",
+      "client": "שליחות הוראה (Uria demo)"
+    },
+    "adavot-uria": {
+      "data":   "pilots/adavot/data.json",
+      "out":    "docs/adavot-uria/index.html",
+      "mode":   "uria",
+      "client": "עמותת אדוות (Uria demo)"
+    }
+  }
+}
