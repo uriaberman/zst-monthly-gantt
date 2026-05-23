@@ -886,7 +886,7 @@ body.view-mode .cell-status {
   font-size: 12px;
 }
 /* Separator before status — hyphen in Zeliger, × in Uria.
-   align-self: center + matching line-height keeps × visually centered ON the baseline of adjacent pills. */
+   Centered with the adjacent pills (date-block + status-pill ≈ 28px tall). */
 .modal-sep {
   display: inline-flex;
   align-self: center;
@@ -894,18 +894,20 @@ body.view-mode .cell-status {
   justify-content: center;
   color: var(--ink-faint);
   font-family: var(--font-en);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1;
   height: 28px;
-  width: 18px;
+  width: 22px;
   text-align: center;
+  vertical-align: middle;
 }
 .modal-sep-x {
   color: #FF6B35;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
+  /* Same height/align as .modal-sep — stays centered with date + status pills */
 }
 /* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
 .modal-status-pill {
@@ -1039,26 +1041,75 @@ body.view-mode .cell-status {
   letter-spacing: 0.04em;
 }
 body.theme-uria .media-zone-spec { color: #FF6B35; }
+/* MEDIA GRID — 5 columns per row, supports up to MAX_MEDIA_SLOTS (10) cards */
 .media-grid {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
   align-content: start;
 }
-.media-zone.ratio-9-16 .media-grid {
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+@media (max-width: 720px) {
+  .media-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .media-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Each card = slot + actions bar BELOW */
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 .media-slot {
   position: relative;
   border: 2px dashed var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--paper-2);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: 100%;
 }
 .media-slot.ratio-1-1 { aspect-ratio: 1 / 1; }
 .media-slot.ratio-9-16 { aspect-ratio: 9 / 16; }
+/* Action bar BELOW each image card */
+.media-actions {
+  display: flex;
+  gap: 6px;
+}
+.media-act {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.media-act svg { width: 12px; height: 12px; }
+.media-act-replace:hover {
+  background: rgba(103,232,249,0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+.media-act-trash:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: #EF4444;
+  color: #EF4444;
+}
+.media-replace-input { display: none; }
+body.theme-uria .media-act { background: rgba(255,255,255,0.03); border-color: #2D1759; color: #C4B5FD; }
+body.theme-uria .media-act-replace:hover { background: rgba(34,211,238,0.14); border-color: #22D3EE; color: #22D3EE; }
+body.theme-uria .media-act-trash:hover { background: rgba(255,107,53,0.14); border-color: #FF6B35; color: #FF6B35; }
 .media-slot.has-image { border-style: solid; border-color: var(--accent-cyan); }
 .media-slot .media-img {
   width: 100%;
@@ -1067,26 +1118,7 @@ body.theme-uria .media-zone-spec { color: #FF6B35; }
   display: block;
   cursor: zoom-in;
 }
-.media-slot .media-remove {
-  position: absolute;
-  top: 6px; left: 6px;
-  width: 26px; height: 26px;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,255,255,0.20);
-  color: #FFFFFF;
-  border-radius: 50%;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-.media-slot.has-image:hover .media-remove { opacity: 1; }
+/* media-remove button removed — replaced by .media-actions bar below the card */
 .media-slot-num {
   position: absolute;
   bottom: 6px; right: 6px;
@@ -1427,7 +1459,7 @@ body.theme-uria .footer-link:hover {
       <a class="brand-link" href="https://zst.co.il/" target="_blank" rel="noopener" title="זליגר שומרון"><img class="logo" src="data:image/png;base64,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" alt="Zeliger Shomron" /></a>
     </div>
     <div class="header-titles">
-      <div class="period-mini"><span class="period-greg">יוני 2026</span><span class="period-dot">·</span><span class="period-heb">סיון תשפ״ו</span></div>
+      <div class="period-mini"><span class="period-greg" id="periodGreg">יוני 2026</span><span class="period-dot">·</span><span class="period-heb" id="periodHeb">סיון תשפ״ו</span></div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">·</span><span class="h1-client">שליחות הוראה</span></h1>
       <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
     </div>
@@ -1728,6 +1760,7 @@ body.theme-uria .footer-link:hover {
 const ITEMS_DATA = [{"num": 1, "date": "2026-06-01", "day": "ב'", "heb_date": "ט״ז סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "הראיון של נעמה קלר", "short_explanation": "ראיון של נעמה קלר מתוך יום ההכשרה במוזיאון אנו - פתיחת חודש שמסכמת שנת שליחות.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 2, "date": "2026-06-02", "day": "ג'", "heb_date": "י״ז סיון תשפ״ו", "type_key": "story", "type_label": "סטורי", "type_accent": "#C4B5FD", "type_soft": "rgba(196,181,253,0.14)", "title": "פעימת סטוריז מההכשרה", "short_explanation": "פעימת סטוריז עם תמונות אותנטיות מתוך יום ההכשרה - שיתוף רגעים אינטימיים מהיום.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 3, "date": "2026-06-04", "day": "ה'", "heb_date": "י״ט סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חששות ושאלות השליחים", "short_explanation": "רילס מתוך יום ההכשרה - חששות ושאלות אמיתיות של שליחים לפני יציאתם, וגם 3 הדברים שיתגעגעו אליהם.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 4, "date": "2026-06-08", "day": "ב'", "heb_date": "כ״ג סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "איך המשפחה והסביבה הגיבה?", "short_explanation": "רילס שמראה איך תגובות המשפחה והסביבה השפיעו על השליחים לפני שיצאו לדרך.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 5, "date": "2026-06-10", "day": "ד'", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "3 דברים שאתגעגע אליהם בחופש הגדול", "short_explanation": "קרוסלה עם כמה שליחים שמראים 3 דברים שיתגעגעו אליהם מהשליחות בחופש הגדול - אישי, חם, אנושי.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-06-11", "day": "ה'", "heb_date": "כ״ו סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מה למדתי השנה - סרטוני שליחים", "short_explanation": "סרטוני סלפי של שליחים שמשתפים מה הם עצמם למדו השנה - היפוך כיוון משמעותי שמייצר עומק.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-06-15", "day": "ב'", "heb_date": "ל׳ סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חידון ישראלי - תלמידים מהעולם", "short_explanation": "חידון ישראלי מצולם בין שתי קבוצות תלמידים מהעולם - שאלות על ישראל, יהדות וזהות, באווירה מגניבה וקלילה.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-06-17", "day": "ד'", "heb_date": "ב׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "Tell me without telling me - שליח מישראל", "short_explanation": "טרנד מוכר 'Tell me without telling me' - ילדים מראים בלי לומר שהיה להם שליח מישראל. הומור עדין שיתאהבו בו.", "source": "", "status": "בעבודה"}, {"num": 9, "date": "2026-06-22", "day": "ב'", "heb_date": "ז׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "POV של תלמידים - השבוע האחרון", "short_explanation": "תלמידים מצלמים בעצמם את השבוע האחרון עם השליחים שלהם - POV אותנטי שמראה את הקשר האישי שנוצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-06-28", "day": "א'", "heb_date": "י״ג תמוז תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "Best 5 Moments of the Year", "short_explanation": "קרוסלה מסכמת: תלמידים, מורים, הורים ואנשים מהקהילה בוחרים את 5 הרגעים הכי בלתי נשכחים מהשנה.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'שליחות_הוראה';
+const MONTHS_META = {"2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -1992,12 +2025,22 @@ window.restoreOriginal = function() {
   location.reload();
 };
 
-/* ---------- Month picker (dropdown) ---------- */
+/* ---------- Month picker (dropdown) + dynamic period label ---------- */
+function updatePeriodLabel(monthKey) {
+  const meta = MONTHS_META[monthKey];
+  if (!meta) return;
+  const gregEl = document.getElementById('periodGreg');
+  const hebEl = document.getElementById('periodHeb');
+  if (gregEl) gregEl.textContent = meta.greg;
+  if (hebEl) hebEl.textContent = meta.heb;
+}
+
 const monthSelect = document.querySelector('.month-select');
 if (monthSelect) {
   monthSelect.addEventListener('change', () => {
     const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    updatePeriodLabel(m);
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
   try {
@@ -2005,6 +2048,7 @@ if (monthSelect) {
     if (saved && [...monthSelect.options].some(o => o.value === saved)) {
       monthSelect.value = saved;
       document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+      updatePeriodLabel(saved);
     }
   } catch (e) {}
 }
@@ -2161,37 +2205,73 @@ function saveImages(num, arr) {
   try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
 }
 
+const MAX_MEDIA_SLOTS = 10;
+
 function renderMediaSlots(num, images, ratioCls, isView) {
   const parts = [];
-  // Existing image slots
+  // Existing image slots — each with its own card: image + actions (replace / trash)
   images.forEach((src, idx) => {
     parts.push(`
-      <div class="media-slot ${ratioCls} has-image" data-idx="${idx}" data-num="${num}">
-        <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
-             onclick="openLightbox(${num}, ${idx})" />
-        ${!isView ? `
-          <button class="media-remove" title="הסר" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">×</button>
+      <div class="media-card" data-idx="${idx}" data-num="${num}">
+        <div class="media-slot ${ratioCls} has-image">
+          <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
+               onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
-        ` : `<div class="media-slot-num">${idx + 1}</div>`}
+        </div>
+        ${!isView ? `
+          <div class="media-actions">
+            <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>החלף</span>
+            </button>
+            <input type="file" class="media-replace-input" accept="image/*"
+                   onchange="handleImageReplace(${num}, ${idx}, this.files[0])" />
+            <button class="media-act media-act-trash" title="מחק תמונה זו" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>מחק</span>
+            </button>
+          </div>
+        ` : ''}
       </div>
     `);
   });
-  // The add-slot tile (always last, hidden in view mode)
-  if (!isView) {
+  // Add-slot tile (always last when count < MAX, hidden in view mode)
+  if (!isView && images.length < MAX_MEDIA_SLOTS) {
     parts.push(`
-      <div class="media-slot ${ratioCls} media-slot-add" data-num="${num}" onclick="triggerImageAdd(${num})">
-        <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
-        <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה נוספת'}</div>
-        <div class="media-add-sub">PNG · JPG · WebP</div>
+      <div class="media-card media-card-add" data-num="${num}">
+        <div class="media-slot ${ratioCls} media-slot-add" onclick="triggerImageAdd(${num})">
+          <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
+          <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה'}</div>
+          <div class="media-add-sub">PNG · JPG · WebP · עד ${MAX_MEDIA_SLOTS}</div>
+        </div>
       </div>
     `);
-  } else if (images.length === 0) {
-    parts.push(`<div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div>`);
+  } else if (isView && images.length === 0) {
+    parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
   }
   return parts.join('');
+}
+
+function triggerImageReplace(num, idx) {
+  const card = document.querySelector('.media-card[data-num="' + num + '"][data-idx="' + idx + '"]');
+  if (!card) return;
+  const input = card.querySelector('.media-replace-input');
+  if (input) input.click();
+}
+
+function handleImageReplace(num, idx, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const arr = getImages(num);
+    arr[idx] = e.target.result;
+    saveImages(num, arr);
+    refreshMediaGrid(num);
+  };
+  reader.readAsDataURL(file);
 }
 
 function triggerImageAdd(num) {
@@ -2203,9 +2283,13 @@ function triggerImageAdd(num) {
 
 function handleImageAdd(num, file) {
   if (!file || !file.type.startsWith('image/')) return;
+  const arr = getImages(num);
+  if (arr.length >= MAX_MEDIA_SLOTS) {
+    alert(`הגעת למקסימום ${MAX_MEDIA_SLOTS} תמונות לפריט`);
+    return;
+  }
   const reader = new FileReader();
   reader.onload = (e) => {
-    const arr = getImages(num);
     arr.push(e.target.result);
     saveImages(num, arr);
     refreshMediaGrid(num);

@@ -343,14 +343,20 @@ body.theme-uria .cell-open:hover {
   color: #0A0418 !important;
 }
 /* Uria today: TANGERINE ring + tangerine badge (per user request) */
-/* Uria today: thick tangerine ring + strong inner+outer glow — feels like a brand badge */
-body.theme-uria .cell.is-today {
-  border: 2px solid #FF6B35 !important;
+/* Uria today: thick TANGERINE ring + strong tangerine glow ring — same color as the "היום" badge.
+   Win over .cell.type-post / .cell.type-carousel / etc with explicit !important + outline:none. */
+body.theme-uria .cell.is-today,
+body.theme-uria .cell.is-today.type-post,
+body.theme-uria .cell.is-today.type-carousel,
+body.theme-uria .cell.is-today.type-story,
+body.theme-uria .cell.is-today.type-reel {
+  border: 3px solid #FF6B35 !important;
+  outline: none !important;
   box-shadow:
-    0 0 0 4px rgba(255,107,53,0.22),
+    0 0 0 4px rgba(255,107,53,0.28),
     0 0 0 1px #FF6B35 inset,
-    0 0 28px rgba(255,107,53,0.55),
-    0 0 56px rgba(255,107,53,0.28) !important;
+    0 0 32px rgba(255,107,53,0.60),
+    0 0 64px rgba(255,107,53,0.30) !important;
   animation: uria-today-glow 2.4s ease-in-out infinite;
 }
 @keyframes uria-today-glow {
@@ -621,16 +627,13 @@ body.theme-uria .h1-sep .x-box-mini {
   align-items: center;
   justify-content: center;
   background: transparent;
-  color: #FF6B35;             /* Brand tangerine × acting as a hyphen separator */
+  color: #FF6B35;             /* Brand tangerine × acting as a static separator */
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
-  font-size: 28px;             /* Sits on baseline like an em-dash, not floating */
+  font-size: 32px;             /* Big + static, centered on the line */
   line-height: 1;
   letter-spacing: 0;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-body.theme-uria .h1-sep .x-box-mini:hover {
-  transform: rotate(90deg);
+  /* NO transform / NO rotate animation — user requested static */
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -1716,7 +1719,7 @@ body.view-mode .cell-status {
   font-size: 12px;
 }
 /* Separator before status — hyphen in Zeliger, × in Uria.
-   align-self: center + matching line-height keeps × visually centered ON the baseline of adjacent pills. */
+   Centered with the adjacent pills (date-block + status-pill ≈ 28px tall). */
 .modal-sep {
   display: inline-flex;
   align-self: center;
@@ -1724,18 +1727,20 @@ body.view-mode .cell-status {
   justify-content: center;
   color: var(--ink-faint);
   font-family: var(--font-en);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1;
   height: 28px;
-  width: 18px;
+  width: 22px;
   text-align: center;
+  vertical-align: middle;
 }
 .modal-sep-x {
   color: #FF6B35;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
+  /* Same height/align as .modal-sep — stays centered with date + status pills */
 }
 /* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
 .modal-status-pill {
@@ -1869,26 +1874,75 @@ body.view-mode .cell-status {
   letter-spacing: 0.04em;
 }
 body.theme-uria .media-zone-spec { color: #FF6B35; }
+/* MEDIA GRID — 5 columns per row, supports up to MAX_MEDIA_SLOTS (10) cards */
 .media-grid {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
   align-content: start;
 }
-.media-zone.ratio-9-16 .media-grid {
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+@media (max-width: 720px) {
+  .media-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .media-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Each card = slot + actions bar BELOW */
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 .media-slot {
   position: relative;
   border: 2px dashed var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--paper-2);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: 100%;
 }
 .media-slot.ratio-1-1 { aspect-ratio: 1 / 1; }
 .media-slot.ratio-9-16 { aspect-ratio: 9 / 16; }
+/* Action bar BELOW each image card */
+.media-actions {
+  display: flex;
+  gap: 6px;
+}
+.media-act {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.media-act svg { width: 12px; height: 12px; }
+.media-act-replace:hover {
+  background: rgba(103,232,249,0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+.media-act-trash:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: #EF4444;
+  color: #EF4444;
+}
+.media-replace-input { display: none; }
+body.theme-uria .media-act { background: rgba(255,255,255,0.03); border-color: #2D1759; color: #C4B5FD; }
+body.theme-uria .media-act-replace:hover { background: rgba(34,211,238,0.14); border-color: #22D3EE; color: #22D3EE; }
+body.theme-uria .media-act-trash:hover { background: rgba(255,107,53,0.14); border-color: #FF6B35; color: #FF6B35; }
 .media-slot.has-image { border-style: solid; border-color: var(--accent-cyan); }
 .media-slot .media-img {
   width: 100%;
@@ -1897,26 +1951,7 @@ body.theme-uria .media-zone-spec { color: #FF6B35; }
   display: block;
   cursor: zoom-in;
 }
-.media-slot .media-remove {
-  position: absolute;
-  top: 6px; left: 6px;
-  width: 26px; height: 26px;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,255,255,0.20);
-  color: #FFFFFF;
-  border-radius: 50%;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-.media-slot.has-image:hover .media-remove { opacity: 1; }
+/* media-remove button removed — replaced by .media-actions bar below the card */
 .media-slot-num {
   position: absolute;
   bottom: 6px; right: 6px;
@@ -2255,6 +2290,7 @@ JS = '''
 const ITEMS_DATA = __ITEMS_JSON__;
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = '__CLIENT_KEY__';
+const MONTHS_META = __MONTHS_META_JSON__;
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2519,12 +2555,22 @@ window.restoreOriginal = function() {
   location.reload();
 };
 
-/* ---------- Month picker (dropdown) ---------- */
+/* ---------- Month picker (dropdown) + dynamic period label ---------- */
+function updatePeriodLabel(monthKey) {
+  const meta = MONTHS_META[monthKey];
+  if (!meta) return;
+  const gregEl = document.getElementById('periodGreg');
+  const hebEl = document.getElementById('periodHeb');
+  if (gregEl) gregEl.textContent = meta.greg;
+  if (hebEl) hebEl.textContent = meta.heb;
+}
+
 const monthSelect = document.querySelector('.month-select');
 if (monthSelect) {
   monthSelect.addEventListener('change', () => {
     const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    updatePeriodLabel(m);
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
   try {
@@ -2532,6 +2578,7 @@ if (monthSelect) {
     if (saved && [...monthSelect.options].some(o => o.value === saved)) {
       monthSelect.value = saved;
       document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+      updatePeriodLabel(saved);
     }
   } catch (e) {}
 }
@@ -2688,37 +2735,73 @@ function saveImages(num, arr) {
   try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
 }
 
+const MAX_MEDIA_SLOTS = 10;
+
 function renderMediaSlots(num, images, ratioCls, isView) {
   const parts = [];
-  // Existing image slots
+  // Existing image slots — each with its own card: image + actions (replace / trash)
   images.forEach((src, idx) => {
     parts.push(`
-      <div class="media-slot ${ratioCls} has-image" data-idx="${idx}" data-num="${num}">
-        <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
-             onclick="openLightbox(${num}, ${idx})" />
-        ${!isView ? `
-          <button class="media-remove" title="הסר" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">×</button>
+      <div class="media-card" data-idx="${idx}" data-num="${num}">
+        <div class="media-slot ${ratioCls} has-image">
+          <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
+               onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
-        ` : `<div class="media-slot-num">${idx + 1}</div>`}
+        </div>
+        ${!isView ? `
+          <div class="media-actions">
+            <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>החלף</span>
+            </button>
+            <input type="file" class="media-replace-input" accept="image/*"
+                   onchange="handleImageReplace(${num}, ${idx}, this.files[0])" />
+            <button class="media-act media-act-trash" title="מחק תמונה זו" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>מחק</span>
+            </button>
+          </div>
+        ` : ''}
       </div>
     `);
   });
-  // The add-slot tile (always last, hidden in view mode)
-  if (!isView) {
+  // Add-slot tile (always last when count < MAX, hidden in view mode)
+  if (!isView && images.length < MAX_MEDIA_SLOTS) {
     parts.push(`
-      <div class="media-slot ${ratioCls} media-slot-add" data-num="${num}" onclick="triggerImageAdd(${num})">
-        <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
-        <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה נוספת'}</div>
-        <div class="media-add-sub">PNG · JPG · WebP</div>
+      <div class="media-card media-card-add" data-num="${num}">
+        <div class="media-slot ${ratioCls} media-slot-add" onclick="triggerImageAdd(${num})">
+          <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
+          <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה'}</div>
+          <div class="media-add-sub">PNG · JPG · WebP · עד ${MAX_MEDIA_SLOTS}</div>
+        </div>
       </div>
     `);
-  } else if (images.length === 0) {
-    parts.push(`<div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div>`);
+  } else if (isView && images.length === 0) {
+    parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
   }
   return parts.join('');
+}
+
+function triggerImageReplace(num, idx) {
+  const card = document.querySelector('.media-card[data-num="' + num + '"][data-idx="' + idx + '"]');
+  if (!card) return;
+  const input = card.querySelector('.media-replace-input');
+  if (input) input.click();
+}
+
+function handleImageReplace(num, idx, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const arr = getImages(num);
+    arr[idx] = e.target.result;
+    saveImages(num, arr);
+    refreshMediaGrid(num);
+  };
+  reader.readAsDataURL(file);
 }
 
 function triggerImageAdd(num) {
@@ -2730,9 +2813,13 @@ function triggerImageAdd(num) {
 
 function handleImageAdd(num, file) {
   if (!file || !file.type.startsWith('image/')) return;
+  const arr = getImages(num);
+  if (arr.length >= MAX_MEDIA_SLOTS) {
+    alert(`הגעת למקסימום ${MAX_MEDIA_SLOTS} תמונות לפריט`);
+    return;
+  }
   const reader = new FileReader();
   reader.onload = (e) => {
-    const arr = getImages(num);
     arr.push(e.target.result);
     saveImages(num, arr);
     refreshMediaGrid(num);
@@ -2911,30 +2998,36 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     legend_html = render_legend()
     items_json = render_modal_data(items)
 
-    # CANONICAL period label — always "[Heb month] [year] · [Hebrew gematria month] תשפ"X"
-    # Overrides whatever raw 'period' came from data.json (which may be a date range like "20.5 - 30.6.2026").
+    # PERIOD LABEL — ALWAYS shows ONE month at a time (the currently-viewed one).
+    # We pre-compute a meta map { "YYYY-MM": {greg, heb} } and let JS update the label
+    # whenever the month dropdown changes. Default = first chronological month.
     from israeli_holidays import hebrew_month_for_gregorian, hebrew_year_for_gregorian
-    if len(months) == 1:
-        y, m = months[0]
-        greg_label = f'{HEB_GREG_MONTHS[m]} {y}'
-        heb_label = f'{hebrew_month_for_gregorian(y, m)} {hebrew_year_for_gregorian(y, m)}'
-    else:
-        y1, m1 = months[0]
-        y2, m2 = months[-1]
-        greg_label = f'{HEB_GREG_MONTHS[m1]}-{HEB_GREG_MONTHS[m2]} {y2}'
-        h_m1 = hebrew_month_for_gregorian(y1, m1)
-        h_m2 = hebrew_month_for_gregorian(y2, m2)
-        heb_label = f'{h_m1}-{h_m2} {hebrew_year_for_gregorian(y2, m2)}'
+    months_meta = {}
+    for (y, m) in months:
+        key = f'{y}-{m:02d}'
+        months_meta[key] = {
+            'greg': f'{HEB_GREG_MONTHS[m]} {y}',
+            'heb':  f'{hebrew_month_for_gregorian(y, m)} {hebrew_year_for_gregorian(y, m)}',
+        }
+    months_meta_json = json.dumps(months_meta, ensure_ascii=False)
+    # Initial label = first month
+    y0, m0 = months[0]
+    init_greg = f'{HEB_GREG_MONTHS[m0]} {y0}'
+    init_heb = f'{hebrew_month_for_gregorian(y0, m0)} {hebrew_year_for_gregorian(y0, m0)}'
     canonical_period_html = (
-        f'<span class="period-greg">{greg_label}</span>'
+        f'<span class="period-greg" id="periodGreg">{init_greg}</span>'
         f'<span class="period-dot">·</span>'
-        f'<span class="period-heb">{heb_label}</span>'
+        f'<span class="period-heb" id="periodHeb">{init_heb}</span>'
     )
 
     # Client key for localStorage scoping (slug-ish)
     client_key = ''.join(c if c.isalnum() else '_' for c in client) or 'client'
 
-    js_filled = JS.replace('__ITEMS_JSON__', items_json).replace('__CLIENT_KEY__', client_key)
+    js_filled = (
+        JS.replace('__ITEMS_JSON__', items_json)
+          .replace('__CLIENT_KEY__', client_key)
+          .replace('__MONTHS_META_JSON__', months_meta_json)
+    )
 
     if mode == 'uria':
         # Logo 03 - "אוריה ברמן." with tangerine period (per brand kit final-3.html line 988-993)

@@ -886,7 +886,7 @@ body.view-mode .cell-status {
   font-size: 12px;
 }
 /* Separator before status — hyphen in Zeliger, × in Uria.
-   align-self: center + matching line-height keeps × visually centered ON the baseline of adjacent pills. */
+   Centered with the adjacent pills (date-block + status-pill ≈ 28px tall). */
 .modal-sep {
   display: inline-flex;
   align-self: center;
@@ -894,18 +894,20 @@ body.view-mode .cell-status {
   justify-content: center;
   color: var(--ink-faint);
   font-family: var(--font-en);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1;
   height: 28px;
-  width: 18px;
+  width: 22px;
   text-align: center;
+  vertical-align: middle;
 }
 .modal-sep-x {
   color: #FF6B35;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
+  /* Same height/align as .modal-sep — stays centered with date + status pills */
 }
 /* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
 .modal-status-pill {
@@ -1039,26 +1041,75 @@ body.view-mode .cell-status {
   letter-spacing: 0.04em;
 }
 body.theme-uria .media-zone-spec { color: #FF6B35; }
+/* MEDIA GRID — 5 columns per row, supports up to MAX_MEDIA_SLOTS (10) cards */
 .media-grid {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
   align-content: start;
 }
-.media-zone.ratio-9-16 .media-grid {
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+@media (max-width: 720px) {
+  .media-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .media-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Each card = slot + actions bar BELOW */
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 .media-slot {
   position: relative;
   border: 2px dashed var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--paper-2);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.15s ease;
+  width: 100%;
 }
 .media-slot.ratio-1-1 { aspect-ratio: 1 / 1; }
 .media-slot.ratio-9-16 { aspect-ratio: 9 / 16; }
+/* Action bar BELOW each image card */
+.media-actions {
+  display: flex;
+  gap: 6px;
+}
+.media-act {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.media-act svg { width: 12px; height: 12px; }
+.media-act-replace:hover {
+  background: rgba(103,232,249,0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+.media-act-trash:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: #EF4444;
+  color: #EF4444;
+}
+.media-replace-input { display: none; }
+body.theme-uria .media-act { background: rgba(255,255,255,0.03); border-color: #2D1759; color: #C4B5FD; }
+body.theme-uria .media-act-replace:hover { background: rgba(34,211,238,0.14); border-color: #22D3EE; color: #22D3EE; }
+body.theme-uria .media-act-trash:hover { background: rgba(255,107,53,0.14); border-color: #FF6B35; color: #FF6B35; }
 .media-slot.has-image { border-style: solid; border-color: var(--accent-cyan); }
 .media-slot .media-img {
   width: 100%;
@@ -1067,26 +1118,7 @@ body.theme-uria .media-zone-spec { color: #FF6B35; }
   display: block;
   cursor: zoom-in;
 }
-.media-slot .media-remove {
-  position: absolute;
-  top: 6px; left: 6px;
-  width: 26px; height: 26px;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,255,255,0.20);
-  color: #FFFFFF;
-  border-radius: 50%;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-.media-slot.has-image:hover .media-remove { opacity: 1; }
+/* media-remove button removed — replaced by .media-actions bar below the card */
 .media-slot-num {
   position: absolute;
   bottom: 6px; right: 6px;
@@ -1447,14 +1479,20 @@ body.theme-uria .cell-open:hover {
   color: #0A0418 !important;
 }
 /* Uria today: TANGERINE ring + tangerine badge (per user request) */
-/* Uria today: thick tangerine ring + strong inner+outer glow — feels like a brand badge */
-body.theme-uria .cell.is-today {
-  border: 2px solid #FF6B35 !important;
+/* Uria today: thick TANGERINE ring + strong tangerine glow ring — same color as the "היום" badge.
+   Win over .cell.type-post / .cell.type-carousel / etc with explicit !important + outline:none. */
+body.theme-uria .cell.is-today,
+body.theme-uria .cell.is-today.type-post,
+body.theme-uria .cell.is-today.type-carousel,
+body.theme-uria .cell.is-today.type-story,
+body.theme-uria .cell.is-today.type-reel {
+  border: 3px solid #FF6B35 !important;
+  outline: none !important;
   box-shadow:
-    0 0 0 4px rgba(255,107,53,0.22),
+    0 0 0 4px rgba(255,107,53,0.28),
     0 0 0 1px #FF6B35 inset,
-    0 0 28px rgba(255,107,53,0.55),
-    0 0 56px rgba(255,107,53,0.28) !important;
+    0 0 32px rgba(255,107,53,0.60),
+    0 0 64px rgba(255,107,53,0.30) !important;
   animation: uria-today-glow 2.4s ease-in-out infinite;
 }
 @keyframes uria-today-glow {
@@ -1725,16 +1763,13 @@ body.theme-uria .h1-sep .x-box-mini {
   align-items: center;
   justify-content: center;
   background: transparent;
-  color: #FF6B35;             /* Brand tangerine × acting as a hyphen separator */
+  color: #FF6B35;             /* Brand tangerine × acting as a static separator */
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
-  font-size: 28px;             /* Sits on baseline like an em-dash, not floating */
+  font-size: 32px;             /* Big + static, centered on the line */
   line-height: 1;
   letter-spacing: 0;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-body.theme-uria .h1-sep .x-box-mini:hover {
-  transform: rotate(90deg);
+  /* NO transform / NO rotate animation — user requested static */
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -1971,7 +2006,7 @@ body.theme-uria .modal-section h3 {
       <a class="brand-link" href="https://uriaberman.com" target="_blank" rel="noopener"><div class="uria-x-logo"><span class="logo-name-block">אוריה ברמן<span class="logo-period">.</span></span><span class="logo-tagline">Strategy · Creative · Digital · <span class="tag-accent">AI</span></span></div></a>
     </div>
     <div class="header-titles">
-      <div class="period-mini"><span class="period-greg">מאי-יוני 2026</span><span class="period-dot">·</span><span class="period-heb">אייר-סיון תשפ״ו</span></div>
+      <div class="period-mini"><span class="period-greg" id="periodGreg">מאי 2026</span><span class="period-dot">·</span><span class="period-heb" id="periodHeb">אייר תשפ״ו</span></div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep"><span class="x-box-mini">×</span></span><span class="h1-client">עמותת אדוות</span></h1>
       <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
     </div>
@@ -2739,6 +2774,7 @@ body.theme-uria .modal-section h3 {
 const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "heb_date": "ד׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1,000 בחודש", "short_explanation": "בוחרים בנתון התהליך המתמשך - 1,000 פצועים חדשים מצטרפים לטיפול אגף השיקום מדי חודש. 33 ביום.", "source": "כלכליסט (מצטט אגף השיקום) | calcalist.co.il/local_news/article/eec33ub7s", "status": "בעבודה"}, {"num": 2, "date": "2026-05-21", "day": "ה'", "heb_date": "ה׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "שירה (מייצג): השנה שלא ישנתי", "short_explanation": "פתיחה רכה של עמוד \"קולות מהשטח\" לתקופה. בת זוג של פצוע - הקבוצה הכי מוסתרת מבני המשפחה.", "source": "", "status": "בעבודה"}, {"num": 3, "date": "2026-05-22", "day": "ו' - ערב שבועות", "heb_date": "ו׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "10 הדברות של בן משפחת פצוע", "short_explanation": "חג שבועות = חג קבלת תורה, חג של 10 הדברות. ניקח את הסמליות החגיגית ונייצר 10 הדברות חדשות - 10 משפטים שכל בן משפחה של פצוע צריך לזכור.", "source": "", "status": "בעבודה"}, {"num": 4, "date": "2026-05-23", "day": "ש' - שבועות", "heb_date": "ז׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך השנה?", "short_explanation": "יום שני של שבועות. במקום עוד פוסט תוכן - פוסט engagement.", "source": "", "status": "בעבודה"}, {"num": 5, "date": "2026-05-24", "day": "א'", "heb_date": "ח׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8.3 מיליארד מול 12 טיפולים", "short_explanation": "תקציב אגף השיקום עלה ב-53% ב-2026 ועומד על 8.3 מיליארד שקל. בו זמנית, אמא של פצוע מקבלת 12 טיפולים פסיכולוגיים.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-05-25", "day": "ב'", "heb_date": "ט׳ סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מי שואל את האמא?", "short_explanation": "מקור הפוסט הוא הנתון \"412,000 בני משפחה דרגה ראשונה מול 11,500 שמקבלים מענה\". 30 שניות motion graphics על רקע כהה.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-05-26", "day": "ג'", "heb_date": "י׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני לא מרגישה אשמה שאני לא חולה?\"", "short_explanation": "פעם בשבוע, יום ג', שאלה אנונימית מהפורומים + תשובה קצרה. הפינה בונה ציפייה ושייכות.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-05-28", "day": "ה'", "heb_date": "י״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "25,274 ילדים", "short_explanation": "פוסט שני בסדרה - אגרוף רגשי. הדור הצעיר.", "source": "המוסד לביטוח לאומי | btl.gov.il/benefits/Victims_of_Hostilities/Pages/default.aspx", "status": "בעבודה"}, {"num": 9, "date": "2026-05-30", "day": "ש'", "heb_date": "י״ד סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "פורום אחים - דיווח שטח", "short_explanation": "דיווח מהשטח של מפגש פורום אחים שהתקיים השבוע. סיכום חם וקצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-05-31", "day": "א'", "heb_date": "ט״ו סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "חודש בריאות נפש נסגר. אצלנו זה כל חודש.", "short_explanation": "מאי הוא חודש המודעות לבריאות נפש בעולם (Mental Health Awareness Month). הוא נגמר.", "source": "", "status": "בעבודה"}, {"num": 11, "date": "2026-06-01", "day": "ב'", "heb_date": "ט״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "31,000 פצועי נפש", "short_explanation": "פוסט שלישי בסדרה. נתון רשמי ומדהים מאגף השיקום: 31,000 ישראלים מטופלים היום על פגיעות נפש.", "source": "אגף השיקום מש\"ב, יום ההוקרה 2025 | publichealth.doctorsonly.co.il/2025/12/360044/", "status": "בעבודה"}, {"num": 12, "date": "2026-06-02", "day": "ג'", "heb_date": "י״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?\"", "short_explanation": "הפינה השבועית, שאלה מס' 2. הפעם מאמא של פצוע, שמתמודדת עם ילדים נוספים שמרגישים שקופים בגלל ההתעסקות בפצוע.", "source": "", "status": "בעבודה"}, {"num": 13, "date": "2026-06-04", "day": "ה'", "heb_date": "י״ט סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "אבא לא בוכה", "short_explanation": "רייל שני בסדרה. 45 שניות.", "source": "", "status": "בעבודה"}, {"num": 14, "date": "2026-06-05", "day": "ו'", "heb_date": "כ׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אחים ואחיות - אין להם שורה בחוק", "short_explanation": "הפעם בהרחבה: אחים ואחיות של פצועי צה\"ל אינם מופיעים בחוק הנכים כזכאים לטיפול נפשי במימון המדינה. רק במקרים חריגים.", "source": "Ynet (מצטט תשובה רשמית של מש\"ב) | ynet.co.il/laisha/article/sjt0wo2z1l", "status": "בעבודה"}, {"num": 15, "date": "2026-06-06", "day": "ש'", "heb_date": "כ״א סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "גיא (מייצג), אח של פצוע", "short_explanation": "עדות מייצגת של אח של פצוע. גיא בן 19, אחיו הגדול נפצע ב-7.10.", "source": "", "status": "בעבודה"}, {"num": 16, "date": "2026-06-07", "day": "א'", "heb_date": "כ״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1 מ-7 בני זוג", "short_explanation": "פוסט רביעי בסדרה. נתון מבוסס מחקרי אורך peer-reviewed של פרופ' רחל דקל וצבי סולומון - מובילי המחקר העולמיים בפוסט-טראומה משנית.", "source": "PMC peer-reviewed - דקל וסולומון | pmc.ncbi.nlm.nih.gov/articles/PMC2080512/", "status": "בעבודה"}, {"num": 17, "date": "2026-06-08", "day": "ב'", "heb_date": "כ״ג סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפעם האחרונה שלא קמתי באמצע הלילה?\"", "short_explanation": "הפינה השבועית, שאלה מס' 3. מבת זוג של פצוע נפש.", "source": "", "status": "בעבודה"}, {"num": 18, "date": "2026-06-10", "day": "ד'", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8 אבות בחדר. לראשונה.", "short_explanation": "דיווח שטח על פתיחת פורום האבות. עד עכשיו, אבות הגיעו רק לפורום ההורים המעורב, ולפעמים לא הגיעו בכלל.", "source": "", "status": "בעבודה"}, {"num": 19, "date": "2026-06-11", "day": "ה'", "heb_date": "כ״ו סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "₪46 לשעה", "short_explanation": "רייל שלישי. 30 שניות motion על נתון אדווקסי-כלכלי: ₪46 לשעת ליווי סיעודי לפצוע 100%+.", "source": "", "status": "בעבודה"}, {"num": 20, "date": "2026-06-12", "day": "ו'", "heb_date": "כ״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "דיווח שטח מהפורום השבועי", "short_explanation": "דיווח שטח רגיל מהפורום השבועי - \"חמישי בנחלים\". פעילות עם משפחות שמגיעות באופן קבוע.", "source": "", "status": "בעבודה"}, {"num": 21, "date": "2026-06-13", "day": "ש'", "heb_date": "כ״ח סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מאיה, 7, ציירה את אבא", "short_explanation": "עדות חזותית. ילדים של פצועים הם הקבוצה הכי שקופה.", "source": "", "status": "בעבודה"}, {"num": 22, "date": "2026-06-14", "day": "א'", "heb_date": "כ״ט סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "873 בכיסא גלגלים", "short_explanation": "פוסט חמישי בסדרה - הקונקרטי ביותר. 873 פצועי צה\"ל מטופלים היום בכיסא גלגלים.", "source": "אגף השיקום + מקור ראשון | makorrishon.co.il/news/defence/article/219969", "status": "בעבודה"}, {"num": 23, "date": "2026-06-16", "day": "ג'", "heb_date": "א׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "בראש חודש סופרים. גם אנחנו.", "short_explanation": "פוסט סיכום חודשי לראש חודש תמוז. החודש שבר אדוות לעצמנו, ומה הצלחנו השבוע/החודש - בלי דרמה, בלי המעטה.", "source": "", "status": "בעבודה"}, {"num": 24, "date": "2026-06-17", "day": "ד'", "heb_date": "ב׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מתחיל יום שלא תלוי בו?\"", "short_explanation": "הפינה השבועית #4. הפעם מאבא של פצוע.", "source": "", "status": "בעבודה"}, {"num": 25, "date": "2026-06-18", "day": "ה'", "heb_date": "ג׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "60 דקות בשבוע", "short_explanation": "רייל #4 בסדרה. 45 שניות motion על נתון אדווקסי קשה: בני זוג של פצועי נפש מקבלים מהמדינה רק 60 דקות של טיפול נפשי בשבוע.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 26, "date": "2026-06-19", "day": "ו'", "heb_date": "ד׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "60 דקות בשבוע", "short_explanation": "מבוסס על הקופי המוכן מהקובץ של היום (פוסט 09 - \"ידעתם ש...\"). הקופי הראשי קצר ומדויק.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 27, "date": "2026-06-20", "day": "ש'", "heb_date": "ה׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מתנדבת השבוע", "short_explanation": "דיוקן מתנדב/ת בקהילה. השבוע - מי שמגיעה כל חמישי לפעילות.", "source": "", "status": "בעבודה"}, {"num": 28, "date": "2026-06-21", "day": "א' - יום אבא", "heb_date": "ו׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אבא של פצוע - 24/7", "short_explanation": "יום אבא הבינלאומי (יום ראשון השלישי של יוני בארה\"ב). אדוות לוקחת את הזווית: אבא של פצוע הוא אבא 24/7 - הוא לא רק האבא של הילדים שלו, הוא הופך לאבא של הבית, לאבא של ההחלטות הכלכליות, לאבא של ההסעות...", "source": "", "status": "בעבודה"}, {"num": 29, "date": "2026-06-22", "day": "ב'", "heb_date": "ז׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "5 שנים אחרי", "short_explanation": "הפוסט השישי והאחרון בסדרת \"מאחורי המספרים יש אדוות\". מבוסס על הקופי המוכן (פוסט 05) - מחקר אורך peer-reviewed שעקב אחרי הורי לוחמים שהשתתפו בלחימה הפעילה.", "source": "European Journal of Psychotraumatology, 2023 | tandfonline.com/doi/full/10.1080/20008066.2023.2235983", "status": "בעבודה"}, {"num": 30, "date": "2026-06-23", "day": "ג'", "heb_date": "ח׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפסקתי לבכות מול הילדים? וזה טוב?\"", "short_explanation": "הפינה השבועית האחרונה לתקופה. הפעם מאמא של פצוע, שמתמודדת עם השאלה - מתי הפסיקה לבכות מול הילדים?", "source": "", "status": "בעבודה"}, {"num": 31, "date": "2026-06-25", "day": "ה'", "heb_date": "י׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "6 מספרים. 6 שבועות. סיפור אחד.", "short_explanation": "סיכום של 6 הפוסטים של \"מאחורי המספרים יש אדוות\". 60 שניות.", "source": "", "status": "בעבודה"}, {"num": 32, "date": "2026-06-26", "day": "ו'", "heb_date": "י״א תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "תורם מספר", "short_explanation": "הקול הראשון מהקהל שמעבר לקהילה הפנימית. תורם של אדוות (מייצג) מספר למה הוא תורם.", "source": "", "status": "בעבודה"}, {"num": 33, "date": "2026-06-28", "day": "א'", "heb_date": "י״ג תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "כולם מטפלים בפצוע. אנחנו במשפחה.", "short_explanation": "פוסט בידול מותגי קלאסי. מציג את ההבדל בין אדוות לבין כל הארגונים האחרים שעוסקים בפצועי צה\"ל.", "source": "ספר המותג של אדוות (V1, 12.4.26)", "status": "בעבודה"}, {"num": 34, "date": "2026-06-30", "day": "ג'", "heb_date": "ט״ו תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה ראינו ב-6 שבועות", "short_explanation": "פוסט סגירה לתקופה. 30 ביוני.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
+const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -3003,12 +3039,22 @@ window.restoreOriginal = function() {
   location.reload();
 };
 
-/* ---------- Month picker (dropdown) ---------- */
+/* ---------- Month picker (dropdown) + dynamic period label ---------- */
+function updatePeriodLabel(monthKey) {
+  const meta = MONTHS_META[monthKey];
+  if (!meta) return;
+  const gregEl = document.getElementById('periodGreg');
+  const hebEl = document.getElementById('periodHeb');
+  if (gregEl) gregEl.textContent = meta.greg;
+  if (hebEl) hebEl.textContent = meta.heb;
+}
+
 const monthSelect = document.querySelector('.month-select');
 if (monthSelect) {
   monthSelect.addEventListener('change', () => {
     const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    updatePeriodLabel(m);
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
   try {
@@ -3016,6 +3062,7 @@ if (monthSelect) {
     if (saved && [...monthSelect.options].some(o => o.value === saved)) {
       monthSelect.value = saved;
       document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+      updatePeriodLabel(saved);
     }
   } catch (e) {}
 }
@@ -3172,37 +3219,73 @@ function saveImages(num, arr) {
   try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
 }
 
+const MAX_MEDIA_SLOTS = 10;
+
 function renderMediaSlots(num, images, ratioCls, isView) {
   const parts = [];
-  // Existing image slots
+  // Existing image slots — each with its own card: image + actions (replace / trash)
   images.forEach((src, idx) => {
     parts.push(`
-      <div class="media-slot ${ratioCls} has-image" data-idx="${idx}" data-num="${num}">
-        <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
-             onclick="openLightbox(${num}, ${idx})" />
-        ${!isView ? `
-          <button class="media-remove" title="הסר" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">×</button>
+      <div class="media-card" data-idx="${idx}" data-num="${num}">
+        <div class="media-slot ${ratioCls} has-image">
+          <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
+               onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
-        ` : `<div class="media-slot-num">${idx + 1}</div>`}
+        </div>
+        ${!isView ? `
+          <div class="media-actions">
+            <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>החלף</span>
+            </button>
+            <input type="file" class="media-replace-input" accept="image/*"
+                   onchange="handleImageReplace(${num}, ${idx}, this.files[0])" />
+            <button class="media-act media-act-trash" title="מחק תמונה זו" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>מחק</span>
+            </button>
+          </div>
+        ` : ''}
       </div>
     `);
   });
-  // The add-slot tile (always last, hidden in view mode)
-  if (!isView) {
+  // Add-slot tile (always last when count < MAX, hidden in view mode)
+  if (!isView && images.length < MAX_MEDIA_SLOTS) {
     parts.push(`
-      <div class="media-slot ${ratioCls} media-slot-add" data-num="${num}" onclick="triggerImageAdd(${num})">
-        <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
-        <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה נוספת'}</div>
-        <div class="media-add-sub">PNG · JPG · WebP</div>
+      <div class="media-card media-card-add" data-num="${num}">
+        <div class="media-slot ${ratioCls} media-slot-add" onclick="triggerImageAdd(${num})">
+          <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
+          <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה'}</div>
+          <div class="media-add-sub">PNG · JPG · WebP · עד ${MAX_MEDIA_SLOTS}</div>
+        </div>
       </div>
     `);
-  } else if (images.length === 0) {
-    parts.push(`<div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div>`);
+  } else if (isView && images.length === 0) {
+    parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
   }
   return parts.join('');
+}
+
+function triggerImageReplace(num, idx) {
+  const card = document.querySelector('.media-card[data-num="' + num + '"][data-idx="' + idx + '"]');
+  if (!card) return;
+  const input = card.querySelector('.media-replace-input');
+  if (input) input.click();
+}
+
+function handleImageReplace(num, idx, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const arr = getImages(num);
+    arr[idx] = e.target.result;
+    saveImages(num, arr);
+    refreshMediaGrid(num);
+  };
+  reader.readAsDataURL(file);
 }
 
 function triggerImageAdd(num) {
@@ -3214,9 +3297,13 @@ function triggerImageAdd(num) {
 
 function handleImageAdd(num, file) {
   if (!file || !file.type.startsWith('image/')) return;
+  const arr = getImages(num);
+  if (arr.length >= MAX_MEDIA_SLOTS) {
+    alert(`הגעת למקסימום ${MAX_MEDIA_SLOTS} תמונות לפריט`);
+    return;
+  }
   const reader = new FileReader();
   reader.onload = (e) => {
-    const arr = getImages(num);
     arr.push(e.target.result);
     saveImages(num, arr);
     refreshMediaGrid(num);
