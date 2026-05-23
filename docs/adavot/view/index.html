@@ -1550,7 +1550,7 @@ body.theme-uria .footer-link:hover {
 }
 </style>
 </head>
-<body class="theme-zeliger">
+<body class="theme-zeliger view-mode">
 <div class="page">
   <header class="header">
     <div class="header-brand">
@@ -1559,18 +1559,10 @@ body.theme-uria .footer-link:hover {
     <div class="header-titles">
       <div class="period-mini"><span class="period-greg" id="periodGreg">מאי 2026</span><span class="period-dot">·</span><span class="period-heb" id="periodHeb">אייר תשפ״ו</span></div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">·</span><span class="h1-client">עמותת אדוות</span></h1>
-      <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+      <span class="header-hint">לחץ על קוביה לצפייה בפרטים</span>
     </div>
   </header>
 
-  
-  <div class="draft-bar" id="draftBar" hidden>
-    <span class="draft-bar-text">⚠ יש לך שינויים בטיוטה — הלקוח עדיין לא רואה אותם</span>
-    <div class="draft-bar-actions">
-      <button class="draft-bar-publish" onclick="requestPublish()">📤 פרסם שינויים</button>
-      <button class="draft-bar-discard" onclick="discardDraft()">בטל הכל</button>
-    </div>
-  </div>
   
 
   <div class="controls">
@@ -1588,18 +1580,6 @@ body.theme-uria .footer-link:hover {
     </div>
     
     <div class="control-cluster">
-      
-      <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור צפייה ללקוח">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        <span>שיתוף</span>
-      </button>
-      <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>הורד כ-PDF</span>
-      </button>
-      <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-        <span>↺ החזר למקור</span>
-      </button>
       
       <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-05" selected>מאי 2026</option><option value="2026-06">יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
     </div>
@@ -2328,7 +2308,7 @@ body.theme-uria .footer-link:hover {
 
   <div class="footer-meta">
     <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">23.05.26, 19:55</span></span>
-    <span class="view-mode-badge">מצב עריכה</span>
+    <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
 </div>
@@ -2342,7 +2322,7 @@ const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "heb_date": "
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
-const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
+const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
 const LAST_UPDATED = '23.05.26, 19:55';
 

@@ -9,29 +9,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Theme: zeliger */
-  --bg:        #07101F;
-  --paper:     #0F1A2E;
-  --paper-2:   #14223A;
-  --paper-3:   #0C1828;
-  --paper-4:   #18253F;
-  --ink:       #F1F5F9;
-  --ink-soft:  #94A3B8;
-  --ink-faint: #475569;
-  --ink-mute:  #64748B;
-  --border:    #1E2D45;
-  --border-soft: #182338;
-  --accent-cyan: #67E8F9;
-  --accent-primary: #67E8F9;
-  --accent-secondary: #A78BFA;
-  --accent-warm: #FB7185;
-  --gold:      #FACC15;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
-  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
-  --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
-  --font-en: 'Inter', system-ui, -apple-system, sans-serif;
-  --font: 'Inter', 'Rubik', system-ui, sans-serif;
+  /* Theme: uria */
+  --bg:        #0A0418;
+  --paper:     #160730;
+  --paper-2:   #1F0E45;
+  --paper-3:   #120524;
+  --paper-4:   #250F50;
+  --ink:       #FAFAFA;
+  --ink-soft:  #C4B5FD;
+  --ink-faint: #5B4685;
+  --ink-mute:  #8B7BA5;
+  --border:    #2D1759;
+  --border-soft: #1F0E45;
+  --accent-cyan: #A78BFA;
+  --accent-primary: #A78BFA;
+  --accent-secondary: #22D3EE;
+  --accent-warm: #FF8A65;
+  --gold:      #FF8A65;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
+  --font-he: 'Rubik', 'Heebo', sans-serif;
+  --font-en: 'Plus Jakarta Sans', sans-serif;
+  --font: 'Rubik', 'Heebo', sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -1548,29 +1548,568 @@ body.theme-uria .footer-link {
 body.theme-uria .footer-link:hover {
   color: #FF6B35;
 }
+
+/* Uria DARK mode - FLAT aubergine tint on dark (no gradients - brand rule) */
+body.theme-uria .cell.has-content {
+  background: rgba(167,139,250,0.10) !important;
+  border-color: rgba(167,139,250,0.40) !important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.04) inset,
+    0 4px 16px rgba(0,0,0,0.4) !important;
+}
+body.theme-uria .cell.has-content:hover {
+  background: rgba(167,139,250,0.16) !important;
+  border-color: rgba(167,139,250,0.65) !important;
+}
+body.theme-uria .cell-footer {
+  background: rgba(10,4,24,0.45) !important;        /* Solid dark band, full cell width */
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 0 !important;
+}
+body.theme-uria .cell-open {
+  background: #22D3EE !important;     /* Bright teal on dark */
+  border-color: #22D3EE !important;
+  color: #0A0418 !important;          /* Dark text on teal button */
+}
+body.theme-uria .cell-open:hover {
+  background: #FF8A65 !important;     /* Tangerine on hover */
+  border-color: #FF8A65 !important;
+  color: #0A0418 !important;
+}
+/* Uria today: TANGERINE ring + tangerine badge (per user request) */
+/* Uria today: thick TANGERINE ring + strong tangerine glow ring — same color as the "היום" badge.
+   Win over .cell.type-post / .cell.type-carousel / etc with explicit !important + outline:none. */
+body.theme-uria .cell.is-today,
+body.theme-uria .cell.is-today.type-post,
+body.theme-uria .cell.is-today.type-carousel,
+body.theme-uria .cell.is-today.type-story,
+body.theme-uria .cell.is-today.type-reel {
+  border: 3px solid #FF6B35 !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 4px rgba(255,107,53,0.28),
+    0 0 0 1px #FF6B35 inset,
+    0 0 32px rgba(255,107,53,0.60),
+    0 0 64px rgba(255,107,53,0.30) !important;
+  animation: uria-today-glow 2.4s ease-in-out infinite;
+}
+@keyframes uria-today-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 4px rgba(255,107,53,0.22),
+      0 0 0 1px #FF6B35 inset,
+      0 0 28px rgba(255,107,53,0.55),
+      0 0 56px rgba(255,107,53,0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(255,107,53,0.30),
+      0 0 0 1px #FF6B35 inset,
+      0 0 36px rgba(255,107,53,0.70),
+      0 0 72px rgba(255,107,53,0.40);
+  }
+}
+body.theme-uria .cell.is-today .cell-num { color: #FF6B35 !important; }
+body.theme-uria .cell.is-today::after {
+  background: #FF6B35;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(255,107,53,0.45);
+  font-family: 'Rubik', sans-serif;  /* Hebrew text - must be Rubik */
+}
+/* (uria-today-pulse replaced by uria-today-glow defined later — keep this anchor for diff history) */
+body.theme-uria .cell.holiday::before {
+  border-color: #FF6B35 transparent transparent transparent;
+}
+body.theme-uria .cell-status-label { color: #FAFAFA; }
+body.theme-uria .header-brand { filter: none; }
+body.theme-uria .modal {
+  background: #160730;
+  border-color: #2D1759;
+  color: #FAFAFA;
+}
+body.theme-uria .modal-bg { background: rgba(10,4,24,0.85); backdrop-filter: blur(10px); }
+body.theme-uria .modal-head { background: #160730; border-bottom-color: #2D1759; }
+body.theme-uria .modal-head-left h2 { color: #FAFAFA; }
+body.theme-uria .modal-head-left .date-row { color: #C4B5FD; }
+body.theme-uria .modal-head-left .date-row .dot { background: #5B4685; }
+body.theme-uria .modal-explainline {
+  background: rgba(34,211,238,0.08);
+  border-right: 3px solid #22D3EE;
+  color: #FAFAFA;
+}
+body.theme-uria .modal-source { color: #C4B5FD; }
+body.theme-uria .modal-source-label { color: #8B7BA5; }
+body.theme-uria .copy-area textarea {
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
+}
+body.theme-uria .copy-area textarea:focus { border-color: #A78BFA; }
+body.theme-uria .copy-area textarea::placeholder { color: #5B4685; }
+body.theme-uria .copy-area label { color: #C4B5FD; }
+body.theme-uria .copy-view {
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
+}
+body.theme-uria .dropzone {
+  background: #0A0418;
+  border-color: #2D1759;
+}
+body.theme-uria .dropzone:hover {
+  border-color: #A78BFA;
+  background: rgba(167,139,250,0.06);
+}
+body.theme-uria .dropzone .dz-icon { color: #5B4685; }
+body.theme-uria .dropzone .dz-text { color: #C4B5FD; }
+body.theme-uria .dropzone .dz-sub { color: #8B7BA5; }
+body.theme-uria .copy-save-btn {
+  background: #22D3EE;
+  border-color: #22D3EE;
+  color: #0A0418;
+}
+body.theme-uria .copy-save-btn:hover { background: #67E8F9; border-color: #67E8F9; }
+body.theme-uria .copy-save-btn.saved-flash { background: #A78BFA; border-color: #A78BFA; color: #0A0418; }
+body.theme-uria .copy-save-btn.is-dirty { background: #FF8A65; border-color: #FF8A65; color: #0A0418; }
+body.theme-uria .pair-item {
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
+}
+body.theme-uria .pair-item .pair-text { color: #FAFAFA; }
+body.theme-uria .modal-close {
+  background: rgba(167,139,250,0.15);
+  border-color: #2D1759;
+  color: #C4B5FD;
+}
+body.theme-uria .modal-close:hover {
+  background: rgba(167,139,250,0.30);
+  color: #FAFAFA;
+}
+body.theme-uria .modal-section h3 {
+  color: #C4B5FD;
+  border-bottom-color: #2D1759;
+}
+body.theme-uria .explanation { color: #C4B5FD; }
+body.theme-uria details.collapsible {
+  background: #0A0418;
+  border-color: #2D1759;
+}
+body.theme-uria details.collapsible > summary { color: #FAFAFA; }
+body.theme-uria details.collapsible > summary::after { color: #C4B5FD; }
+body.theme-uria .pair-label { color: #C4B5FD; }
+/* Uria month-picker (dark) */
+body.theme-uria .month-picker {
+  background: rgba(34,211,238,0.06);
+  border: 1px solid rgba(34,211,238,0.30);
+}
+body.theme-uria .month-picker:hover {
+  border-color: #22D3EE;
+  box-shadow: 0 0 0 1px #22D3EE, 0 0 18px rgba(34,211,238,0.25);
+}
+body.theme-uria .month-picker-label { color: #C4B5FD; }
+body.theme-uria .month-select { color: #FAFAFA; }
+body.theme-uria .month-select option { background: #160730; color: #FAFAFA; }
+body.theme-uria .month-picker-arrow { color: #22D3EE; }
+/* Uria buttons - IDENTICAL pair: both filled brand tangerine.
+   Share + PDF look exactly the same. Single visual language. */
+body.theme-uria .share-btn,
+body.theme-uria .pdf-btn {
+  color: #FAFAFA !important;
+  background: #FF6B35 !important;
+  border: 1px solid #FF6B35 !important;
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  padding: 7px 16px !important;
+}
+body.theme-uria .share-btn:hover,
+body.theme-uria .pdf-btn:hover {
+  background: #FF8A65 !important;
+  border-color: #FF8A65 !important;
+}
+body.theme-uria .h1-label { color: #FAFAFA; background: transparent; padding: 0; }
+body.theme-uria .header-titles .count-pill {
+  color: #A78BFA;
+  background: rgba(167,139,250,0.10);
+  border-color: rgba(167,139,250,0.30);
+}
+body.theme-uria .cell.friday { background: #120524; }
+body.theme-uria .cell.saturday {
+  background: #160730;
+  border-color: rgba(255,138,101,0.15);
+}
+/* Uria DARK mode: type chips - bright on dark with contrast */
+body.theme-uria .cell.type-post .cell-type-chip {
+  background: #A78BFA !important;  /* Bright aubergine */
+  color: #0A0418 !important;
+}
+body.theme-uria .cell.type-carousel .cell-type-chip {
+  background: #22D3EE !important;  /* Bright teal */
+  color: #0A0418 !important;
+}
+body.theme-uria .cell.type-story .cell-type-chip {
+  background: #FF8A65 !important;  /* Bright tangerine */
+  color: #0A0418 !important;
+}
+body.theme-uria .cell.type-reel .cell-type-chip {
+  background: #C4B5FD !important;  /* Lavender (lighter aubergine) */
+  color: #0A0418 !important;
+}
+
+/* Uria DARK: FLAT cell tints by type (brand rule = no gradients) */
+body.theme-uria .cell.type-post {
+  background: rgba(167,139,250,0.12) !important;
+  border-color: rgba(167,139,250,0.45) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
+}
+body.theme-uria .cell.type-carousel {
+  background: rgba(34,211,238,0.12) !important;
+  border-color: rgba(34,211,238,0.45) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
+}
+body.theme-uria .cell.type-story {
+  background: rgba(255,138,101,0.12) !important;
+  border-color: rgba(255,138,101,0.45) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
+}
+body.theme-uria .cell.type-reel {
+  background: rgba(196,181,253,0.10) !important;
+  border-color: rgba(196,181,253,0.40) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
+}
+
+/* Uria logo - Logo 03 (אוריה ברמן. with colored period) per brand kit final-3.html */
+body.theme-uria .uria-x-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+body.theme-uria .uria-x-logo .logo-name-block {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-weight: 900;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #FAFAFA;          /* White text on dark aubergine bg */
+}
+body.theme-uria .uria-x-logo .logo-period {
+  color: #FF8A65;          /* Tangerine period */
+  margin-right: 3px;       /* Proper spacing from ן */
+  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-size: 36px;
+  line-height: 1;
+}
+body.theme-uria .uria-x-logo .logo-tagline {
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;            /* Larger and consistent */
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #22D3EE;             /* Teal blue tagline (brand kit secondary) */
+}
+body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
+  color: #22D3EE;             /* AI in matching teal */
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* Uria header in NEGATIVE - dark aubergine bg with light text on top */
+body.theme-uria .header {
+  position: relative;
+  border: none;
+  background: #0A0418 !important;            /* FLAT dark aubergine - brand rule = no gradient */
+  box-shadow: 0 4px 18px rgba(0,0,0,0.55);
+  color: #FAFAFA;
+  overflow: hidden;
+}
+/* Kill the cyan accent strip + cyan tint that Zeliger uses; Uria stays flat */
+body.theme-uria .header::before {
+  display: none !important;
+}
+body.theme-uria .header-titles h1 {
+  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #FAFAFA;
+}
+body.theme-uria .h1-label {
+  background: transparent !important;
+  color: #FAFAFA !important;
+  padding: 0 !important;
+  font-family: 'Rubik', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+body.theme-uria .h1-sep {
+  display: inline-flex !important;
+  align-items: center;          /* Vertically center with text */
+  justify-content: center;
+  width: auto !important;
+  height: 1em !important;        /* Match h1 line-box so × sits on baseline like a hyphen */
+  background: transparent !important;
+  box-shadow: none !important;
+  margin: 0 10px !important;
+}
+body.theme-uria .h1-sep .x-box-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #FF6B35;             /* Brand tangerine × acting as a static separator */
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 32px;             /* Big + static, centered on the line */
+  line-height: 1;
+  letter-spacing: 0;
+  /* NO transform / NO rotate animation — user requested static */
+}
+body.theme-uria .h1-client {
+  color: #FAFAFA;
+  font-weight: 900;
+  font-size: 26px;
+  margin-right: 4px;
+}
+body.theme-uria .header-titles .period {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #C4B5FD;
+  font-weight: 600;
+}
+body.theme-uria .header-titles .hint {
+  font-family: 'Rubik', sans-serif;
+  color: #8B7BA5;
+}
+
+/* Uria footer - FLAT dark strip with English brand name + × separator (brand rule = no gradient) */
+body.theme-uria .footer {
+  background: #0A0418;
+  color: #FAFAFA;
+  padding: 16px 22px;
+  margin-top: 18px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-top: 2px solid #FF6B35;   /* Tangerine accent line */
+}
+body.theme-uria .footer-built {
+  color: #C4B5FD;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+body.theme-uria .footer-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #FF6B35;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  margin: 0 4px;
+  height: 1em;             /* Snap to baseline like a separator */
+  vertical-align: middle;
+}
+body.theme-uria .footer-brand {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #FAFAFA;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 14px;
+  text-decoration: none;
+}
+body.theme-uria .footer-link-wa {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  color: #FAFAFA;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+body.theme-uria .footer-link-wa:hover {
+  color: #FF6B35;
+  border-bottom-color: #FF6B35;
+}
+body.theme-uria .footer-period {
+  display: inline-block;
+  color: #FF6B35;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 0.6;
+  margin-left: -10px;            /* Pull the dot snug to "Berman" — fix wide gap */
+  margin-right: 0;
+}
+
+/* (Uria month-picker overrides defined earlier in this file) */
+
+/* Type chips Uria - HEBREW text = Rubik. NOT Plus Jakarta. */
+body.theme-uria .cell-type-chip {
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  border-radius: 999px !important;
+  padding: 2px 10px !important;
+  box-shadow: none !important;
+}
+
+/* Title text in cells - WHITE on dark, Hebrew = Rubik */
+body.theme-uria .cell-title {
+  color: #FAFAFA !important;
+  font-weight: 700 !important;
+  font-family: 'Rubik', sans-serif !important;
+}
+
+/* Status label HEBREW = Rubik, light on dark */
+body.theme-uria .cell-status-label {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 10px;
+  color: #FAFAFA;
+}
+body.theme-uria .cell-status {
+  font-family: 'Rubik', sans-serif;  /* Status values are Hebrew */
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Legend strip Uria - dark mode */
+body.theme-uria .legend {
+  background: #160730;
+  border: 1px solid #2D1759;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+body.theme-uria .legend-label {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 11px;
+  color: #A78BFA;
+  background: rgba(167,139,250,0.10);
+}
+body.theme-uria .legend-divider { background: #2D1759; }
+body.theme-uria .legend-chip {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  color: #FAFAFA;
+}
+
+/* Weekday headers - light on dark */
+body.theme-uria .wd {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #C4B5FD;
+  font-size: 11px;
+}
+
+/* Month wrap - dark */
+body.theme-uria .month {
+  background: #160730;
+  border: 1px solid #2D1759;
+  border-radius: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}
+
+/* Cell empty (no content) background */
+body.theme-uria .cell:not(.has-content):not(.outside) {
+  background: rgba(255,255,255,0.02);
+  border-color: #2D1759;
+}
+
+/* Cell number = Plus Jakarta (number), light color */
+body.theme-uria .cell-num {
+  color: #FAFAFA !important;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+}
+/* Hebrew date letter = Rubik */
+body.theme-uria .cell-heb {
+  color: #A78BFA !important;
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700;
+}
+/* Outside cells (other month) - more dim on dark */
+body.theme-uria .cell.outside .cell-num,
+body.theme-uria .cell.outside .cell-heb {
+  color: #3D2A6A !important;
+}
+body.theme-uria .cell.outside { border-color: transparent !important; }
+/* Holiday label in cell = Hebrew = Rubik */
+body.theme-uria .cell-hol {
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700;
+  color: #FF6B35;
+}
+/* Share button hint = Hebrew = Rubik */
+body.theme-uria .share-btn {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+}
+body.theme-uria .restore-btn {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+}
+/* Open cell button = Hebrew "צפייה" = Rubik */
+body.theme-uria .cell-open {
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+/* Modal headings */
+body.theme-uria .modal-head-left h2 {
+  font-family: 'Rubik', sans-serif;
+}
+body.theme-uria .modal-pill {
+  font-family: 'Rubik', sans-serif !important;
+}
+body.theme-uria .modal-explainline {
+  font-family: 'Rubik', sans-serif;
+}
+body.theme-uria .copy-area label,
+body.theme-uria .pair-item .pair-label,
+body.theme-uria .modal-section h3 {
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 800 !important;
+}
 </style>
 </head>
-<body class="theme-zeliger">
+<body class="theme-uria view-mode">
 <div class="page">
   <header class="header">
     <div class="header-brand">
-      <a class="brand-link" href="https://zst.co.il/" target="_blank" rel="noopener" title="זליגר שומרון"><img class="logo" src="data:image/png;base64,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" alt="Zeliger Shomron" /></a>
+      <a class="brand-link" href="https://uriaberman.com" target="_blank" rel="noopener"><div class="uria-x-logo"><span class="logo-name-block">אוריה ברמן<span class="logo-period">.</span></span><span class="logo-tagline">Strategy · Creative · Digital · <span class="tag-accent">AI</span></span></div></a>
     </div>
     <div class="header-titles">
       <div class="period-mini"><span class="period-greg" id="periodGreg">מאי 2026</span><span class="period-dot">·</span><span class="period-heb" id="periodHeb">אייר תשפ״ו</span></div>
-      <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">·</span><span class="h1-client">עמותת אדוות</span></h1>
-      <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+      <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep"><span class="x-box-mini">×</span></span><span class="h1-client">עמותת אדוות</span></h1>
+      <span class="header-hint">לחץ על קוביה לצפייה בפרטים</span>
     </div>
   </header>
 
-  
-  <div class="draft-bar" id="draftBar" hidden>
-    <span class="draft-bar-text">⚠ יש לך שינויים בטיוטה — הלקוח עדיין לא רואה אותם</span>
-    <div class="draft-bar-actions">
-      <button class="draft-bar-publish" onclick="requestPublish()">📤 פרסם שינויים</button>
-      <button class="draft-bar-discard" onclick="discardDraft()">בטל הכל</button>
-    </div>
-  </div>
   
 
   <div class="controls">
@@ -1588,18 +2127,6 @@ body.theme-uria .footer-link:hover {
     </div>
     
     <div class="control-cluster">
-      
-      <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור צפייה ללקוח">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        <span>שיתוף</span>
-      </button>
-      <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>הורד כ-PDF</span>
-      </button>
-      <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-        <span>↺ החזר למקור</span>
-      </button>
       
       <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-05" selected>מאי 2026</option><option value="2026-06">יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
     </div>
@@ -2328,9 +2855,9 @@ body.theme-uria .footer-link:hover {
 
   <div class="footer-meta">
     <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">23.05.26, 19:55</span></span>
-    <span class="view-mode-badge">מצב עריכה</span>
+    <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
-  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
+  <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%2C%20%D7%A7%D7%95%D7%A8%D7%95%D7%AA%20%D7%94%D7%97%D7%99%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9A%20-%20%D7%95%D7%95%D7%90%D7%95%21%20%D7%91%D7%90%20%D7%9C%D7%99%20%D7%A9%D7%A0%D7%A2%D7%A9%D7%94%20%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%9E%D7%A2%D7%A0%D7%99%D7%99%D7%A0%D7%99%D7%9D%20%D7%99%D7%97%D7%93." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
 </div>
 
 <div class="modal-bg" id="modal">
@@ -2342,8 +2869,8 @@ const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "heb_date": "
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
-const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
-const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
+const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
+const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot-uria/view/';
 const LAST_UPDATED = '23.05.26, 19:55';
 
 const STATUS_COLORS = {

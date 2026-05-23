@@ -235,6 +235,7 @@ def render_modal_data(items: list) -> str:
             'short_explanation': it.get('short_explanation', ''),
             'source': it.get('source', ''),
             'status': it['status'],
+            'media_files': it.get('media_files', []),
         })
     return json.dumps(slim, ensure_ascii=False)
 
@@ -2253,8 +2254,106 @@ details.collapsible > .pair {
   color: var(--ink);
 }
 
+/* DRAFT BAR — appears when there are unpublished local changes */
+.draft-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.45);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: #FACC15;
+}
+.draft-bar[hidden] { display: none !important; }
+.draft-bar-actions { display: inline-flex; gap: 8px; }
+.draft-bar-publish {
+  background: #FACC15;
+  color: #0B1220;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.draft-bar-publish:hover { background: #EAB308; }
+.draft-bar-discard {
+  background: transparent;
+  color: #FACC15;
+  border: 1px solid rgba(250,204,21,0.45);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.draft-bar-discard:hover { background: rgba(250,204,21,0.10); }
+body.theme-uria .draft-bar { background: rgba(255,107,53,0.10); border-color: rgba(255,107,53,0.45); color: #FF8A65; }
+body.theme-uria .draft-bar-publish { background: #FF6B35; color: #FAFAFA; }
+body.theme-uria .draft-bar-publish:hover { background: #FF8A65; }
+body.theme-uria .draft-bar-discard { color: #FF8A65; border-color: rgba(255,107,53,0.45); }
+body.theme-uria .draft-bar-discard:hover { background: rgba(255,107,53,0.10); }
+
+/* FOOTER META: last updated + view-mode badge */
+.footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 10px 4px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-mute);
+  border-top: 1px solid var(--border);
+}
+.footer-meta .last-updated {
+  font-family: var(--font-he);
+  font-weight: 500;
+}
+.footer-meta .last-updated #lastUpdatedTime {
+  font-family: var(--font-en);
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 4px;
+}
+.footer-meta .view-mode-badge {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.30);
+  color: var(--accent-cyan);
+}
+body.view-mode .footer-meta .view-mode-badge {
+  background: rgba(167,139,250,0.08);
+  border-color: rgba(167,139,250,0.30);
+  color: #A78BFA;
+}
+body.theme-uria .footer-meta .view-mode-badge {
+  background: rgba(34,211,238,0.08);
+  border-color: rgba(34,211,238,0.30);
+  color: #22D3EE;
+}
+body.theme-uria.view-mode .footer-meta .view-mode-badge {
+  background: rgba(255,107,53,0.08);
+  border-color: rgba(255,107,53,0.40);
+  color: #FF6B35;
+}
+
 .footer {
-  margin-top: 28px;
+  margin-top: 12px;
   text-align: center;
   font-family: var(--font-en);
   font-size: 11px;
@@ -2291,6 +2390,9 @@ const ITEMS_DATA = __ITEMS_JSON__;
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = '__CLIENT_KEY__';
 const MONTHS_META = __MONTHS_META_JSON__;
+const VIEW_MODE_BAKED = __VIEW_MODE_BAKED__;   // true = this HTML is the frozen Viewer
+const VIEWER_URL = '__VIEWER_URL__';
+const LAST_UPDATED = '__LAST_UPDATED__';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2309,8 +2411,9 @@ function setLocal(num, field, value) {
   try { localStorage.setItem(lsKey(num, field), value); } catch (e) {}
 }
 
-/* ---------- View mode (URL ?mode=view) ---------- */
+/* ---------- View mode (baked into HTML at build time + legacy URL ?mode=view) ---------- */
 function isViewMode() {
+  if (VIEW_MODE_BAKED) return true;  // The Viewer HTML always returns true
   return new URLSearchParams(window.location.search).get('mode') === 'view';
 }
 if (isViewMode()) document.body.classList.add('view-mode');
@@ -2320,12 +2423,15 @@ window.downloadPDF = function() {
   window.print();
 };
 
-/* Share with client = copy ?mode=view link */
+/* Share with client = copy the dedicated Viewer URL (different file, frozen, read-only) */
 window.shareView = function(btn) {
-  const url = new URL(window.location.href);
-  url.searchParams.set('mode', 'view');
-  url.hash = '';
-  navigator.clipboard.writeText(url.toString()).then(() => {
+  // VIEWER_URL is baked at build time. Falls back to current URL+view path if unset.
+  let url = VIEWER_URL;
+  if (!url) {
+    const base = window.location.href.replace(/[/]?(view[/]?)?(\\?.*)?(#.*)?$/, '/');
+    url = base + 'view/';
+  }
+  navigator.clipboard.writeText(url).then(() => {
     const orig = btn.querySelector('span').textContent;
     btn.querySelector('span').textContent = '✓ הקישור הועתק';
     btn.classList.add('copied');
@@ -2334,9 +2440,75 @@ window.shareView = function(btn) {
       btn.classList.remove('copied');
     }, 2000);
   }).catch(() => {
-    prompt('העתק את הקישור הבא ושלח ללקוח:', url.toString());
+    prompt('העתק את הקישור הבא ושלח ללקוח:', url);
   });
 };
+
+/* Publish workflow — the Editor packages localStorage changes as a JSON blob and
+   prompts the user to either (a) copy the blob to paste back to Claude in chat, or
+   (b) download as a file. Claude then calls the publish CLI which merges into data.json,
+   rebuilds Editor + Viewer, and pushes to GitHub Pages. */
+window.requestPublish = function() {
+  const changes = collectDraftChanges();
+  if (!changes || Object.keys(changes.items).length === 0) {
+    alert('אין שינויים בטיוטה לפרסום.');
+    return;
+  }
+  const payload = {
+    client_key: CLIENT_KEY,
+    generated_at: new Date().toISOString(),
+    changes: changes,
+  };
+  const blob = JSON.stringify(payload, null, 2);
+  const dl = document.createElement('a');
+  dl.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(blob);
+  dl.download = 'gantt-publish-' + CLIENT_KEY + '-' + Date.now() + '.json';
+  document.body.appendChild(dl);
+  dl.click();
+  document.body.removeChild(dl);
+  alert('הטיוטה הורדה כקובץ JSON.\\n\\nגרור אותו לצ\\'אט של Claude עם ההודעה:\\n"פרסם שינויים לגאנט של ' + CLIENT_KEY + '"\\n\\nClaude יחיל את השינויים, יבנה מחדש את שני ה-URLs וידחוף לאוויר.');
+};
+
+window.discardDraft = function() {
+  if (!confirm('לבטל את כל השינויים שטרם פורסמו?')) return;
+  ITEMS_DATA.forEach(it => {
+    try { localStorage.removeItem(lsKey(it.num, 'date_override')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
+  });
+  location.reload();
+};
+
+/* Collect all unpublished changes from localStorage into a structured payload */
+function collectDraftChanges() {
+  const items = {};
+  ITEMS_DATA.forEach(it => {
+    const num = it.num;
+    const draft = {};
+    const d = getLocal(num, 'date_override', null);
+    if (d && d !== it.date) draft.date = d;
+    const s = getLocal(num, 'status', null);
+    if (s && s !== it.status) draft.status = s;
+    const c = getLocal(num, 'copy', null);
+    if (c) draft.copy = c;
+    if (Object.keys(draft).length > 0) items[num] = draft;
+  });
+  return { items: items };
+}
+
+/* Show the draft bar whenever there are local changes (Editor only) */
+function updateDraftBar() {
+  if (VIEW_MODE_BAKED) return;  // viewer never shows the bar
+  const bar = document.getElementById('draftBar');
+  if (!bar) return;
+  const ch = collectDraftChanges();
+  const count = Object.keys(ch.items).length;
+  bar.hidden = count === 0;
+  const text = bar.querySelector('.draft-bar-text');
+  if (text && count > 0) {
+    text.textContent = `⚠ יש לך ${count} שינוי${count > 1 ? 'ים' : ''} בטיוטה — הלקוח עדיין לא רואה אותם`;
+  }
+}
 
 /* ---------- Status decoration on cells (read from localStorage) ----------
    Paints the wrapper .cell-status-pill via CSS var --status-c. Border + dot + text
@@ -2365,6 +2537,7 @@ document.addEventListener('change', (e) => {
     const num = parseInt(sel.dataset.num);
     setLocal(num, 'status', sel.value);
     paintStatus(sel);
+    updateDraftBar();
   }
 });
 
@@ -2680,6 +2853,7 @@ function openModal(num) {
       const c = STATUS_COLORS[v] || '#94A3B8';
       if (modalPill) modalPill.style.setProperty('--status-c', c);
       applyStatusToCells();
+      updateDraftBar();
     });
   }
 
@@ -2701,6 +2875,7 @@ function openModal(num) {
       saveBtn.classList.remove('is-dirty');
       saveBtn.classList.add('saved-flash');
       saveBtn.textContent = '✓ נשמר';
+      updateDraftBar();
       savedHint.textContent = '';
       setTimeout(() => {
         saveBtn.classList.remove('saved-flash');
@@ -2720,8 +2895,15 @@ function openModal(num) {
   setupMediaDrop(num);
 }
 
-/* ---------- Media slots (multi-image gallery, per-type aspect ratio) ---------- */
+/* ---------- Media slots (multi-image gallery, per-type aspect ratio) ----------
+   PRIORITY: file-based media (committed in repo, visible to client) over localStorage (preview only).
+   If the item has `media_files` baked in at build time → use those paths.
+   Otherwise → fall back to localStorage (Editor-side draft preview only). */
 function getImages(num) {
+  const it = itemsByNum[num];
+  if (it && Array.isArray(it.media_files) && it.media_files.length > 0) {
+    return it.media_files.slice();
+  }
   let arr = getLocal(num, 'images', null);
   if (!Array.isArray(arr)) {
     const legacy = getLocal(num, 'img', '');
@@ -2959,10 +3141,17 @@ highlightToday();
 applyDateOverrides();
 applyStatusToCells();
 setupDragAndDrop();
+updateDraftBar();
 '''
 
 
-def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
+def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
+                view: bool = False, viewer_url: str = '', last_updated: str = '') -> str:
+    """Render a single HTML file.
+
+    view=False → Editor: full edit UI, draft bar, share/PDF/restore buttons
+    view=True  → Viewer: read-only, no edit chrome at all (file is frozen, client-safe)
+    """
     items = data['items']
     items_by_date = {}
     for it in items:
@@ -3027,6 +3216,9 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
         JS.replace('__ITEMS_JSON__', items_json)
           .replace('__CLIENT_KEY__', client_key)
           .replace('__MONTHS_META_JSON__', months_meta_json)
+          .replace('__VIEW_MODE_BAKED__', 'true' if view else 'false')
+          .replace('__VIEWER_URL__', viewer_url)
+          .replace('__LAST_UPDATED__', last_updated)
     )
 
     if mode == 'uria':
@@ -3073,6 +3265,8 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     font_links = ('<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">')
 
     body_class = f'theme-{mode}'
+    if view:
+        body_class += ' view-mode'
 
     return f'''<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -3094,24 +3288,36 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     <div class="header-titles">
       <div class="period-mini">{canonical_period_html}</div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">{('<span class="x-box-mini">×</span>' if mode == 'uria' else '·')}</span><span class="h1-client">{html.escape(client)}</span></h1>
-      <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+      <span class="header-hint">{('לחץ על קוביה לצפייה בפרטים' if view else 'גרור קוביה כדי להזיז · לחץ לעריכה')}</span>
     </div>
   </header>
+
+  {('' if view else '''
+  <div class="draft-bar" id="draftBar" hidden>
+    <span class="draft-bar-text">⚠ יש לך שינויים בטיוטה — הלקוח עדיין לא רואה אותם</span>
+    <div class="draft-bar-actions">
+      <button class="draft-bar-publish" onclick="requestPublish()">📤 פרסם שינויים</button>
+      <button class="draft-bar-discard" onclick="discardDraft()">בטל הכל</button>
+    </div>
+  </div>
+  ''')}
 
   <div class="controls">
     {legend_html}
     <div class="control-cluster">
-      <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-        <span>שתף עם לקוח</span>
+      {('' if view else '''
+      <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור צפייה ללקוח">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span>שיתוף</span>
       </button>
       <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>הורד PDF</span>
+        <span>הורד כ-PDF</span>
       </button>
       <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
         <span>↺ החזר למקור</span>
       </button>
+      ''')}
       {tabs_html}
     </div>
   </div>
@@ -3120,6 +3326,10 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     {''.join(months_html_parts)}
   </div>
 
+  <div class="footer-meta">
+    {('<span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">' + html.escape(last_updated) + '</span></span>') if last_updated else ''}
+    <span class="view-mode-badge">{('מצב צפייה · ללא עריכה' if view else 'מצב עריכה')}</span>
+  </div>
   <div class="footer" dir="ltr">{footer_text}</div>
 </div>
 
@@ -3133,43 +3343,137 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
 '''
 
 
+def _now_he_he() -> str:
+    """Return current Israel time as 'DD.M.YY, HH:MM' for the 'עודכן לאחרונה' footer."""
+    from datetime import datetime, timezone, timedelta
+    tz_il = timezone(timedelta(hours=3))  # Israel summer time approx (good enough for footer)
+    now = datetime.now(tz_il)
+    return now.strftime('%d.%m.%y, %H:%M')
+
+
+def _sync_media(pilot_dir: Path, out_dir: Path):
+    """Copy pilots/{slug}/media/* → docs/{slug}/media/* so client URLs serve images.
+    File naming convention: {num}-{idx}.{ext}  (e.g. 5-0.jpg, 5-1.png, 12-0.webp)
+    """
+    src = pilot_dir / 'media'
+    if not src.exists():
+        return []
+    dst = out_dir / 'media'
+    dst.mkdir(parents=True, exist_ok=True)
+    import shutil
+    copied = []
+    for f in src.iterdir():
+        if f.is_file() and f.suffix.lower() in {'.jpg', '.jpeg', '.png', '.webp', '.gif'}:
+            shutil.copy2(f, dst / f.name)
+            copied.append(f.name)
+    return copied
+
+
+def _media_index_for_data(pilot_dir: Path, items: list) -> dict:
+    """Scan pilots/{slug}/media/ and group files by item num.
+    Returns {num: ['media/1-0.jpg', 'media/1-1.png', ...]} for each item.
+    """
+    media_dir = pilot_dir / 'media'
+    if not media_dir.exists():
+        return {}
+    idx = {}
+    for f in sorted(media_dir.iterdir()):
+        if not f.is_file():
+            continue
+        if f.suffix.lower() not in {'.jpg', '.jpeg', '.png', '.webp', '.gif'}:
+            continue
+        # Expected: {num}-{idx}.{ext}
+        stem = f.stem
+        if '-' not in stem:
+            continue
+        try:
+            num_str, idx_str = stem.split('-', 1)
+            num = int(num_str)
+            sort_key = int(idx_str)
+        except ValueError:
+            continue
+        idx.setdefault(num, []).append((sort_key, f'media/{f.name}'))
+    # Sort each item's images by their slot idx
+    return {num: [path for (_, path) in sorted(paths)] for num, paths in idx.items()}
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--data', required=True)
+    ap.add_argument('--data', required=True, help='Path to pilots/{slug}/data.json')
     ap.add_argument('--logo', required=True)
-    ap.add_argument('--out', required=True)
+    ap.add_argument('--out', required=True, help='Path to docs/{slug}/index.html (Editor). The Viewer is auto-built at docs/{slug}/view/index.html')
     ap.add_argument('--mode', choices=['zeliger', 'uria'], default='zeliger',
-                    help='Brand mode: zeliger (default, dark) or uria (light, brand kit)')
+                    help='Brand mode: zeliger (default, dark) or uria (dark aubergine, brand kit)')
+    ap.add_argument('--base-url', default='https://uriaberman.github.io/zst-monthly-gantt',
+                    help='Base URL prefix used to compute the Viewer URL baked into the Editor')
     args = ap.parse_args()
 
-    data = json.loads(Path(args.data).read_text(encoding='utf-8'))
+    data_path = Path(args.data)
+    data = json.loads(data_path.read_text(encoding='utf-8'))
     logo_b64 = base64.b64encode(Path(args.logo).read_bytes()).decode('ascii')
 
     # Compute Israeli holidays for the period of the data
     dates = sorted([it['date_iso'] for it in data['items'] if it.get('date_iso')])
     if dates:
         from israeli_holidays import get_israeli_holidays, hebrew_month_for_gregorian, hebrew_year_for_gregorian
-        # Expand range by 7 days each side to catch nearby holidays
         from datetime import date, timedelta
         first = date.fromisoformat(dates[0])
         last = date.fromisoformat(dates[-1])
         start_ext = (first - timedelta(days=7)).isoformat()
         end_ext = (last + timedelta(days=7)).isoformat()
         holidays = get_israeli_holidays(start_ext, end_ext)
-        # Populate the module-level dict that render_cell uses
         HOLIDAYS_2026.update(holidays)
-        # Compute Hebrew month for the title
         heb_month = hebrew_month_for_gregorian(first.year, first.month)
         heb_year = hebrew_year_for_gregorian(first.year, first.month)
         data['_heb_month'] = heb_month
         data['_heb_year'] = heb_year
 
-    out_html = render_html(data, logo_b64, mode=args.mode)
-    Path(args.out).write_text(out_html, encoding='utf-8')
-    print(f'WROTE {args.out} ({len(out_html):,} chars)')
+    # File-based media: scan pilots/{slug}/media/ and inject relative paths into each item
+    pilot_dir = data_path.parent
+    media_idx = _media_index_for_data(pilot_dir, data['items'])
+    for it in data['items']:
+        if it['num'] in media_idx:
+            it['media_files'] = media_idx[it['num']]
+
+    out_editor = Path(args.out)
+    out_dir = out_editor.parent
+    out_viewer = out_dir / 'view' / 'index.html'
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_viewer.parent.mkdir(parents=True, exist_ok=True)
+
+    # Compute slug + Viewer URL for embedding into the Editor's share button
+    slug = out_dir.name
+    viewer_url = f'{args.base_url.rstrip("/")}/{slug}/view/'
+
+    # Last-updated timestamp (Israel time)
+    last_updated = _now_he_he()
+    data['published_at'] = last_updated
+
+    # Copy media files to BOTH docs/{slug}/media/ and docs/{slug}/view/media/
+    copied_main = _sync_media(pilot_dir, out_dir)
+    copied_view = _sync_media(pilot_dir, out_viewer.parent)
+
+    # Build Editor (full edit UI)
+    editor_html = render_html(data, logo_b64, mode=args.mode, view=False,
+                              viewer_url=viewer_url, last_updated=last_updated)
+    out_editor.write_text(editor_html, encoding='utf-8')
+    print(f'WROTE EDITOR  {out_editor} ({len(editor_html):,} chars)')
+
+    # Build Viewer (read-only, frozen at this moment)
+    viewer_html = render_html(data, logo_b64, mode=args.mode, view=True,
+                              viewer_url=viewer_url, last_updated=last_updated)
+    out_viewer.write_text(viewer_html, encoding='utf-8')
+    print(f'WROTE VIEWER  {out_viewer} ({len(viewer_html):,} chars)')
+
     print(f'  Mode: {args.mode}')
+    print(f'  Slug: {slug}')
+    print(f'  Last updated (IL): {last_updated}')
+    if copied_main:
+        print(f'  Media files copied: {len(copied_main)} → {", ".join(copied_main[:5])}{"..." if len(copied_main) > 5 else ""}')
+    else:
+        print(f'  Media files: none (drop {pilot_dir}/media/{{num}}-{{idx}}.jpg)')
     if HOLIDAYS_2026:
-        print(f'  Israeli holidays detected in period: {len(HOLIDAYS_2026)}')
+        print(f'  Israeli holidays in period: {len(HOLIDAYS_2026)}')
 
 
 if __name__ == '__main__':
