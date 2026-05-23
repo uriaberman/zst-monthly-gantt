@@ -2653,13 +2653,13 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
         )
     else:
         logo_tag = (
-            f'<a class="brand-link" href="https://zeligershomron.co.il" target="_blank" rel="noopener" title="זליגר שומרון">'
+            f'<a class="brand-link" href="https://zst.co.il/" target="_blank" rel="noopener" title="זליגר שומרון">'
             f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
             f'</a>'
         )
         footer_text = (
             'Built by <span class="footer-brand">Social · '
-            '<a class="footer-link" href="https://zeligershomron.co.il" target="_blank" rel="noopener">Zeliger Shomron</a>'
+            '<a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a>'
             '</span>'
         )
 
