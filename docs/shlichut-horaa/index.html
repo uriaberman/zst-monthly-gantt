@@ -131,22 +131,38 @@ body.theme-uria .header-brand { filter: none; }
   flex-wrap: wrap;                /* Title flows naturally RTL: גאנט חודשי · שליחות הוראה reads right-to-left */
 }
 .period-mini {
-  font-family: var(--font-en);
-  font-size: 11px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
   margin-bottom: 2px;
 }
-.period-mini .heb {
+.period-mini .period-greg {
   font-family: var(--font-he);
-  letter-spacing: 0.05em;
-  text-transform: none;
-  font-weight: 500;
-  color: var(--ink-soft);
-  margin-inline-start: 6px;
+  color: var(--accent-cyan);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
 }
+.period-mini .period-dot {
+  color: var(--ink-faint);
+  font-weight: 400;
+  opacity: 0.6;
+}
+.period-mini .period-heb {
+  font-family: var(--font-he);
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+body.theme-uria .period-mini .period-greg { color: #C4B5FD; }
+body.theme-uria .period-mini .period-heb { color: #FF8A65; }
+body.theme-uria .period-mini .period-dot { color: rgba(255,255,255,0.35); }
 .h1-label {
   color: var(--accent-cyan);
   font-weight: 700;
@@ -869,9 +885,11 @@ body.view-mode .cell-status {
   font-weight: 600;
   font-size: 12px;
 }
-/* Separator before status — hyphen in Zeliger, × in Uria */
+/* Separator before status — hyphen in Zeliger, × in Uria.
+   align-self: center + matching line-height keeps × visually centered ON the baseline of adjacent pills. */
 .modal-sep {
   display: inline-flex;
+  align-self: center;
   align-items: center;
   justify-content: center;
   color: var(--ink-faint);
@@ -879,13 +897,15 @@ body.view-mode .cell-status {
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
-  width: 16px;
+  height: 28px;
+  width: 18px;
   text-align: center;
 }
 .modal-sep-x {
   color: #FF6B35;
   font-weight: 700;
   font-size: 22px;
+  line-height: 1;
 }
 /* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
 .modal-status-pill {
@@ -995,62 +1015,203 @@ body.view-mode .cell-status {
 }
 @media (max-width: 820px) { .modal-primary { grid-template-columns: 1fr; } }
 
-.dropzone {
-  background: var(--paper-2);
+/* MEDIA ZONE: multi-slot gallery with per-type aspect ratio (1:1 or 9:16) + lightbox */
+.media-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.media-zone-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.media-zone-label-text { color: var(--ink); }
+.media-zone-spec {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  letter-spacing: 0.04em;
+}
+body.theme-uria .media-zone-spec { color: #FF6B35; }
+.media-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  align-content: start;
+}
+.media-zone.ratio-9-16 .media-grid {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+}
+.media-slot {
+  position: relative;
   border: 2px dashed var(--border);
-  border-radius: 14px;
-  min-height: 280px;
+  border-radius: 12px;
+  background: var(--paper-2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.media-slot.ratio-1-1 { aspect-ratio: 1 / 1; }
+.media-slot.ratio-9-16 { aspect-ratio: 9 / 16; }
+.media-slot.has-image { border-style: solid; border-color: var(--accent-cyan); }
+.media-slot .media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+}
+.media-slot .media-remove {
+  position: absolute;
+  top: 6px; left: 6px;
+  width: 26px; height: 26px;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,255,255,0.20);
+  color: #FFFFFF;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-  overflow: hidden;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
-.dropzone:hover {
-  border-color: var(--accent-cyan);
-  background: rgba(103,232,249,0.04);
-}
-.dropzone.has-image { padding: 0; border-style: solid; }
-.dropzone img.uploaded {
-  max-width: 100%;
-  max-height: 380px;
-  border-radius: 12px;
-  display: block;
-}
-.dropzone .dz-icon {
-  width: 44px; height: 44px;
-  color: var(--ink-mute);
-}
-.dropzone .dz-text {
-  font-family: var(--font-he);
-  font-size: 14px;
-  color: var(--ink-soft);
-  text-align: center;
-  font-weight: 500;
-}
-.dropzone .dz-sub {
-  font-family: var(--font);
-  font-size: 11.5px;
-  color: var(--ink-mute);
-}
-.dropzone input[type="file"] { display: none; }
-.dz-remove {
+.media-slot.has-image:hover .media-remove { opacity: 1; }
+.media-slot-num {
   position: absolute;
-  top: 10px; left: 10px;
+  bottom: 6px; right: 6px;
   background: rgba(0,0,0,0.55);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: white;
-  border-radius: 999px;
-  font-size: 11px;
-  padding: 4px 12px;
-  cursor: pointer;
-  display: none;
+  border: 1px solid rgba(255,255,255,0.20);
+  color: #FFFFFF;
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 6px;
 }
-.dropzone.has-image .dz-remove { display: block; }
+.media-slot-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 12px 10px;
+}
+.media-slot-add:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.06);
+}
+.media-slot-add.drag-over {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.14);
+  border-style: solid;
+}
+.media-slot-add .media-file-input { display: none; }
+.media-slot-add .media-add-icon {
+  width: 28px; height: 28px;
+  color: var(--ink-mute);
+}
+.media-slot-add .media-add-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.media-slot-add .media-add-sub {
+  font-family: var(--font-en);
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.media-slot-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-empty-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+/* Uria overrides for media slots */
+body.theme-uria .media-slot { background: rgba(255,255,255,0.02); border-color: #2D1759; }
+body.theme-uria .media-slot.has-image { border-color: #FF6B35; }
+body.theme-uria .media-slot-add:hover { border-color: #FF6B35; background: rgba(255,107,53,0.06); }
+body.theme-uria .media-slot-add.drag-over { border-color: #FF6B35; background: rgba(255,107,53,0.14); }
+body.theme-uria .media-slot-add .media-add-icon { color: #C4B5FD; }
+body.theme-uria .media-slot-add .media-add-text { color: #C4B5FD; }
+body.theme-uria .media-slot-add .media-add-sub { color: #8B7BA5; }
+
+/* LIGHTBOX (click image → fullscreen view) */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #FFFFFF;
+  border-radius: 50%;
+  width: 48px; height: 48px;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255,255,255,0.18);
+}
+.lightbox-close { top: 24px; left: 24px; }
+.lightbox-prev { left: 24px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 24px; top: 50%; transform: translateY(-50%); }
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 700;
+}
 
 .copy-area {
   display: flex;
@@ -1266,7 +1427,7 @@ body.theme-uria .footer-link:hover {
       <a class="brand-link" href="https://zst.co.il/" target="_blank" rel="noopener" title="זליגר שומרון"><img class="logo" src="data:image/png;base64,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" alt="Zeliger Shomron" /></a>
     </div>
     <div class="header-titles">
-      <div class="period-mini">יוני 2026 <span class="heb">סיון תשפ״ו</span></div>
+      <div class="period-mini"><span class="period-greg">יוני 2026</span><span class="period-dot">·</span><span class="period-heb">סיון תשפ״ו</span></div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">·</span><span class="h1-client">שליחות הוראה</span></h1>
       <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
     </div>
@@ -1855,7 +2016,10 @@ function openModal(num) {
 
   const status = getLocal(num, 'status', it.status || 'בעבודה');
   const savedCopy = getLocal(num, 'copy', '');
-  const savedImg = getLocal(num, 'img', '');
+  // Multi-slot images: read array, fall back to legacy single 'img' for backward compat
+  const legacyImg = getLocal(num, 'img', '');
+  let savedImages = getLocal(num, 'images', null);
+  if (!Array.isArray(savedImages)) savedImages = legacyImg ? [legacyImg] : [];
 
   const statusOpts = STATUS_ORDER.map(s =>
     `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
@@ -1869,6 +2033,10 @@ function openModal(num) {
   const sepChar = isUriaMode ? '×' : '–';
   const sepCls = isUriaMode ? 'modal-sep modal-sep-x' : 'modal-sep';
   const statusColor = STATUS_COLORS[status] || '#94A3B8';
+  // Media aspect ratio per content type: 1:1 for post/carousel, 9:16 for story/reel
+  const isVertical = (it.type_key === 'story' || it.type_key === 'reel');
+  const ratioCls = isVertical ? 'ratio-9-16' : 'ratio-1-1';
+  const aspectLabel = isVertical ? '9:16 · 1080×1920' : '1:1 · 1080×1080';
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
@@ -1909,16 +2077,14 @@ function openModal(num) {
                </div>`
           }
         </div>
-        <div class="dropzone ${savedImg ? 'has-image' : ''} ${isView ? 'view-mode' : ''}" id="dropzone" data-num="${num}">
-          ${!isView ? `<input type="file" id="fileInput" accept="image/*">` : ''}
-          ${savedImg
-            ? `<img class="uploaded" src="${savedImg}" alt="ויזואל" />${!isView ? `<button class="dz-remove" onclick="event.stopPropagation(); removeImage(${num})">הסר</button>` : ''}`
-            : (isView
-                ? `<div class="dz-text dz-empty">— אין עדיין תמונה —</div>`
-                : `<svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                   <div class="dz-text">גרור תמונה לכאן או לחץ לבחירה</div>
-                   <div class="dz-sub">PNG · JPG · WebP</div>`)
-          }
+        <div class="media-zone ${ratioCls}" data-num="${num}" data-type="${it.type_key}">
+          <div class="media-zone-label">
+            <span class="media-zone-label-text">ויזואל</span>
+            <span class="media-zone-spec">${aspectLabel}</span>
+          </div>
+          <div class="media-grid" id="mediaGrid">
+            ${renderMediaSlots(num, savedImages, ratioCls, isView)}
+          </div>
         </div>
       </div>
     </div>
@@ -1976,46 +2142,156 @@ function openModal(num) {
     });
   }
 
-  // Wire up dropzone
-  setupDropzone(num);
+  // Wire up media drag/drop on the add-slot
+  setupMediaDrop(num);
 }
 
-function setupDropzone(num) {
-  const dz = document.getElementById('dropzone');
-  const fi = document.getElementById('fileInput');
-  if (!dz || !fi) return;
-  dz.addEventListener('click', (e) => {
-    if (e.target.classList.contains('dz-remove')) return;
-    fi.click();
-  });
-  fi.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if (f) handleImage(num, f);
-  });
-  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.style.borderColor = '#67E8F9'; });
-  dz.addEventListener('dragleave', () => { dz.style.borderColor = ''; });
-  dz.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dz.style.borderColor = '';
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) handleImage(num, f);
-  });
+/* ---------- Media slots (multi-image gallery, per-type aspect ratio) ---------- */
+function getImages(num) {
+  let arr = getLocal(num, 'images', null);
+  if (!Array.isArray(arr)) {
+    const legacy = getLocal(num, 'img', '');
+    arr = legacy ? [legacy] : [];
+  }
+  return arr;
 }
 
-function handleImage(num, file) {
+function saveImages(num, arr) {
+  setLocal(num, 'images', arr);
+  try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
+}
+
+function renderMediaSlots(num, images, ratioCls, isView) {
+  const parts = [];
+  // Existing image slots
+  images.forEach((src, idx) => {
+    parts.push(`
+      <div class="media-slot ${ratioCls} has-image" data-idx="${idx}" data-num="${num}">
+        <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
+             onclick="openLightbox(${num}, ${idx})" />
+        ${!isView ? `
+          <button class="media-remove" title="הסר" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">×</button>
+          <div class="media-slot-num">${idx + 1}</div>
+        ` : `<div class="media-slot-num">${idx + 1}</div>`}
+      </div>
+    `);
+  });
+  // The add-slot tile (always last, hidden in view mode)
+  if (!isView) {
+    parts.push(`
+      <div class="media-slot ${ratioCls} media-slot-add" data-num="${num}" onclick="triggerImageAdd(${num})">
+        <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
+        <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה נוספת'}</div>
+        <div class="media-add-sub">PNG · JPG · WebP</div>
+      </div>
+    `);
+  } else if (images.length === 0) {
+    parts.push(`<div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div>`);
+  }
+  return parts.join('');
+}
+
+function triggerImageAdd(num) {
+  const slot = document.querySelector('.media-slot-add[data-num="' + num + '"]');
+  if (!slot) return;
+  const input = slot.querySelector('.media-file-input');
+  if (input) input.click();
+}
+
+function handleImageAdd(num, file) {
+  if (!file || !file.type.startsWith('image/')) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    const dataUrl = e.target.result;
-    setLocal(num, 'img', dataUrl);
-    openModal(num);
+    const arr = getImages(num);
+    arr.push(e.target.result);
+    saveImages(num, arr);
+    refreshMediaGrid(num);
   };
   reader.readAsDataURL(file);
 }
 
-function removeImage(num) {
-  try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
-  openModal(num);
+function removeImageAt(num, idx) {
+  const arr = getImages(num);
+  arr.splice(idx, 1);
+  saveImages(num, arr);
+  refreshMediaGrid(num);
 }
+
+function refreshMediaGrid(num) {
+  const zone = document.querySelector('.media-zone[data-num="' + num + '"]');
+  if (!zone) return;
+  const grid = zone.querySelector('.media-grid');
+  const ratioCls = zone.classList.contains('ratio-9-16') ? 'ratio-9-16' : 'ratio-1-1';
+  const isView = isViewMode();
+  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView);
+  // Re-wire drag/drop on the new add-slot
+  setupMediaDrop(num);
+}
+
+function setupMediaDrop(num) {
+  const addSlot = document.querySelector('.media-slot-add[data-num="' + num + '"]');
+  if (!addSlot) return;
+  addSlot.addEventListener('dragover', (e) => { e.preventDefault(); addSlot.classList.add('drag-over'); });
+  addSlot.addEventListener('dragleave', () => addSlot.classList.remove('drag-over'));
+  addSlot.addEventListener('drop', (e) => {
+    e.preventDefault();
+    addSlot.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImageAdd(num, f);
+  });
+}
+
+/* ---------- Lightbox (click image to enlarge) ---------- */
+function openLightbox(num, idx) {
+  const arr = getImages(num);
+  if (!arr[idx]) return;
+  let lb = document.getElementById('lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'lightbox';
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+      <button class="lightbox-close" onclick="closeLightbox()" aria-label="סגור">×</button>
+      <button class="lightbox-prev" onclick="lightboxNav(-1)" aria-label="הקודם">‹</button>
+      <img class="lightbox-img" id="lightboxImg" alt="ויזואל" />
+      <button class="lightbox-next" onclick="lightboxNav(1)" aria-label="הבא">›</button>
+      <div class="lightbox-counter" id="lightboxCounter"></div>
+    `;
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+    document.body.appendChild(lb);
+  }
+  lb.dataset.num = num;
+  lb.dataset.idx = idx;
+  document.getElementById('lightboxImg').src = arr[idx];
+  document.getElementById('lightboxCounter').textContent = `${idx + 1} / ${arr.length}`;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('open');
+}
+function lightboxNav(delta) {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  const num = parseInt(lb.dataset.num);
+  const arr = getImages(num);
+  let idx = parseInt(lb.dataset.idx) + delta;
+  if (idx < 0) idx = arr.length - 1;
+  if (idx >= arr.length) idx = 0;
+  lb.dataset.idx = idx;
+  document.getElementById('lightboxImg').src = arr[idx];
+  document.getElementById('lightboxCounter').textContent = `${idx + 1} / ${arr.length}`;
+}
+document.addEventListener('keydown', (e) => {
+  const lb = document.getElementById('lightbox');
+  if (!lb || !lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+  if (e.key === 'ArrowRight') lightboxNav(1);
+});
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
