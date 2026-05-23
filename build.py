@@ -302,17 +302,16 @@ def render_theme_root(mode: str) -> str:
 
 # Uria-mode overrides: light-theme specific rules that flip the dark-mode hardcoded overlays
 URIA_OVERRIDES = '''
-/* Uria DARK mode - aubergine bg with brand colors lighting up */
+/* Uria DARK mode - FLAT aubergine tint on dark (no gradients - brand rule) */
 body.theme-uria .cell.has-content {
-  background: linear-gradient(155deg, rgba(167,139,250,0.18) 0%, rgba(167,139,250,0.06) 55%, rgba(167,139,250,0.02) 100%) !important;
+  background: rgba(167,139,250,0.10) !important;
   border-color: rgba(167,139,250,0.40) !important;
   box-shadow:
     0 1px 0 rgba(255,255,255,0.04) inset,
-    0 4px 16px rgba(0,0,0,0.4),
-    0 0 22px rgba(167,139,250,0.10) !important;
+    0 4px 16px rgba(0,0,0,0.4) !important;
 }
 body.theme-uria .cell.has-content:hover {
-  background: linear-gradient(155deg, rgba(167,139,250,0.28) 0%, rgba(167,139,250,0.10) 55%, rgba(167,139,250,0.04) 100%) !important;
+  background: rgba(167,139,250,0.16) !important;
   border-color: rgba(167,139,250,0.65) !important;
 }
 body.theme-uria .cell-footer {
@@ -482,26 +481,26 @@ body.theme-uria .cell.type-reel .cell-type-chip {
   color: #0A0418 !important;
 }
 
-/* Uria DARK: cell tints with type color glow */
+/* Uria DARK: FLAT cell tints by type (brand rule = no gradients) */
 body.theme-uria .cell.type-post {
-  background: linear-gradient(155deg, rgba(167,139,250,0.20) 0%, rgba(167,139,250,0.06) 60%, rgba(167,139,250,0.02) 100%) !important;
+  background: rgba(167,139,250,0.12) !important;
   border-color: rgba(167,139,250,0.45) !important;
-  box-shadow: 0 4px 18px rgba(167,139,250,0.15), 0 0 24px rgba(167,139,250,0.08) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
 }
 body.theme-uria .cell.type-carousel {
-  background: linear-gradient(155deg, rgba(34,211,238,0.20) 0%, rgba(34,211,238,0.06) 60%, rgba(34,211,238,0.02) 100%) !important;
+  background: rgba(34,211,238,0.12) !important;
   border-color: rgba(34,211,238,0.45) !important;
-  box-shadow: 0 4px 18px rgba(34,211,238,0.15), 0 0 24px rgba(34,211,238,0.08) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
 }
 body.theme-uria .cell.type-story {
-  background: linear-gradient(155deg, rgba(255,138,101,0.20) 0%, rgba(255,138,101,0.06) 60%, rgba(255,138,101,0.02) 100%) !important;
+  background: rgba(255,138,101,0.12) !important;
   border-color: rgba(255,138,101,0.45) !important;
-  box-shadow: 0 4px 18px rgba(255,138,101,0.15), 0 0 24px rgba(255,138,101,0.08) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
 }
 body.theme-uria .cell.type-reel {
-  background: linear-gradient(155deg, rgba(196,181,253,0.18) 0%, rgba(196,181,253,0.06) 60%, rgba(196,181,253,0.02) 100%) !important;
+  background: rgba(196,181,253,0.10) !important;
   border-color: rgba(196,181,253,0.40) !important;
-  box-shadow: 0 4px 18px rgba(196,181,253,0.12), 0 0 24px rgba(196,181,253,0.06) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35) !important;
 }
 
 /* Uria logo - Logo 03 (אוריה ברמן. with colored period) per brand kit final-3.html */
@@ -547,10 +546,14 @@ body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
 body.theme-uria .header {
   position: relative;
   border: none;
-  background: #0A0418;            /* Solid dark aubergine — no per-side gradient */
+  background: #0A0418 !important;            /* FLAT dark aubergine - brand rule = no gradient */
   box-shadow: 0 4px 18px rgba(0,0,0,0.55);
   color: #FAFAFA;
   overflow: hidden;
+}
+/* Kill the cyan accent strip + cyan tint that Zeliger uses; Uria stays flat */
+body.theme-uria .header::before {
+  display: none !important;
 }
 body.theme-uria .header-titles h1 {
   font-family: 'Rubik', 'Heebo', sans-serif;
@@ -603,9 +606,9 @@ body.theme-uria .header-titles .hint {
   color: #8B7BA5;
 }
 
-/* Uria footer - dark strip with English brand name + × separator (brand-kit signature) */
+/* Uria footer - FLAT dark strip with English brand name + × separator (brand rule = no gradient) */
 body.theme-uria .footer {
-  background: linear-gradient(135deg, #160730 0%, #0A0418 100%);
+  background: #0A0418;
   color: #FAFAFA;
   padding: 16px 22px;
   margin-top: 18px;
