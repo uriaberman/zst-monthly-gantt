@@ -10,25 +10,25 @@
 <style>
 :root {
   /* Theme: uria */
-  --bg:        #FAFAFA;
-  --paper:     #FFFFFF;
-  --paper-2:   #F5F5F5;
-  --paper-3:   #F8F3FE;
-  --paper-4:   #FFF0E8;
-  --ink:       #0A0A0A;
-  --ink-soft:  #4A4A4A;
-  --ink-faint: #9A9A9A;
-  --ink-mute:  #6A6A6A;
-  --border:    #E5E5E5;
-  --border-soft: #F0F0F0;
-  --accent-cyan: #4C1D95;
-  --accent-primary: #4C1D95;
-  --accent-secondary: #0EA5BB;
-  --accent-warm: #FF6B35;
-  --gold:      #FF6B35;
-  --shadow-sm: 0 1px 2px rgba(76,29,149,0.06);
-  --shadow-md: 0 4px 20px rgba(76,29,149,0.10);
-  --shadow-lg: 0 20px 60px rgba(76,29,149,0.18);
+  --bg:        #0A0418;
+  --paper:     #160730;
+  --paper-2:   #1F0E45;
+  --paper-3:   #120524;
+  --paper-4:   #250F50;
+  --ink:       #FAFAFA;
+  --ink-soft:  #C4B5FD;
+  --ink-faint: #5B4685;
+  --ink-mute:  #8B7BA5;
+  --border:    #2D1759;
+  --border-soft: #1F0E45;
+  --accent-cyan: #A78BFA;
+  --accent-primary: #A78BFA;
+  --accent-secondary: #22D3EE;
+  --accent-warm: #FF8A65;
+  --gold:      #FF8A65;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
   --font-he: 'Rubik', 'Heebo', sans-serif;
   --font-en: 'Plus Jakarta Sans', sans-serif;
   --font: 'Rubik', 'Heebo', sans-serif;
@@ -85,27 +85,28 @@ body {
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.015em;
   line-height: 1.1;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 .h1-label {
   color: var(--accent-cyan);
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 26px;
 }
 .h1-sep {
   color: var(--ink-faint);
   font-weight: 300;
-  font-size: 20px;
+  font-size: 26px;
+  opacity: 0.5;
 }
-.h1-client { color: var(--ink); }
+.h1-client { color: var(--ink); font-size: 26px; font-weight: 700; }
 .header-titles .period {
   font-family: var(--font-en);
   font-size: 13px;
@@ -121,6 +122,8 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 14px;
   margin-top: 8px;
 }
@@ -167,6 +170,44 @@ body {
 .restore-btn:hover {
   background: rgba(251,191,36,0.20);
   border-color: #FBBF24;
+}
+.header-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: #34D399;
+  background: rgba(52,211,153,0.10);
+  border: 1px solid rgba(52,211,153,0.35);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pdf-btn:hover {
+  background: rgba(52,211,153,0.20);
+  border-color: #34D399;
+}
+/* Print styles - PDF download via browser print */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .header-actions, .modal-bg, .modal { display: none !important; }
+  .cell.has-content { box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell { box-shadow: none !important; }
+  .controls { page-break-after: avoid; }
+  .month { page-break-inside: avoid; box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell-open { display: none; }
+  .footer { background: #FFFFFF !important; color: #666 !important; }
 }
 body.view-mode .restore-btn { display: none !important; }
 body.view-mode .cell.has-content { cursor: pointer; }
@@ -1038,31 +1079,32 @@ details.collapsible > .pair {
   margin-inline-start: 6px;
 }
 
-/* Uria brand overrides - flip white overlays to aubergine tints */
+/* Uria DARK mode - aubergine bg with brand colors lighting up */
 body.theme-uria .cell.has-content {
-  background: linear-gradient(155deg, rgba(76,29,149,0.10) 0%, rgba(76,29,149,0.04) 55%, rgba(76,29,149,0.02) 100%) !important;
-  border-color: rgba(76,29,149,0.25) !important;
+  background: linear-gradient(155deg, rgba(167,139,250,0.18) 0%, rgba(167,139,250,0.06) 55%, rgba(167,139,250,0.02) 100%) !important;
+  border-color: rgba(167,139,250,0.40) !important;
   box-shadow:
-    0 1px 0 rgba(76,29,149,0.04) inset,
-    0 4px 16px rgba(76,29,149,0.10),
-    0 0 18px rgba(76,29,149,0.05) !important;
+    0 1px 0 rgba(255,255,255,0.04) inset,
+    0 4px 16px rgba(0,0,0,0.4),
+    0 0 22px rgba(167,139,250,0.10) !important;
 }
 body.theme-uria .cell.has-content:hover {
-  background: linear-gradient(155deg, rgba(76,29,149,0.16) 0%, rgba(76,29,149,0.08) 55%, rgba(76,29,149,0.04) 100%) !important;
-  border-color: rgba(76,29,149,0.45) !important;
+  background: linear-gradient(155deg, rgba(167,139,250,0.28) 0%, rgba(167,139,250,0.10) 55%, rgba(167,139,250,0.04) 100%) !important;
+  border-color: rgba(167,139,250,0.65) !important;
 }
 body.theme-uria .cell-footer {
-  background: rgba(76,29,149,0.05) !important;
-  border-top: 1px solid rgba(76,29,149,0.12) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
 }
 body.theme-uria .cell-open {
-  background: #0EA5BB !important;     /* Teal - secondary brand, used for all action buttons */
-  border-color: #0EA5BB !important;
-  color: #FFFFFF !important;
+  background: #22D3EE !important;     /* Bright teal on dark */
+  border-color: #22D3EE !important;
+  color: #0A0418 !important;          /* Dark text on teal button */
 }
 body.theme-uria .cell-open:hover {
-  background: #FF6B35 !important;     /* Tangerine on hover - warm accent */
-  border-color: #FF6B35 !important;
+  background: #FF8A65 !important;     /* Tangerine on hover */
+  border-color: #FF8A65 !important;
+  color: #0A0418 !important;
 }
 /* Uria today: TANGERINE ring + tangerine badge (per user request) */
 body.theme-uria .cell.is-today {
@@ -1084,107 +1126,149 @@ body.theme-uria .cell.is-today { animation: uria-today-pulse 2.5s ease-in-out in
 body.theme-uria .cell.holiday::before {
   border-color: #FF6B35 transparent transparent transparent;
 }
-body.theme-uria .cell-status-label { color: #0A0A0A; }
+body.theme-uria .cell-status-label { color: #FAFAFA; }
 body.theme-uria .header-brand { filter: none; }
 body.theme-uria .modal {
-  background: #FFFFFF;
-  border-color: #E5E5E5;
+  background: #160730;
+  border-color: #2D1759;
+  color: #FAFAFA;
 }
-body.theme-uria .modal-bg { background: rgba(76,29,149,0.35); }
+body.theme-uria .modal-bg { background: rgba(10,4,24,0.85); backdrop-filter: blur(10px); }
+body.theme-uria .modal-head { background: #160730; border-bottom-color: #2D1759; }
+body.theme-uria .modal-head-left h2 { color: #FAFAFA; }
+body.theme-uria .modal-head-left .date-row { color: #C4B5FD; }
+body.theme-uria .modal-head-left .date-row .dot { background: #5B4685; }
 body.theme-uria .modal-explainline {
-  background: rgba(14,165,187,0.06);
-  border-right: 3px solid #0EA5BB;
+  background: rgba(34,211,238,0.08);
+  border-right: 3px solid #22D3EE;
+  color: #FAFAFA;
 }
+body.theme-uria .modal-source { color: #C4B5FD; }
+body.theme-uria .modal-source-label { color: #8B7BA5; }
 body.theme-uria .copy-area textarea {
-  background: #FAFAFA;
-  border-color: #E5E5E5;
-  color: #0A0A0A;
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
 }
-body.theme-uria .copy-area textarea:focus { border-color: #4C1D95; }
+body.theme-uria .copy-area textarea:focus { border-color: #A78BFA; }
+body.theme-uria .copy-area textarea::placeholder { color: #5B4685; }
+body.theme-uria .copy-area label { color: #C4B5FD; }
+body.theme-uria .copy-view {
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
+}
 body.theme-uria .dropzone {
-  background: #FAFAFA;
-  border-color: #E5E5E5;
+  background: #0A0418;
+  border-color: #2D1759;
 }
 body.theme-uria .dropzone:hover {
-  border-color: #4C1D95;
-  background: rgba(76,29,149,0.04);
+  border-color: #A78BFA;
+  background: rgba(167,139,250,0.06);
 }
+body.theme-uria .dropzone .dz-icon { color: #5B4685; }
+body.theme-uria .dropzone .dz-text { color: #C4B5FD; }
+body.theme-uria .dropzone .dz-sub { color: #8B7BA5; }
 body.theme-uria .copy-save-btn {
-  background: #0EA5BB;
-  border-color: #0EA5BB;
-  color: #FFFFFF;
+  background: #22D3EE;
+  border-color: #22D3EE;
+  color: #0A0418;
 }
-body.theme-uria .copy-save-btn:hover { background: #0987A0; }
-body.theme-uria .copy-save-btn.saved-flash { background: #4C1D95; border-color: #4C1D95; }
-body.theme-uria .copy-save-btn.is-dirty { background: #FF6B35; border-color: #FF6B35; }
+body.theme-uria .copy-save-btn:hover { background: #67E8F9; border-color: #67E8F9; }
+body.theme-uria .copy-save-btn.saved-flash { background: #A78BFA; border-color: #A78BFA; color: #0A0418; }
+body.theme-uria .copy-save-btn.is-dirty { background: #FF8A65; border-color: #FF8A65; color: #0A0418; }
 body.theme-uria .pair-item {
-  background: #F5F5F5;
-  border-color: #E5E5E5;
+  background: #0A0418;
+  border-color: #2D1759;
+  color: #FAFAFA;
 }
+body.theme-uria .pair-item .pair-text { color: #FAFAFA; }
 body.theme-uria .modal-close {
-  background: rgba(76,29,149,0.08);
-  border-color: #E5E5E5;
-  color: #4A4A4A;
+  background: rgba(167,139,250,0.15);
+  border-color: #2D1759;
+  color: #C4B5FD;
 }
 body.theme-uria .modal-close:hover {
-  background: rgba(76,29,149,0.18);
-  color: #4C1D95;
+  background: rgba(167,139,250,0.30);
+  color: #FAFAFA;
 }
+body.theme-uria .modal-section h3 {
+  color: #C4B5FD;
+  border-bottom-color: #2D1759;
+}
+body.theme-uria .explanation { color: #C4B5FD; }
+body.theme-uria details.collapsible {
+  background: #0A0418;
+  border-color: #2D1759;
+}
+body.theme-uria details.collapsible > summary { color: #FAFAFA; }
+body.theme-uria details.collapsible > summary::after { color: #C4B5FD; }
+body.theme-uria .pair-label { color: #C4B5FD; }
 body.theme-uria .tab.active {
-  background: #4C1D95;
-  color: #FFFFFF;
+  background: #A78BFA;
+  color: #0A0418;
 }
 body.theme-uria .share-btn {
-  color: #4C1D95;
-  background: rgba(76,29,149,0.06);
-  border-color: rgba(76,29,149,0.25);
+  color: #A78BFA;
+  background: rgba(167,139,250,0.10);
+  border-color: rgba(167,139,250,0.35);
 }
-body.theme-uria .share-btn:hover { background: rgba(76,29,149,0.14); border-color: #4C1D95; }
-body.theme-uria .h1-label { color: #4C1D95; }
+body.theme-uria .share-btn:hover { background: rgba(167,139,250,0.20); border-color: #A78BFA; }
+body.theme-uria .pdf-btn {
+  color: #22D3EE;
+  background: rgba(34,211,238,0.10);
+  border-color: rgba(34,211,238,0.35);
+}
+body.theme-uria .pdf-btn:hover { background: rgba(34,211,238,0.20); border-color: #22D3EE; }
+body.theme-uria .h1-label { color: #FAFAFA; }
 body.theme-uria .header-titles .count-pill {
-  color: #4C1D95;
-  background: rgba(76,29,149,0.08);
-  border-color: rgba(76,29,149,0.25);
+  color: #A78BFA;
+  background: rgba(167,139,250,0.10);
+  border-color: rgba(167,139,250,0.30);
 }
-body.theme-uria .cell.friday { background: #FFF8F0; }
+body.theme-uria .cell.friday { background: #120524; }
 body.theme-uria .cell.saturday {
-  background: #FFF8F0;
-  border-color: rgba(255,107,53,0.15);
+  background: #160730;
+  border-color: rgba(255,138,101,0.15);
 }
-/* Uria mode: type chips ride the Brand Kit palette (aubergine/teal/tangerine/aubergine-deep) */
+/* Uria DARK mode: type chips - bright on dark with contrast */
 body.theme-uria .cell.type-post .cell-type-chip {
-  background: #4C1D95 !important;  /* Aubergine */
-  color: #FFFFFF !important;
+  background: #A78BFA !important;  /* Bright aubergine */
+  color: #0A0418 !important;
 }
 body.theme-uria .cell.type-carousel .cell-type-chip {
-  background: #0EA5BB !important;  /* Teal */
-  color: #FFFFFF !important;
+  background: #22D3EE !important;  /* Bright teal */
+  color: #0A0418 !important;
 }
 body.theme-uria .cell.type-story .cell-type-chip {
-  background: #FF6B35 !important;  /* Tangerine */
-  color: #FFFFFF !important;
+  background: #FF8A65 !important;  /* Bright tangerine */
+  color: #0A0418 !important;
 }
 body.theme-uria .cell.type-reel .cell-type-chip {
-  background: #3B1675 !important;  /* Aubergine Deep */
-  color: #FFFFFF !important;
+  background: #C4B5FD !important;  /* Lavender (lighter aubergine) */
+  color: #0A0418 !important;
 }
 
-/* Uria mode: cell tints follow type accents (subtle backgrounds) */
+/* Uria DARK: cell tints with type color glow */
 body.theme-uria .cell.type-post {
-  background: linear-gradient(155deg, rgba(76,29,149,0.10) 0%, rgba(76,29,149,0.04) 60%, rgba(76,29,149,0.02) 100%) !important;
-  border-color: rgba(76,29,149,0.30) !important;
+  background: linear-gradient(155deg, rgba(167,139,250,0.20) 0%, rgba(167,139,250,0.06) 60%, rgba(167,139,250,0.02) 100%) !important;
+  border-color: rgba(167,139,250,0.45) !important;
+  box-shadow: 0 4px 18px rgba(167,139,250,0.15), 0 0 24px rgba(167,139,250,0.08) !important;
 }
 body.theme-uria .cell.type-carousel {
-  background: linear-gradient(155deg, rgba(14,165,187,0.10) 0%, rgba(14,165,187,0.04) 60%, rgba(14,165,187,0.02) 100%) !important;
-  border-color: rgba(14,165,187,0.30) !important;
+  background: linear-gradient(155deg, rgba(34,211,238,0.20) 0%, rgba(34,211,238,0.06) 60%, rgba(34,211,238,0.02) 100%) !important;
+  border-color: rgba(34,211,238,0.45) !important;
+  box-shadow: 0 4px 18px rgba(34,211,238,0.15), 0 0 24px rgba(34,211,238,0.08) !important;
 }
 body.theme-uria .cell.type-story {
-  background: linear-gradient(155deg, rgba(255,107,53,0.10) 0%, rgba(255,107,53,0.04) 60%, rgba(255,107,53,0.02) 100%) !important;
-  border-color: rgba(255,107,53,0.30) !important;
+  background: linear-gradient(155deg, rgba(255,138,101,0.20) 0%, rgba(255,138,101,0.06) 60%, rgba(255,138,101,0.02) 100%) !important;
+  border-color: rgba(255,138,101,0.45) !important;
+  box-shadow: 0 4px 18px rgba(255,138,101,0.15), 0 0 24px rgba(255,138,101,0.08) !important;
 }
 body.theme-uria .cell.type-reel {
-  background: linear-gradient(155deg, rgba(59,22,117,0.10) 0%, rgba(59,22,117,0.04) 60%, rgba(59,22,117,0.02) 100%) !important;
-  border-color: rgba(59,22,117,0.30) !important;
+  background: linear-gradient(155deg, rgba(196,181,253,0.18) 0%, rgba(196,181,253,0.06) 60%, rgba(196,181,253,0.02) 100%) !important;
+  border-color: rgba(196,181,253,0.40) !important;
+  box-shadow: 0 4px 18px rgba(196,181,253,0.12), 0 0 24px rgba(196,181,253,0.06) !important;
 }
 
 /* Uria logo - Logo 03 (אוריה ברמן. with colored period) per brand kit final-3.html */
@@ -1192,68 +1276,91 @@ body.theme-uria .uria-x-logo {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 6px;
 }
 body.theme-uria .uria-x-logo .logo-name-block {
   display: inline-flex;
   align-items: baseline;
-  font-family: 'Rubik', 'Heebo', sans-serif;  /* Hebrew = Rubik */
+  font-family: 'Rubik', 'Heebo', sans-serif;
   font-weight: 900;
-  font-size: 30px;
+  font-size: 32px;
   letter-spacing: -0.04em;
   line-height: 1;
-  color: #0A0A0A;
+  color: #FAFAFA;          /* White text on dark aubergine bg */
 }
 body.theme-uria .uria-x-logo .logo-period {
-  color: #FF6B35;  /* Tangerine period - brand mark */
-  margin-right: -2px;
+  color: #FF8A65;          /* Tangerine period */
+  margin-right: 3px;       /* Proper spacing from ן */
   font-family: 'Rubik', 'Heebo', sans-serif;
+  font-size: 36px;
+  line-height: 1;
 }
 body.theme-uria .uria-x-logo .logo-tagline {
-  font-family: 'Plus Jakarta Sans', sans-serif;  /* English tagline = Plus Jakarta */
-  font-size: 9px;
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;            /* Larger and consistent */
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #4C1D95;
+  color: #C4B5FD;             /* Lavender on dark bg */
 }
-body.theme-uria .uria-x-logo .logo-tagline .tag-accent { color: #FF6B35; }
+body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
+  color: #FF8A65;
+  font-size: 11px;            /* Same size as rest of tagline */
+  font-weight: 800;
+}
 
-/* Uria header - clean, no gradient mess. Single thin aubergine accent line on the right */
+/* Uria header in NEGATIVE - dark aubergine bg with light text on top */
 body.theme-uria .header {
   position: relative;
-  border: 1px solid #E5E5E5;
-  background: #FFFFFF;
-  box-shadow: 0 2px 12px rgba(76,29,149,0.06);
+  border: none;
+  background: linear-gradient(135deg, #1F0E45 0%, #0A0418 100%);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  color: #FAFAFA;
+}
+body.theme-uria .header::before {
+  content: '×';
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  font-size: 140px;
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 900;
+  color: rgba(34,211,238,0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
 }
 body.theme-uria .header-titles h1 {
-  font-family: 'Rubik', 'Heebo', sans-serif;  /* Hebrew title = Rubik */
+  font-family: 'Rubik', 'Heebo', sans-serif;
   font-weight: 900;
   letter-spacing: -0.03em;
+  color: #FAFAFA;
 }
 body.theme-uria .h1-label {
-  background: #4C1D95;
-  color: #FAFAFA;
-  padding: 2px 10px;
-  font-family: 'Rubik', sans-serif;  /* "גאנט" is HEBREW - Rubik */
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0;
+  background: #FF8A65;     /* Tangerine accent box */
+  color: #0A0418;
+  padding: 4px 12px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 body.theme-uria .h1-sep { display: none; }
 body.theme-uria .h1-client {
-  color: #0A0A0A;
+  color: #FAFAFA;
   font-weight: 900;
+  font-size: 26px;
   margin-right: 8px;
 }
 body.theme-uria .header-titles .period {
-  font-family: 'Plus Jakarta Sans', sans-serif;  /* Dates are numbers/English */
-  color: #4A4A4A;
-  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #C4B5FD;
+  font-weight: 600;
 }
 body.theme-uria .header-titles .hint {
-  font-family: 'Rubik', sans-serif;  /* Hebrew hint = Rubik */
-  color: #6A6A6A;
+  font-family: 'Rubik', sans-serif;
+  color: #8B7BA5;
 }
 
 /* Uria footer - aubergine strip with Hebrew name (Rubik) */
@@ -1338,21 +1445,21 @@ body.theme-uria .cell-type-chip {
   box-shadow: none !important;
 }
 
-/* Title text in cells - more contrast, Hebrew = Rubik */
+/* Title text in cells - WHITE on dark, Hebrew = Rubik */
 body.theme-uria .cell-title {
-  color: #0A0A0A !important;
+  color: #FAFAFA !important;
   font-weight: 700 !important;
   font-family: 'Rubik', sans-serif !important;
 }
 
-/* Status label HEBREW = Rubik */
+/* Status label HEBREW = Rubik, light on dark */
 body.theme-uria .cell-status-label {
   font-family: 'Rubik', sans-serif;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: none;
   font-size: 10px;
-  color: #4A4A4A;
+  color: #FAFAFA;
 }
 body.theme-uria .cell-status {
   font-family: 'Rubik', sans-serif;  /* Status values are Hebrew */
@@ -1360,58 +1467,71 @@ body.theme-uria .cell-status {
   letter-spacing: 0;
 }
 
-/* Legend strip Uria */
+/* Legend strip Uria - dark mode */
 body.theme-uria .legend {
-  background: #FFFFFF;
-  border: 1px solid #E5E5E5;
+  background: #160730;
+  border: 1px solid #2D1759;
   border-radius: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 body.theme-uria .legend-label {
-  font-family: 'Rubik', sans-serif;  /* "סוג תוכן" / "סטטוס" = Hebrew = Rubik */
+  font-family: 'Rubik', sans-serif;
   font-weight: 800;
   letter-spacing: 0;
   text-transform: none;
   font-size: 11px;
-  color: #4C1D95;
-  background: rgba(76,29,149,0.08);
+  color: #A78BFA;
+  background: rgba(167,139,250,0.10);
 }
-body.theme-uria .legend-divider { background: #4C1D95; }
+body.theme-uria .legend-divider { background: #2D1759; }
 body.theme-uria .legend-chip {
-  font-family: 'Rubik', sans-serif;  /* Hebrew chip labels */
+  font-family: 'Rubik', sans-serif;
   font-weight: 600;
+  color: #FAFAFA;
 }
 
-/* Weekday headers HEBREW = Rubik */
+/* Weekday headers - light on dark */
 body.theme-uria .wd {
   font-family: 'Rubik', sans-serif;
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
-  color: #4C1D95;
+  color: #C4B5FD;
   font-size: 11px;
 }
 
-/* Month wrap */
+/* Month wrap - dark */
 body.theme-uria .month {
-  background: #FFFFFF;
-  border: 1px solid #E5E5E5;
+  background: #160730;
+  border: 1px solid #2D1759;
   border-radius: 0;
-  box-shadow: 0 4px 18px rgba(76,29,149,0.06);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
 }
 
-/* Cell number = Plus Jakarta (it's a NUMBER) */
+/* Cell empty (no content) background */
+body.theme-uria .cell:not(.has-content):not(.outside) {
+  background: rgba(255,255,255,0.02);
+  border-color: #2D1759;
+}
+
+/* Cell number = Plus Jakarta (number), light color */
 body.theme-uria .cell-num {
-  color: #0A0A0A !important;
+  color: #FAFAFA !important;
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
 }
-/* Hebrew date letter = Rubik (it's HEBREW) */
+/* Hebrew date letter = Rubik */
 body.theme-uria .cell-heb {
-  color: #4C1D95 !important;
+  color: #A78BFA !important;
   font-family: 'Rubik', sans-serif !important;
   font-weight: 700;
 }
+/* Outside cells (other month) - more dim on dark */
+body.theme-uria .cell.outside .cell-num,
+body.theme-uria .cell.outside .cell-heb {
+  color: #3D2A6A !important;
+}
+body.theme-uria .cell.outside { border-color: transparent !important; }
 /* Holiday label in cell = Hebrew = Rubik */
 body.theme-uria .cell-hol {
   font-family: 'Rubik', sans-serif !important;
@@ -1461,14 +1581,20 @@ body.theme-uria .modal-section h3 {
       <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">עמותת אדוות</span></h1>
       <div class="period">20.5 - 30.6.2026 · אייר תשפ״ו</div>
       <div class="header-actions">
-        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-          <span>שתף עם לקוח</span>
-        </button>
-        <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-          <span>↺ החזר למקור</span>
-        </button>
         <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+        <div class="header-action-group">
+          <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>שתף עם לקוח</span>
+          </button>
+          <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>הורד PDF</span>
+          </button>
+          <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
+            <span>↺ החזר למקור</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -2246,6 +2372,11 @@ function isViewMode() {
 }
 if (isViewMode()) document.body.classList.add('view-mode');
 
+/* Download as PDF - uses browser print dialog with print-friendly CSS */
+window.downloadPDF = function() {
+  window.print();
+};
+
 /* Share with client = copy ?mode=view link */
 window.shareView = function(btn) {
   const url = new URL(window.location.href);
@@ -2270,7 +2401,10 @@ function paintStatus(selectEl) {
   const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
   selectEl.style.color = c;
   selectEl.style.borderColor = c;
-  selectEl.style.background = `color-mix(in srgb, ${c} 14%, transparent)`;
+  selectEl.style.borderWidth = '2px';
+  selectEl.style.borderStyle = 'solid';
+  selectEl.style.fontWeight = '700';
+  selectEl.style.background = `color-mix(in srgb, ${c} 12%, transparent)`;
 }
 
 function applyStatusToCells() {

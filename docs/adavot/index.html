@@ -85,27 +85,28 @@ body {
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.015em;
   line-height: 1.1;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
 }
 .h1-label {
   color: var(--accent-cyan);
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 26px;
 }
 .h1-sep {
   color: var(--ink-faint);
   font-weight: 300;
-  font-size: 20px;
+  font-size: 26px;
+  opacity: 0.5;
 }
-.h1-client { color: var(--ink); }
+.h1-client { color: var(--ink); font-size: 26px; font-weight: 700; }
 .header-titles .period {
   font-family: var(--font-en);
   font-size: 13px;
@@ -121,6 +122,8 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 14px;
   margin-top: 8px;
 }
@@ -167,6 +170,44 @@ body {
 .restore-btn:hover {
   background: rgba(251,191,36,0.20);
   border-color: #FBBF24;
+}
+.header-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: #34D399;
+  background: rgba(52,211,153,0.10);
+  border: 1px solid rgba(52,211,153,0.35);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pdf-btn:hover {
+  background: rgba(52,211,153,0.20);
+  border-color: #34D399;
+}
+/* Print styles - PDF download via browser print */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .header-actions, .modal-bg, .modal { display: none !important; }
+  .cell.has-content { box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell { box-shadow: none !important; }
+  .controls { page-break-after: avoid; }
+  .month { page-break-inside: avoid; box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell-open { display: none; }
+  .footer { background: #FFFFFF !important; color: #666 !important; }
 }
 body.view-mode .restore-btn { display: none !important; }
 body.view-mode .cell.has-content { cursor: pointer; }
@@ -1049,14 +1090,20 @@ details.collapsible > .pair {
       <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">עמותת אדוות</span></h1>
       <div class="period">20.5 - 30.6.2026 · אייר תשפ״ו</div>
       <div class="header-actions">
-        <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-          <span>שתף עם לקוח</span>
-        </button>
-        <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-          <span>↺ החזר למקור</span>
-        </button>
         <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
+        <div class="header-action-group">
+          <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <span>שתף עם לקוח</span>
+          </button>
+          <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>הורד PDF</span>
+          </button>
+          <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
+            <span>↺ החזר למקור</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -1834,6 +1881,11 @@ function isViewMode() {
 }
 if (isViewMode()) document.body.classList.add('view-mode');
 
+/* Download as PDF - uses browser print dialog with print-friendly CSS */
+window.downloadPDF = function() {
+  window.print();
+};
+
 /* Share with client = copy ?mode=view link */
 window.shareView = function(btn) {
   const url = new URL(window.location.href);
@@ -1858,7 +1910,10 @@ function paintStatus(selectEl) {
   const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
   selectEl.style.color = c;
   selectEl.style.borderColor = c;
-  selectEl.style.background = `color-mix(in srgb, ${c} 14%, transparent)`;
+  selectEl.style.borderWidth = '2px';
+  selectEl.style.borderStyle = 'solid';
+  selectEl.style.fontWeight = '700';
+  selectEl.style.background = `color-mix(in srgb, ${c} 12%, transparent)`;
 }
 
 function applyStatusToCells() {
