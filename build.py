@@ -307,8 +307,9 @@ body.theme-uria .cell.has-content:hover {
   border-color: rgba(167,139,250,0.65) !important;
 }
 body.theme-uria .cell-footer {
-  background: rgba(255,255,255,0.04) !important;
-  border-top: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(10,4,24,0.45) !important;        /* Solid dark band, full cell width */
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 0 !important;
 }
 body.theme-uria .cell-open {
   background: #22D3EE !important;     /* Bright teal on dark */
@@ -423,18 +424,18 @@ body.theme-uria .tab.active {
   color: #0A0418;
 }
 body.theme-uria .share-btn {
-  color: #A78BFA;
-  background: rgba(167,139,250,0.10);
-  border-color: rgba(167,139,250,0.35);
-}
-body.theme-uria .share-btn:hover { background: rgba(167,139,250,0.20); border-color: #A78BFA; }
-body.theme-uria .pdf-btn {
-  color: #22D3EE;
+  color: #22D3EE;                         /* Uria secondary: teal */
   background: rgba(34,211,238,0.10);
-  border-color: rgba(34,211,238,0.35);
+  border-color: rgba(34,211,238,0.40);
+}
+body.theme-uria .share-btn:hover { background: rgba(34,211,238,0.20); border-color: #22D3EE; }
+body.theme-uria .pdf-btn {
+  color: #22D3EE;                         /* Uria secondary: teal */
+  background: rgba(34,211,238,0.10);
+  border-color: rgba(34,211,238,0.40);
 }
 body.theme-uria .pdf-btn:hover { background: rgba(34,211,238,0.20); border-color: #22D3EE; }
-body.theme-uria .h1-label { color: #FAFAFA; }
+body.theme-uria .h1-label { color: #FAFAFA; background: transparent; padding: 0; }
 body.theme-uria .header-titles .count-pill {
   color: #A78BFA;
   background: rgba(167,139,250,0.10);
@@ -516,11 +517,11 @@ body.theme-uria .uria-x-logo .logo-tagline {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #C4B5FD;             /* Lavender on dark bg */
+  color: #22D3EE;             /* Teal blue tagline (brand kit secondary) */
 }
 body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
-  color: #FF8A65;
-  font-size: 11px;            /* Same size as rest of tagline */
+  color: #22D3EE;             /* AI in matching teal */
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -528,22 +529,33 @@ body.theme-uria .uria-x-logo .logo-tagline .tag-accent {
 body.theme-uria .header {
   position: relative;
   border: none;
-  background: linear-gradient(135deg, #1F0E45 0%, #0A0418 100%);
-  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, #160730 0%, #0A0418 60%, #050210 100%);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.55);
   color: #FAFAFA;
+  overflow: hidden;
 }
 body.theme-uria .header::before {
   content: '×';
   position: absolute;
-  top: -20px;
-  left: -10px;
-  font-size: 140px;
+  top: -50px;
+  left: -25px;
+  font-size: 220px;
   font-family: 'Plus Jakarta Sans';
   font-weight: 900;
-  color: rgba(34,211,238,0.06);
+  color: rgba(255,107,53,0.14);   /* Tangerine × backdrop, much stronger */
   line-height: 1;
   pointer-events: none;
   user-select: none;
+  letter-spacing: -0.04em;
+}
+body.theme-uria .header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 8% 30%, rgba(34,211,238,0.06), transparent 40%),
+    radial-gradient(circle at 92% 80%, rgba(255,107,53,0.05), transparent 40%);
+  pointer-events: none;
 }
 body.theme-uria .header-titles h1 {
   font-family: 'Rubik', 'Heebo', sans-serif;
@@ -552,20 +564,37 @@ body.theme-uria .header-titles h1 {
   color: #FAFAFA;
 }
 body.theme-uria .h1-label {
-  background: #FF8A65;     /* Tangerine accent box */
-  color: #0A0418;
-  padding: 4px 12px;
+  background: transparent !important;
+  color: #FAFAFA !important;
+  padding: 0 !important;
   font-family: 'Rubik', sans-serif;
   font-size: 26px;
   font-weight: 900;
   letter-spacing: -0.02em;
 }
-body.theme-uria .h1-sep { display: none; }
+body.theme-uria .h1-sep {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+body.theme-uria .h1-sep .x-box-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #FF6B35;        /* Tangerine × box (brand kit signature) */
+  color: #0A0418;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1;
+}
 body.theme-uria .h1-client {
   color: #FAFAFA;
   font-weight: 900;
   font-size: 26px;
-  margin-right: 8px;
+  margin-right: 4px;
 }
 body.theme-uria .header-titles .period {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -577,46 +606,59 @@ body.theme-uria .header-titles .hint {
   color: #8B7BA5;
 }
 
-/* Uria footer - aubergine strip with Hebrew name (Rubik) */
+/* Uria footer - dark strip with English brand name + × separator (brand-kit signature) */
 body.theme-uria .footer {
-  background: #4C1D95;
+  background: linear-gradient(135deg, #160730 0%, #0A0418 100%);
   color: #FAFAFA;
-  padding: 12px 22px;
-  margin-top: 14px;
-  font-family: 'Plus Jakarta Sans', sans-serif;  /* "Built by" = English */
-  font-size: 11px;
+  padding: 16px 22px;
+  margin-top: 18px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+  border-top: 2px solid #FF6B35;   /* Tangerine accent line */
+}
+body.theme-uria .footer-built {
+  color: #C4B5FD;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+body.theme-uria .footer-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: #FF6B35;
+  color: #0A0418;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1;
 }
 body.theme-uria .footer-brand {
-  font-family: 'Rubik', sans-serif;  /* Hebrew name = Rubik */
+  font-family: 'Plus Jakarta Sans', sans-serif;
   color: #FAFAFA;
   font-weight: 900;
-  letter-spacing: 0;
-  text-transform: none;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   font-size: 14px;
-}
-body.theme-uria .footer-brand-mark {
-  display: inline-flex;
-  background: #0EA5BB;
-  color: #FAFAFA;
-  padding: 1px 6px;
-  font-family: 'Plus Jakarta Sans', sans-serif;  /* "UB" = English */
-  font-size: 11px;
-  font-weight: 900;
 }
 body.theme-uria .footer-period {
   display: inline-block;
   color: #FF6B35;
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 0.6;
+  margin-right: 2px;
 }
 
 /* Uria tabs */
@@ -826,6 +868,16 @@ body {
   align-items: center;
   filter: invert(1) hue-rotate(180deg) brightness(1.05);
 }
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.brand-link:hover { opacity: 0.85; transform: translateY(-1px); }
+body.theme-uria .header-brand { filter: none; }
 .header img.logo {
   height: 46px;
   width: auto;
@@ -856,10 +908,17 @@ body {
   font-size: 26px;
 }
 .h1-sep {
-  color: var(--ink-faint);
-  font-weight: 300;
-  font-size: 26px;
-  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6px;
+  height: 6px;
+  background: var(--accent-cyan);
+  color: transparent;
+  font-size: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(103,232,249,0.55);
+  margin: 0 4px;
 }
 .h1-client { color: var(--ink); font-size: 26px; font-weight: 700; }
 .header-titles .period {
@@ -888,18 +947,18 @@ body {
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 600;
-  color: var(--accent-cyan);
-  background: rgba(103,232,249,0.10);
-  border: 1px solid rgba(103,232,249,0.35);
+  font-weight: 700;
+  color: #FACC15;                         /* Zeliger secondary: yellow */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .share-btn:hover {
-  background: rgba(103,232,249,0.20);
-  border-color: var(--accent-cyan);
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -937,18 +996,18 @@ body {
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 600;
-  color: #34D399;
-  background: rgba(52,211,153,0.10);
-  border: 1px solid rgba(52,211,153,0.35);
+  font-weight: 700;
+  color: #FACC15;                         /* Zeliger secondary: yellow */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .pdf-btn:hover {
-  background: rgba(52,211,153,0.20);
-  border-color: #34D399;
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
 }
 /* Print styles - PDF download via browser print */
 @media print {
@@ -1362,15 +1421,19 @@ body.view-mode .cell-status {
   justify-content: center;
 }
 
-/* Bottom action zone - LIGHT tray, stacked: status row + button row below */
+/* Bottom action zone - FULL-WIDTH tray that hits the cell's outer edges exactly */
 .cell-footer {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  margin: 8px -10px -9px;
-  padding: 9px 10px;
-  background: rgba(255,255,255,0.12);
-  border-top: 1px solid rgba(255,255,255,0.22);
+  margin-top: auto;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: -9px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.14);
+  border-top: 1px solid rgba(255,255,255,0.24);
+  width: calc(100% + 20px);
 }
 .cell-status-row {
   display: flex;
@@ -2355,6 +2418,7 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
     if mode == 'uria':
         # Logo 03 - "אוריה ברמן." with tangerine period (per brand kit final-3.html line 988-993)
         logo_tag = (
+            '<a class="brand-link" href="https://uriaberman.com" target="_blank" rel="noopener">'
             '<div class="uria-x-logo">'
             '<span class="logo-name-block">'
             'אוריה ברמן'
@@ -2362,16 +2426,22 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
             '</span>'
             '<span class="logo-tagline">Strategy · Creative · Digital · <span class="tag-accent">AI</span></span>'
             '</div>'
+            '</a>'
         )
-        # Hebrew name in footer = Rubik via CSS, period = tangerine
+        # English brand name + × separator (brand-kit signature)
         footer_text = (
-            '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;">Built by</span> '
-            '<span class="footer-brand">אוריה ברמן</span>'
+            '<span class="footer-built">Built by</span>'
+            '<span class="footer-x">×</span>'
+            '<span class="footer-brand">Uria Berman</span>'
             '<span class="footer-period">.</span>'
         )
     else:
-        logo_tag = f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
-        footer_text = 'Built by <span class="footer-brand">Social @ Zeliger Shomron</span>'
+        logo_tag = (
+            f'<a class="brand-link" href="https://zeligershomron.co.il" target="_blank" rel="noopener" title="זליגר שומרון">'
+            f'<img class="logo" src="data:image/png;base64,{logo_b64}" alt="Zeliger Shomron" />'
+            f'</a>'
+        )
+        footer_text = 'Built by <span class="footer-brand">Social · Zeliger Shomron</span>'
 
     css_with_theme = CSS.replace('__THEME_ROOT__', render_theme_root(mode))
     if mode == 'uria':
@@ -2400,7 +2470,7 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
       {logo_tag}
     </div>
     <div class="header-titles">
-      <h1><span class="h1-label">גאנט</span><span class="h1-sep">·</span><span class="h1-client">{html.escape(client)}</span></h1>
+      <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">{('<span class="x-box-mini">×</span>' if mode == 'uria' else '·')}</span><span class="h1-client">{html.escape(client)}</span></h1>
       <div class="period">{html.escape(period)}{f' · {data.get("_heb_month","")} {data.get("_heb_year","")}' if data.get('_heb_month') else ''}</div>
       <div class="header-actions">
         <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
