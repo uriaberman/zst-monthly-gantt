@@ -60,7 +60,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 26px;
+  padding: 22px 30px;
+  gap: 32px;
   background:
     linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
     var(--paper);
@@ -110,37 +111,41 @@ body.theme-uria .header-brand { filter: none; }
   display: block;
 }
 .header-titles {
-  text-align: left;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;       /* In RTL, flex-start = visual RIGHT — but we override per-child below */
-  gap: 2px;
+  align-items: flex-end;          /* In RTL, flex-end = visual LEFT — block hugs left edge */
+  gap: 4px;
   flex: 1;
-}
-.header-titles h1,
-.header-titles .period,
-.header-titles .header-actions {
-  direction: ltr;                /* Render the title row LTR so it visually anchors LEFT */
 }
 .header-titles h1 {
   margin: 0;
   font-family: var(--font-he);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.015em;
   line-height: 1.1;
   display: flex;
   align-items: center;
-  justify-content: flex-start;   /* Stick left in this LTR row */
-  gap: 12px;
-  flex-wrap: wrap;
-  width: 100%;
+  gap: 10px;
+  flex-wrap: wrap;                /* Title flows naturally RTL: גאנט חודשי · שליחות הוראה reads right-to-left */
 }
-.header-titles h1 .h1-label,
-.header-titles h1 .h1-client {
-  direction: rtl;                /* But Hebrew text inside stays RTL */
-  unicode-bidi: isolate;
+.period-mini {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 2px;
+}
+.period-mini .heb {
+  font-family: var(--font-he);
+  letter-spacing: 0.05em;
+  text-transform: none;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-inline-start: 6px;
 }
 .h1-label {
   color: var(--accent-cyan);
@@ -173,16 +178,13 @@ body.theme-uria .header-brand { filter: none; }
   color: var(--ink-mute);
   letter-spacing: 0.01em;
 }
-.header-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 14px;
-  margin-top: 8px;
-  flex-direction: row-reverse;   /* In LTR row, reverse so hint sits visually right */
+.header-hint {
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.01em;
+  margin-top: 2px;
 }
-.header-actions .hint { direction: rtl; unicode-bidi: isolate; }
 .share-btn {
   display: inline-flex;
   align-items: center;
@@ -257,7 +259,8 @@ body.theme-uria .header-brand { filter: none; }
     background: #FFFFFF !important;
     color: #000000 !important;
   }
-  .header-actions, .modal-bg, .modal { display: none !important; }
+  .control-cluster, .modal-bg, .modal { display: none !important; }
+  .header-hint { display: none !important; }
   .cell.has-content { box-shadow: none !important; border: 1px solid #999 !important; }
   .cell { box-shadow: none !important; }
   .controls { page-break-after: avoid; }
@@ -268,19 +271,26 @@ body.theme-uria .header-brand { filter: none; }
 body.view-mode .restore-btn { display: none !important; }
 body.view-mode .cell.has-content { cursor: pointer; }
 body.view-mode .cell[draggable] { -webkit-user-drag: none; }
-/* In view-mode: hide share button + edit hint, show view-mode badge instead */
+/* In view-mode: hide share/restore buttons + edit hint, show a badge */
 body.view-mode .share-btn,
-body.view-mode .header-actions .hint { display: none; }
-body.view-mode .header-actions::before {
+body.view-mode .restore-btn,
+body.view-mode .header-hint { display: none !important; }
+body.view-mode .control-cluster::before {
   content: 'מצב צפייה · ללא עריכה';
   font-family: var(--font-he);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--accent-cyan);
   background: rgba(103,232,249,0.08);
   border: 1px solid rgba(103,232,249,0.3);
   padding: 4px 12px;
   border-radius: 999px;
+  margin-inline-end: 6px;
+}
+body.theme-uria.view-mode .control-cluster::before {
+  color: #FF6B35;
+  background: rgba(255,107,53,0.08);
+  border-color: rgba(255,107,53,0.40);
 }
 /* In view-mode: hide status dropdown in cells, show as static pill */
 body.view-mode .cell-status {
@@ -290,13 +300,19 @@ body.view-mode .cell-status {
   padding-left: 9px;
 }
 
-/* CONTROLS ROW: tabs + legend in one compact line */
+/* CONTROLS ROW: legend (right in RTL) + cluster of action buttons + month-picker (left in RTL) */
 .controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.control-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -1149,6 +1165,22 @@ details.collapsible > .pair {
   font-weight: 600;
   margin-inline-start: 6px;
 }
+.footer-link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+.footer-link:hover {
+  color: #FACC15;
+  text-decoration: underline;
+}
+body.theme-uria .footer-link {
+  color: #22D3EE;
+}
+body.theme-uria .footer-link:hover {
+  color: #FF6B35;
+}
 
 /* Uria DARK mode - FLAT aubergine tint on dark (no gradients - brand rule) */
 body.theme-uria .cell.has-content {
@@ -1179,8 +1211,13 @@ body.theme-uria .cell-open:hover {
 }
 /* Uria today: TANGERINE ring + tangerine badge (per user request) */
 body.theme-uria .cell.is-today {
-  border-color: #FF6B35 !important;
-  box-shadow: 0 0 0 2px #FF6B35, 0 0 32px rgba(255,107,53,0.50) !important;
+  border: 2px solid #FF6B35 !important;
+  box-shadow:
+    0 0 0 4px rgba(255,107,53,0.18),
+    0 0 0 1px #FF6B35 inset,
+    0 0 36px rgba(255,107,53,0.45) !important;
+  outline: 1px solid rgba(255,107,53,0.65);
+  outline-offset: 2px;
 }
 body.theme-uria .cell.is-today .cell-num { color: #FF6B35 !important; }
 body.theme-uria .cell.is-today::after {
@@ -1289,17 +1326,25 @@ body.theme-uria .month-select { color: #FAFAFA; }
 body.theme-uria .month-select option { background: #160730; color: #FAFAFA; }
 body.theme-uria .month-picker-arrow { color: #22D3EE; }
 body.theme-uria .share-btn {
-  color: #22D3EE;                         /* Uria secondary: teal */
-  background: rgba(34,211,238,0.10);
-  border-color: rgba(34,211,238,0.40);
+  color: #0A0418;                         /* Dark text on FLAT tangerine */
+  background: #FF6B35;                    /* Brand tangerine - solid */
+  border-color: #FF6B35;
+  font-weight: 800;
 }
-body.theme-uria .share-btn:hover { background: rgba(34,211,238,0.20); border-color: #22D3EE; }
+body.theme-uria .share-btn:hover {
+  background: #FF8A65;
+  border-color: #FF8A65;
+}
 body.theme-uria .pdf-btn {
-  color: #22D3EE;                         /* Uria secondary: teal */
-  background: rgba(34,211,238,0.10);
-  border-color: rgba(34,211,238,0.40);
+  color: #FF6B35;                         /* Tangerine outline variant for contrast */
+  background: rgba(255,107,53,0.06);
+  border-color: rgba(255,107,53,0.50);
+  font-weight: 800;
 }
-body.theme-uria .pdf-btn:hover { background: rgba(34,211,238,0.20); border-color: #22D3EE; }
+body.theme-uria .pdf-btn:hover {
+  background: rgba(255,107,53,0.18);
+  border-color: #FF6B35;
+}
 body.theme-uria .h1-label { color: #FAFAFA; background: transparent; padding: 0; }
 body.theme-uria .header-titles .count-pill {
   color: #A78BFA;
@@ -1426,17 +1471,22 @@ body.theme-uria .h1-sep {
   height: auto !important;
   background: transparent !important;
   box-shadow: none !important;
-  margin: 0 6px !important;
+  margin: 0 8px !important;
 }
 body.theme-uria .h1-sep .x-box-mini {
   display: inline-block;
   background: transparent;
-  color: #FF6B35;             /* Plain tangerine × (no box) */
+  color: #FF6B35;             /* Brand tangerine × — bigger, playful */
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
-  font-size: 24px;
-  line-height: 1;
+  font-size: 40px;            /* Big and fun (was 24) */
+  line-height: 0.7;
   letter-spacing: 0;
+  transform: translateY(2px);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+body.theme-uria .h1-sep .x-box-mini:hover {
+  transform: translateY(2px) rotate(90deg);
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -1654,24 +1704,9 @@ body.theme-uria .modal-section h3 {
       <a class="brand-link" href="https://uriaberman.com" target="_blank" rel="noopener"><div class="uria-x-logo"><span class="logo-name-block">אוריה ברמן<span class="logo-period">.</span></span><span class="logo-tagline">Strategy · Creative · Digital · <span class="tag-accent">AI</span></span></div></a>
     </div>
     <div class="header-titles">
+      <div class="period-mini">יוני 2026 <span class="heb">סיון תשפ״ו</span></div>
       <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep"><span class="x-box-mini">×</span></span><span class="h1-client">שליחות הוראה</span></h1>
-      <div class="period">יוני 2026 · סיון תשפ״ו</div>
-      <div class="header-actions">
-        <span class="hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
-        <div class="header-action-group">
-          <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-            <span>שתף עם לקוח</span>
-          </button>
-          <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>הורד PDF</span>
-          </button>
-          <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
-            <span>↺ החזר למקור</span>
-          </button>
-        </div>
-      </div>
+      <span class="header-hint">גרור קוביה כדי להזיז · לחץ לעריכה</span>
     </div>
   </header>
 
@@ -1689,7 +1724,20 @@ body.theme-uria .modal-section h3 {
       </div>
     </div>
     
-    <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-06" selected>יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="control-cluster">
+      <button class="share-btn" id="shareBtn" onclick="shareView(this)" title="העתק קישור לתצוגת לקוח (ללא עריכה)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <span>שתף עם לקוח</span>
+      </button>
+      <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" title="הורד גאנט כ-PDF">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>הורד PDF</span>
+      </button>
+      <button class="restore-btn" id="restoreBtn" onclick="restoreOriginal()" title="החזר את כל התכנים למיקומם המקורי">
+        <span>↺ החזר למקור</span>
+      </button>
+      <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-06" selected>יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
   </div>
 
   <div class="months-container">
