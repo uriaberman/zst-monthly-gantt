@@ -54,20 +54,32 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* TV-DASHBOARD HEADER: bare bottom-border, no glass panel — matches TV's <header> exactly. */
+/* Restored Zeliger header: glass panel with cyan accent strip */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 4px 18px;
+  padding: 22px 30px;
   gap: 32px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 18px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
 }
 .header-meta-label {
   font-family: var(--font-en);
@@ -173,24 +185,26 @@ body.theme-uria .header-brand { filter: none; }
   letter-spacing: 0.01em;
   margin-top: 2px;
 }
-.share-btn {
+.share-btn,
+.pdf-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  color: var(--accent-cyan);              /* TV cyan-blue #00B4F0 */
-  background: rgba(0,180,240,0.13);
-  border: 1px solid rgba(0,180,240,0.55);
+  font-weight: 700;
+  color: #FACC15;                         /* Restored yellow (previous version) */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.share-btn:hover {
-  background: rgba(0,180,240,0.22);
-  border-color: var(--accent-cyan);
+.share-btn:hover,
+.pdf-btn:hover {
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -222,25 +236,7 @@ body.theme-uria .header-brand { filter: none; }
   align-items: center;
   gap: 8px;
 }
-.pdf-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-he);
-  font-size: 12px;
-  font-weight: 500;
-  color: #FCD34D;                          /* TV gold */
-  background: rgba(252,211,77,0.13);
-  border: 1px solid rgba(252,211,77,0.55);
-  padding: 6px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.pdf-btn:hover {
-  background: rgba(252,211,77,0.22);
-  border-color: #FCD34D;
-}
+/* .pdf-btn merged into .share-btn rule above */
 /* Print styles - PDF download via browser print */
 @media print {
   body {
@@ -464,26 +460,29 @@ body.view-mode .cell-status {
 .cell.has-content {
   cursor: pointer;
 }
-/* TV-dashboard pill style: cell tinted by content-type accent (color/22 bg, color/55 border).
-   This is the SAME pattern as parking + Google Trends + Zoom cards on the TV. */
+/* Uniform CYAN glow on all content cells (original design — type differentiation via chip only). */
 .cell.has-content {
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.55);
+  background:
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.08),
-    0 8px 28px rgba(0,0,0,0.45);
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
-/* Type accent: --type-c for chip color, --type-rgb for cell tint */
-.cell.type-post     { --type-c: #00B4F0; --type-rgb: 0,180,240; }
-.cell.type-carousel { --type-c: #34D399; --type-rgb: 52,211,153; }
-.cell.type-story    { --type-c: #FCD34D; --type-rgb: 252,211,77; }
-.cell.type-reel     { --type-c: #FFB68A; --type-rgb: 255,182,138; }
+/* Type accent via the chip only — original family */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  background: rgba(var(--type-rgb, 0,180,240), 0.22);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.90);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.20),
-    0 0 24px rgba(var(--type-rgb, 0,180,240), 0.30),
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
@@ -665,17 +664,18 @@ body.view-mode .cell-status {
   gap: 6px;
   width: 100%;
 }
-/* TV-dashboard PILL: tinted bg + colored text + colored border (NOT solid bg). */
+/* Original solid type chip — dark text on bright color */
 .cell-type-chip {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 600;
-  color: var(--type-c);
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border: 1px solid rgba(var(--type-rgb, 0,180,240), 0.50);
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--type-c);
+  border: none;
   padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
 }
 .cell-warning {
   font-size: 11px;
@@ -711,33 +711,39 @@ body.view-mode .cell-status {
   border-top: 1px solid rgba(255,255,255,0.24);
   width: calc(100% + 20px);
 }
-.cell-status-row {
-  display: flex;
+/* STATUS PILL — single integrated chip: glowing dot + colored text + colored border.
+   The dot is INSIDE the pill, sitting next to the status word ("בעבודה" / "אושר" / etc).
+   Border = current status color. Background = same color @ 12% tint. */
+.cell-status-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 6px;
-  width: 100%;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
+  transition: all 0.15s ease;
 }
-.cell-status-label {
-  font-family: var(--font-he);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-  text-transform: none;
+.cell-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
 }
 .cell-status {
   font-family: var(--font-he);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 18px 3px 9px;
-  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 12px 0 0;
+  border: none;
   cursor: pointer;
   appearance: none;
-  border: 1px solid transparent;
+  color: var(--status-c, #94A3B8);
   letter-spacing: 0.01em;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
   background-size: 4px 4px;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -835,31 +841,94 @@ body.view-mode .cell-status {
 .modal-head-left .date-row .dot {
   width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
 }
-.modal-status {
+/* Modal date block: יום א' · 25.5.26 · ז' סיוון תשפ"ו */
+.modal-publish-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.modal-date-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.modal-weekday { color: var(--ink); }
+.modal-greg {
+  font-family: var(--font-en);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.modal-heb {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 12px;
+}
+/* Separator before status — hyphen in Zeliger, × in Uria */
+.modal-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-faint);
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  width: 16px;
+  text-align: center;
+}
+.modal-sep-x {
+  color: #FF6B35;
+  font-weight: 700;
+  font-size: 22px;
+}
+/* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
+.modal-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
 }
-.status-select {
+.modal-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
+}
+.modal-status-pill .status-text {
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  background: var(--paper-2);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  padding: 4px 28px 4px 10px;
-  border-radius: 999px;
+  font-weight: 700;
+  color: var(--status-c, #94A3B8);
+  letter-spacing: 0.01em;
+}
+.modal-status-pill .status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: var(--status-c, #94A3B8);
+  padding: 0 14px 0 0;
   cursor: pointer;
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
-  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-  background-size: 5px 5px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
+  background-size: 4px 4px;
   background-repeat: no-repeat;
 }
-.status-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  box-shadow: 0 0 6px currentColor;
-}
+.modal-status-pill .status-select:focus { outline: none; }
+.modal-status-pill .status-select option { background: var(--paper); color: var(--ink); }
 
 .modal-close {
   background: rgba(148,163,184,0.08);
@@ -1739,7 +1808,7 @@ body.theme-uria .modal-section h3 {
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
-        <span class="legend-chip"><span class="sw" style="background:#00B4F0;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#34D399;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#FCD34D;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FFB68A;"></span>רילס</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
       </div>
       <div class="legend-divider"></div>
       <div class="legend-group">
@@ -1849,8 +1918,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">1,000 בחודש</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="1">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1866,8 +1935,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">שירה (מייצג): השנה שלא ישנתי</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="2">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1883,8 +1952,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">10 הדברות של בן משפחת פצוע</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="3">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1900,8 +1969,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">מה הביכורים שלך השנה?</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="4">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1917,8 +1986,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">8.3 מיליארד מול 12 טיפולים</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="5">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1934,8 +2003,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">מי שואל את האמא?</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="6">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1951,8 +2020,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">&quot;איך אני לא מרגישה אשמה שאני לא חולה?&quot;</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="7">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1971,8 +2040,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">25,274 ילדים</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="8">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1991,8 +2060,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">פורום אחים - דיווח שטח</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="9">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2008,8 +2077,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">חודש בריאות נפש נסגר. אצלנו זה כל חודש.</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="10">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2051,8 +2120,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">31,000 פצועי נפש</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="11">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="11" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2068,8 +2137,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">&quot;איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?&quot;</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="12">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="12" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2088,8 +2157,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">אבא לא בוכה</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="13">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="13" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2105,8 +2174,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">אחים ואחיות - אין להם שורה בחוק</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="14">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="14" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2122,8 +2191,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">גיא (מייצג), אח של פצוע</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="15">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="15" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2139,8 +2208,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">1 מ-7 בני זוג</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="16">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="16" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2156,8 +2225,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">&quot;מתי הפעם האחרונה שלא קמתי באמצע הלילה?&quot;</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="17">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="17" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2176,8 +2245,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">8 אבות בחדר. לראשונה.</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="18">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="18" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2193,8 +2262,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">₪46 לשעה</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="19">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="19" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2210,8 +2279,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">דיווח שטח מהפורום השבועי</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="20">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="20" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2227,8 +2296,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">מאיה, 7, ציירה את אבא</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="21">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="21" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2244,8 +2313,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">873 בכיסא גלגלים</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="22">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="22" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2264,8 +2333,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">בראש חודש סופרים. גם אנחנו.</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="23">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="23" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2281,8 +2350,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">&quot;איך אני מתחיל יום שלא תלוי בו?&quot;</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="24">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="24" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2298,8 +2367,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">60 דקות בשבוע</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="25">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="25" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2315,8 +2384,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">60 דקות בשבוע</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="26">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="26" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2332,8 +2401,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">מתנדבת השבוע</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="27">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="27" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2349,8 +2418,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">אבא של פצוע - 24/7</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="28">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="28" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2366,8 +2435,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">5 שנים אחרי</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="29">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="29" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2383,8 +2452,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">&quot;מתי הפסקתי לבכות מול הילדים? וזה טוב?&quot;</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="30">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="30" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2403,8 +2472,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">6 מספרים. 6 שבועות. סיפור אחד.</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="31">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="31" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2420,8 +2489,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">תורם מספר</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="32">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="32" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2440,8 +2509,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">כולם מטפלים בפצוע. אנחנו במשפחה.</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="33">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="33" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2460,8 +2529,8 @@ body.theme-uria .modal-section h3 {
         </div>
         <div class="cell-title">מה ראינו ב-6 שבועות</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="34">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="34" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -2485,7 +2554,7 @@ body.theme-uria .modal-section h3 {
     
   </div>
 
-  <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%21%20%D7%A8%D7%90%D7%99%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%94%D7%92%D7%90%D7%A0%D7%98%20%D7%A9%D7%A2%D7%A9%D7%99%D7%AA%2C%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%93%D7%91%D7%A8." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
+  <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%21%20%D7%A8%D7%90%D7%99%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%A7%D7%95%D7%A8%D7%95%D7%AA%20%D7%94%D7%97%D7%99%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9A%2C%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%93%D7%91%D7%A8." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
 </div>
 
 <div class="modal-bg" id="modal">
@@ -2493,7 +2562,7 @@ body.theme-uria .modal-section h3 {
 </div>
 
 <script>
-const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "1,000 בחודש", "short_explanation": "בוחרים בנתון התהליך המתמשך - 1,000 פצועים חדשים מצטרפים לטיפול אגף השיקום מדי חודש. 33 ביום.", "source": "כלכליסט (מצטט אגף השיקום) | calcalist.co.il/local_news/article/eec33ub7s", "status": "בעבודה"}, {"num": 2, "date": "2026-05-21", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "שירה (מייצג): השנה שלא ישנתי", "short_explanation": "פתיחה רכה של עמוד \"קולות מהשטח\" לתקופה. בת זוג של פצוע - הקבוצה הכי מוסתרת מבני המשפחה.", "source": "", "status": "בעבודה"}, {"num": 3, "date": "2026-05-22", "day": "ו' - ערב שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "10 הדברות של בן משפחת פצוע", "short_explanation": "חג שבועות = חג קבלת תורה, חג של 10 הדברות. ניקח את הסמליות החגיגית ונייצר 10 הדברות חדשות - 10 משפטים שכל בן משפחה של פצוע צריך לזכור.", "source": "", "status": "בעבודה"}, {"num": 4, "date": "2026-05-23", "day": "ש' - שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מה הביכורים שלך השנה?", "short_explanation": "יום שני של שבועות. במקום עוד פוסט תוכן - פוסט engagement.", "source": "", "status": "בעבודה"}, {"num": 5, "date": "2026-05-24", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "8.3 מיליארד מול 12 טיפולים", "short_explanation": "תקציב אגף השיקום עלה ב-53% ב-2026 ועומד על 8.3 מיליארד שקל. בו זמנית, אמא של פצוע מקבלת 12 טיפולים פסיכולוגיים.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-05-25", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "מי שואל את האמא?", "short_explanation": "מקור הפוסט הוא הנתון \"412,000 בני משפחה דרגה ראשונה מול 11,500 שמקבלים מענה\". 30 שניות motion graphics על רקע כהה.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-05-26", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני לא מרגישה אשמה שאני לא חולה?\"", "short_explanation": "פעם בשבוע, יום ג', שאלה אנונימית מהפורומים + תשובה קצרה. הפינה בונה ציפייה ושייכות.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-05-28", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "25,274 ילדים", "short_explanation": "פוסט שני בסדרה - אגרוף רגשי. הדור הצעיר.", "source": "המוסד לביטוח לאומי | btl.gov.il/benefits/Victims_of_Hostilities/Pages/default.aspx", "status": "בעבודה"}, {"num": 9, "date": "2026-05-30", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "פורום אחים - דיווח שטח", "short_explanation": "דיווח מהשטח של מפגש פורום אחים שהתקיים השבוע. סיכום חם וקצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-05-31", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "חודש בריאות נפש נסגר. אצלנו זה כל חודש.", "short_explanation": "מאי הוא חודש המודעות לבריאות נפש בעולם (Mental Health Awareness Month). הוא נגמר.", "source": "", "status": "בעבודה"}, {"num": 11, "date": "2026-06-01", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "31,000 פצועי נפש", "short_explanation": "פוסט שלישי בסדרה. נתון רשמי ומדהים מאגף השיקום: 31,000 ישראלים מטופלים היום על פגיעות נפש.", "source": "אגף השיקום מש\"ב, יום ההוקרה 2025 | publichealth.doctorsonly.co.il/2025/12/360044/", "status": "בעבודה"}, {"num": 12, "date": "2026-06-02", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?\"", "short_explanation": "הפינה השבועית, שאלה מס' 2. הפעם מאמא של פצוע, שמתמודדת עם ילדים נוספים שמרגישים שקופים בגלל ההתעסקות בפצוע.", "source": "", "status": "בעבודה"}, {"num": 13, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "אבא לא בוכה", "short_explanation": "רייל שני בסדרה. 45 שניות.", "source": "", "status": "בעבודה"}, {"num": 14, "date": "2026-06-05", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "אחים ואחיות - אין להם שורה בחוק", "short_explanation": "הפעם בהרחבה: אחים ואחיות של פצועי צה\"ל אינם מופיעים בחוק הנכים כזכאים לטיפול נפשי במימון המדינה. רק במקרים חריגים.", "source": "Ynet (מצטט תשובה רשמית של מש\"ב) | ynet.co.il/laisha/article/sjt0wo2z1l", "status": "בעבודה"}, {"num": 15, "date": "2026-06-06", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "גיא (מייצג), אח של פצוע", "short_explanation": "עדות מייצגת של אח של פצוע. גיא בן 19, אחיו הגדול נפצע ב-7.10.", "source": "", "status": "בעבודה"}, {"num": 16, "date": "2026-06-07", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "1 מ-7 בני זוג", "short_explanation": "פוסט רביעי בסדרה. נתון מבוסס מחקרי אורך peer-reviewed של פרופ' רחל דקל וצבי סולומון - מובילי המחקר העולמיים בפוסט-טראומה משנית.", "source": "PMC peer-reviewed - דקל וסולומון | pmc.ncbi.nlm.nih.gov/articles/PMC2080512/", "status": "בעבודה"}, {"num": 17, "date": "2026-06-08", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"מתי הפעם האחרונה שלא קמתי באמצע הלילה?\"", "short_explanation": "הפינה השבועית, שאלה מס' 3. מבת זוג של פצוע נפש.", "source": "", "status": "בעבודה"}, {"num": 18, "date": "2026-06-10", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "8 אבות בחדר. לראשונה.", "short_explanation": "דיווח שטח על פתיחת פורום האבות. עד עכשיו, אבות הגיעו רק לפורום ההורים המעורב, ולפעמים לא הגיעו בכלל.", "source": "", "status": "בעבודה"}, {"num": 19, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "₪46 לשעה", "short_explanation": "רייל שלישי. 30 שניות motion על נתון אדווקסי-כלכלי: ₪46 לשעת ליווי סיעודי לפצוע 100%+.", "source": "", "status": "בעבודה"}, {"num": 20, "date": "2026-06-12", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "דיווח שטח מהפורום השבועי", "short_explanation": "דיווח שטח רגיל מהפורום השבועי - \"חמישי בנחלים\". פעילות עם משפחות שמגיעות באופן קבוע.", "source": "", "status": "בעבודה"}, {"num": 21, "date": "2026-06-13", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מאיה, 7, ציירה את אבא", "short_explanation": "עדות חזותית. ילדים של פצועים הם הקבוצה הכי שקופה.", "source": "", "status": "בעבודה"}, {"num": 22, "date": "2026-06-14", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "873 בכיסא גלגלים", "short_explanation": "פוסט חמישי בסדרה - הקונקרטי ביותר. 873 פצועי צה\"ל מטופלים היום בכיסא גלגלים.", "source": "אגף השיקום + מקור ראשון | makorrishon.co.il/news/defence/article/219969", "status": "בעבודה"}, {"num": 23, "date": "2026-06-16", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "בראש חודש סופרים. גם אנחנו.", "short_explanation": "פוסט סיכום חודשי לראש חודש תמוז. החודש שבר אדוות לעצמנו, ומה הצלחנו השבוע/החודש - בלי דרמה, בלי המעטה.", "source": "", "status": "בעבודה"}, {"num": 24, "date": "2026-06-17", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני מתחיל יום שלא תלוי בו?\"", "short_explanation": "הפינה השבועית #4. הפעם מאבא של פצוע.", "source": "", "status": "בעבודה"}, {"num": 25, "date": "2026-06-18", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "60 דקות בשבוע", "short_explanation": "רייל #4 בסדרה. 45 שניות motion על נתון אדווקסי קשה: בני זוג של פצועי נפש מקבלים מהמדינה רק 60 דקות של טיפול נפשי בשבוע.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 26, "date": "2026-06-19", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "60 דקות בשבוע", "short_explanation": "מבוסס על הקופי המוכן מהקובץ של היום (פוסט 09 - \"ידעתם ש...\"). הקופי הראשי קצר ומדויק.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 27, "date": "2026-06-20", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מתנדבת השבוע", "short_explanation": "דיוקן מתנדב/ת בקהילה. השבוע - מי שמגיעה כל חמישי לפעילות.", "source": "", "status": "בעבודה"}, {"num": 28, "date": "2026-06-21", "day": "א' - יום אבא", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "אבא של פצוע - 24/7", "short_explanation": "יום אבא הבינלאומי (יום ראשון השלישי של יוני בארה\"ב). אדוות לוקחת את הזווית: אבא של פצוע הוא אבא 24/7 - הוא לא רק האבא של הילדים שלו, הוא הופך לאבא של הבית, לאבא של ההחלטות הכלכליות, לאבא של ההסעות...", "source": "", "status": "בעבודה"}, {"num": 29, "date": "2026-06-22", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "5 שנים אחרי", "short_explanation": "הפוסט השישי והאחרון בסדרת \"מאחורי המספרים יש אדוות\". מבוסס על הקופי המוכן (פוסט 05) - מחקר אורך peer-reviewed שעקב אחרי הורי לוחמים שהשתתפו בלחימה הפעילה.", "source": "European Journal of Psychotraumatology, 2023 | tandfonline.com/doi/full/10.1080/20008066.2023.2235983", "status": "בעבודה"}, {"num": 30, "date": "2026-06-23", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"מתי הפסקתי לבכות מול הילדים? וזה טוב?\"", "short_explanation": "הפינה השבועית האחרונה לתקופה. הפעם מאמא של פצוע, שמתמודדת עם השאלה - מתי הפסיקה לבכות מול הילדים?", "source": "", "status": "בעבודה"}, {"num": 31, "date": "2026-06-25", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "6 מספרים. 6 שבועות. סיפור אחד.", "short_explanation": "סיכום של 6 הפוסטים של \"מאחורי המספרים יש אדוות\". 60 שניות.", "source": "", "status": "בעבודה"}, {"num": 32, "date": "2026-06-26", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "תורם מספר", "short_explanation": "הקול הראשון מהקהל שמעבר לקהילה הפנימית. תורם של אדוות (מייצג) מספר למה הוא תורם.", "source": "", "status": "בעבודה"}, {"num": 33, "date": "2026-06-28", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "כולם מטפלים בפצוע. אנחנו במשפחה.", "short_explanation": "פוסט בידול מותגי קלאסי. מציג את ההבדל בין אדוות לבין כל הארגונים האחרים שעוסקים בפצועי צה\"ל.", "source": "ספר המותג של אדוות (V1, 12.4.26)", "status": "בעבודה"}, {"num": 34, "date": "2026-06-30", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מה ראינו ב-6 שבועות", "short_explanation": "פוסט סגירה לתקופה. 30 ביוני.", "source": "", "status": "בעבודה"}];
+const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "heb_date": "ד׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1,000 בחודש", "short_explanation": "בוחרים בנתון התהליך המתמשך - 1,000 פצועים חדשים מצטרפים לטיפול אגף השיקום מדי חודש. 33 ביום.", "source": "כלכליסט (מצטט אגף השיקום) | calcalist.co.il/local_news/article/eec33ub7s", "status": "בעבודה"}, {"num": 2, "date": "2026-05-21", "day": "ה'", "heb_date": "ה׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "שירה (מייצג): השנה שלא ישנתי", "short_explanation": "פתיחה רכה של עמוד \"קולות מהשטח\" לתקופה. בת זוג של פצוע - הקבוצה הכי מוסתרת מבני המשפחה.", "source": "", "status": "בעבודה"}, {"num": 3, "date": "2026-05-22", "day": "ו' - ערב שבועות", "heb_date": "ו׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "10 הדברות של בן משפחת פצוע", "short_explanation": "חג שבועות = חג קבלת תורה, חג של 10 הדברות. ניקח את הסמליות החגיגית ונייצר 10 הדברות חדשות - 10 משפטים שכל בן משפחה של פצוע צריך לזכור.", "source": "", "status": "בעבודה"}, {"num": 4, "date": "2026-05-23", "day": "ש' - שבועות", "heb_date": "ז׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך השנה?", "short_explanation": "יום שני של שבועות. במקום עוד פוסט תוכן - פוסט engagement.", "source": "", "status": "בעבודה"}, {"num": 5, "date": "2026-05-24", "day": "א'", "heb_date": "ח׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8.3 מיליארד מול 12 טיפולים", "short_explanation": "תקציב אגף השיקום עלה ב-53% ב-2026 ועומד על 8.3 מיליארד שקל. בו זמנית, אמא של פצוע מקבלת 12 טיפולים פסיכולוגיים.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-05-25", "day": "ב'", "heb_date": "ט׳ סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מי שואל את האמא?", "short_explanation": "מקור הפוסט הוא הנתון \"412,000 בני משפחה דרגה ראשונה מול 11,500 שמקבלים מענה\". 30 שניות motion graphics על רקע כהה.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-05-26", "day": "ג'", "heb_date": "י׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני לא מרגישה אשמה שאני לא חולה?\"", "short_explanation": "פעם בשבוע, יום ג', שאלה אנונימית מהפורומים + תשובה קצרה. הפינה בונה ציפייה ושייכות.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-05-28", "day": "ה'", "heb_date": "י״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "25,274 ילדים", "short_explanation": "פוסט שני בסדרה - אגרוף רגשי. הדור הצעיר.", "source": "המוסד לביטוח לאומי | btl.gov.il/benefits/Victims_of_Hostilities/Pages/default.aspx", "status": "בעבודה"}, {"num": 9, "date": "2026-05-30", "day": "ש'", "heb_date": "י״ד סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "פורום אחים - דיווח שטח", "short_explanation": "דיווח מהשטח של מפגש פורום אחים שהתקיים השבוע. סיכום חם וקצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-05-31", "day": "א'", "heb_date": "ט״ו סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "חודש בריאות נפש נסגר. אצלנו זה כל חודש.", "short_explanation": "מאי הוא חודש המודעות לבריאות נפש בעולם (Mental Health Awareness Month). הוא נגמר.", "source": "", "status": "בעבודה"}, {"num": 11, "date": "2026-06-01", "day": "ב'", "heb_date": "ט״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "31,000 פצועי נפש", "short_explanation": "פוסט שלישי בסדרה. נתון רשמי ומדהים מאגף השיקום: 31,000 ישראלים מטופלים היום על פגיעות נפש.", "source": "אגף השיקום מש\"ב, יום ההוקרה 2025 | publichealth.doctorsonly.co.il/2025/12/360044/", "status": "בעבודה"}, {"num": 12, "date": "2026-06-02", "day": "ג'", "heb_date": "י״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?\"", "short_explanation": "הפינה השבועית, שאלה מס' 2. הפעם מאמא של פצוע, שמתמודדת עם ילדים נוספים שמרגישים שקופים בגלל ההתעסקות בפצוע.", "source": "", "status": "בעבודה"}, {"num": 13, "date": "2026-06-04", "day": "ה'", "heb_date": "י״ט סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "אבא לא בוכה", "short_explanation": "רייל שני בסדרה. 45 שניות.", "source": "", "status": "בעבודה"}, {"num": 14, "date": "2026-06-05", "day": "ו'", "heb_date": "כ׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אחים ואחיות - אין להם שורה בחוק", "short_explanation": "הפעם בהרחבה: אחים ואחיות של פצועי צה\"ל אינם מופיעים בחוק הנכים כזכאים לטיפול נפשי במימון המדינה. רק במקרים חריגים.", "source": "Ynet (מצטט תשובה רשמית של מש\"ב) | ynet.co.il/laisha/article/sjt0wo2z1l", "status": "בעבודה"}, {"num": 15, "date": "2026-06-06", "day": "ש'", "heb_date": "כ״א סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "גיא (מייצג), אח של פצוע", "short_explanation": "עדות מייצגת של אח של פצוע. גיא בן 19, אחיו הגדול נפצע ב-7.10.", "source": "", "status": "בעבודה"}, {"num": 16, "date": "2026-06-07", "day": "א'", "heb_date": "כ״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1 מ-7 בני זוג", "short_explanation": "פוסט רביעי בסדרה. נתון מבוסס מחקרי אורך peer-reviewed של פרופ' רחל דקל וצבי סולומון - מובילי המחקר העולמיים בפוסט-טראומה משנית.", "source": "PMC peer-reviewed - דקל וסולומון | pmc.ncbi.nlm.nih.gov/articles/PMC2080512/", "status": "בעבודה"}, {"num": 17, "date": "2026-06-08", "day": "ב'", "heb_date": "כ״ג סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפעם האחרונה שלא קמתי באמצע הלילה?\"", "short_explanation": "הפינה השבועית, שאלה מס' 3. מבת זוג של פצוע נפש.", "source": "", "status": "בעבודה"}, {"num": 18, "date": "2026-06-10", "day": "ד'", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8 אבות בחדר. לראשונה.", "short_explanation": "דיווח שטח על פתיחת פורום האבות. עד עכשיו, אבות הגיעו רק לפורום ההורים המעורב, ולפעמים לא הגיעו בכלל.", "source": "", "status": "בעבודה"}, {"num": 19, "date": "2026-06-11", "day": "ה'", "heb_date": "כ״ו סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "₪46 לשעה", "short_explanation": "רייל שלישי. 30 שניות motion על נתון אדווקסי-כלכלי: ₪46 לשעת ליווי סיעודי לפצוע 100%+.", "source": "", "status": "בעבודה"}, {"num": 20, "date": "2026-06-12", "day": "ו'", "heb_date": "כ״ז סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "דיווח שטח מהפורום השבועי", "short_explanation": "דיווח שטח רגיל מהפורום השבועי - \"חמישי בנחלים\". פעילות עם משפחות שמגיעות באופן קבוע.", "source": "", "status": "בעבודה"}, {"num": 21, "date": "2026-06-13", "day": "ש'", "heb_date": "כ״ח סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מאיה, 7, ציירה את אבא", "short_explanation": "עדות חזותית. ילדים של פצועים הם הקבוצה הכי שקופה.", "source": "", "status": "בעבודה"}, {"num": 22, "date": "2026-06-14", "day": "א'", "heb_date": "כ״ט סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "873 בכיסא גלגלים", "short_explanation": "פוסט חמישי בסדרה - הקונקרטי ביותר. 873 פצועי צה\"ל מטופלים היום בכיסא גלגלים.", "source": "אגף השיקום + מקור ראשון | makorrishon.co.il/news/defence/article/219969", "status": "בעבודה"}, {"num": 23, "date": "2026-06-16", "day": "ג'", "heb_date": "א׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "בראש חודש סופרים. גם אנחנו.", "short_explanation": "פוסט סיכום חודשי לראש חודש תמוז. החודש שבר אדוות לעצמנו, ומה הצלחנו השבוע/החודש - בלי דרמה, בלי המעטה.", "source": "", "status": "בעבודה"}, {"num": 24, "date": "2026-06-17", "day": "ד'", "heb_date": "ב׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מתחיל יום שלא תלוי בו?\"", "short_explanation": "הפינה השבועית #4. הפעם מאבא של פצוע.", "source": "", "status": "בעבודה"}, {"num": 25, "date": "2026-06-18", "day": "ה'", "heb_date": "ג׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "60 דקות בשבוע", "short_explanation": "רייל #4 בסדרה. 45 שניות motion על נתון אדווקסי קשה: בני זוג של פצועי נפש מקבלים מהמדינה רק 60 דקות של טיפול נפשי בשבוע.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 26, "date": "2026-06-19", "day": "ו'", "heb_date": "ד׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "60 דקות בשבוע", "short_explanation": "מבוסס על הקופי המוכן מהקובץ של היום (פוסט 09 - \"ידעתם ש...\"). הקופי הראשי קצר ומדויק.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 27, "date": "2026-06-20", "day": "ש'", "heb_date": "ה׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מתנדבת השבוע", "short_explanation": "דיוקן מתנדב/ת בקהילה. השבוע - מי שמגיעה כל חמישי לפעילות.", "source": "", "status": "בעבודה"}, {"num": 28, "date": "2026-06-21", "day": "א' - יום אבא", "heb_date": "ו׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אבא של פצוע - 24/7", "short_explanation": "יום אבא הבינלאומי (יום ראשון השלישי של יוני בארה\"ב). אדוות לוקחת את הזווית: אבא של פצוע הוא אבא 24/7 - הוא לא רק האבא של הילדים שלו, הוא הופך לאבא של הבית, לאבא של ההחלטות הכלכליות, לאבא של ההסעות...", "source": "", "status": "בעבודה"}, {"num": 29, "date": "2026-06-22", "day": "ב'", "heb_date": "ז׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "5 שנים אחרי", "short_explanation": "הפוסט השישי והאחרון בסדרת \"מאחורי המספרים יש אדוות\". מבוסס על הקופי המוכן (פוסט 05) - מחקר אורך peer-reviewed שעקב אחרי הורי לוחמים שהשתתפו בלחימה הפעילה.", "source": "European Journal of Psychotraumatology, 2023 | tandfonline.com/doi/full/10.1080/20008066.2023.2235983", "status": "בעבודה"}, {"num": 30, "date": "2026-06-23", "day": "ג'", "heb_date": "ח׳ תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפסקתי לבכות מול הילדים? וזה טוב?\"", "short_explanation": "הפינה השבועית האחרונה לתקופה. הפעם מאמא של פצוע, שמתמודדת עם השאלה - מתי הפסיקה לבכות מול הילדים?", "source": "", "status": "בעבודה"}, {"num": 31, "date": "2026-06-25", "day": "ה'", "heb_date": "י׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "6 מספרים. 6 שבועות. סיפור אחד.", "short_explanation": "סיכום של 6 הפוסטים של \"מאחורי המספרים יש אדוות\". 60 שניות.", "source": "", "status": "בעבודה"}, {"num": 32, "date": "2026-06-26", "day": "ו'", "heb_date": "י״א תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "תורם מספר", "short_explanation": "הקול הראשון מהקהל שמעבר לקהילה הפנימית. תורם של אדוות (מייצג) מספר למה הוא תורם.", "source": "", "status": "בעבודה"}, {"num": 33, "date": "2026-06-28", "day": "א'", "heb_date": "י״ג תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "כולם מטפלים בפצוע. אנחנו במשפחה.", "short_explanation": "פוסט בידול מותגי קלאסי. מציג את ההבדל בין אדוות לבין כל הארגונים האחרים שעוסקים בפצועי צה\"ל.", "source": "ספר המותג של אדוות (V1, 12.4.26)", "status": "בעבודה"}, {"num": 34, "date": "2026-06-30", "day": "ג'", "heb_date": "ט״ו תמוז תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה ראינו ב-6 שבועות", "short_explanation": "פוסט סגירה לתקופה. 30 ביוני.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
 
@@ -2543,16 +2612,15 @@ window.shareView = function(btn) {
   });
 };
 
-/* ---------- Status decoration on cells (read from localStorage) ---------- */
+/* ---------- Status decoration on cells (read from localStorage) ----------
+   Paints the wrapper .cell-status-pill via CSS var --status-c. Border + dot + text
+   all derive from this single variable, so they stay perfectly in sync. */
 function paintStatus(selectEl) {
   const status = selectEl.value;
   const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-  selectEl.style.color = c;
-  selectEl.style.borderColor = c;
-  selectEl.style.borderWidth = '2px';
-  selectEl.style.borderStyle = 'solid';
-  selectEl.style.fontWeight = '700';
-  selectEl.style.background = `color-mix(in srgb, ${c} 12%, transparent)`;
+  const pill = selectEl.closest('.cell-status-pill');
+  if (pill) pill.style.setProperty('--status-c', c);
+  else { selectEl.style.color = c; }
 }
 
 function applyStatusToCells() {
@@ -2795,16 +2863,25 @@ function openModal(num) {
   const inner = document.getElementById('modal-inner');
 
   const isView = isViewMode();
+  const isUriaMode = document.body.classList.contains('theme-uria');
+  const sepChar = isUriaMode ? '×' : '–';
+  const sepCls = isUriaMode ? 'modal-sep modal-sep-x' : 'modal-sep';
+  const statusColor = STATUS_COLORS[status] || '#94A3B8';
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
         <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
-        <div class="date-row">
-          <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
-          <span class="dot"></span>
-          <span class="modal-status">
-            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; box-shadow:0 0 8px ${STATUS_COLORS[status]};"></span>
+        <div class="date-row" dir="rtl">
+          <span class="modal-publish-label">תאריך פרסום:</span>
+          <span class="modal-date-block">
+            <span class="modal-weekday">יום ${escapeHtml(it.day)}</span>
+            <span class="modal-greg">${formatDateHe(it.date)}</span>
+            ${it.heb_date ? `<span class="modal-heb">${escapeHtml(it.heb_date)}</span>` : ''}
+          </span>
+          <span class="${sepCls}">${sepChar}</span>
+          <span class="modal-status-pill" id="modalStatusPill" style="--status-c:${statusColor};">
+            <span class="modal-status-dot"></span>
             ${isView
               ? `<span class="status-text">${escapeHtml(status)}</span>`
               : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
@@ -2851,16 +2928,15 @@ function openModal(num) {
   // View mode = no interactivity, exit early
   if (isViewMode()) return;
 
-  // Wire up status select
+  // Wire up status select — repaint the modal status pill (border + dot + text all from --status-c)
   const sel = document.getElementById('statusSelect');
-  const dot = document.getElementById('statusDot');
+  const modalPill = document.getElementById('modalStatusPill');
   if (sel) {
     sel.addEventListener('change', () => {
       const v = sel.value;
       setLocal(num, 'status', v);
       const c = STATUS_COLORS[v] || '#94A3B8';
-      dot.style.background = c;
-      dot.style.boxShadow = `0 0 8px ${c}`;
+      if (modalPill) modalPill.style.setProperty('--status-c', c);
       applyStatusToCells();
     });
   }

@@ -18,12 +18,12 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 from pyluach.dates import GregorianDate
 
 
-# 4 content types - TV-dashboard palette (cyan/green/yellow/peach)
+# 4 content types - cool family (cyan/teal/lavender/rose) — original Zeliger palette restored
 TYPE_COLORS = {
-    'post':     {'accent': '#00B4F0', 'soft': 'rgba(0,180,240,0.13)',   'label': 'פוסט'},
-    'carousel': {'accent': '#34D399', 'soft': 'rgba(52,211,153,0.13)',  'label': 'קרוסלה'},
-    'story':    {'accent': '#FCD34D', 'soft': 'rgba(252,211,77,0.13)',  'label': 'סטורי'},
-    'reel':     {'accent': '#FFB68A', 'soft': 'rgba(255,182,138,0.13)', 'label': 'רילס'},
+    'post':     {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
+    'carousel': {'accent': '#5EEAD4', 'soft': 'rgba(94,234,212,0.14)',  'label': 'קרוסלה'},
+    'story':    {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
+    'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
 }
 
 # Statuses - distinct hues that stay visible on light tray
@@ -120,8 +120,8 @@ def render_cell(cell: dict) -> str:
         </div>
         <div class="cell-title">{title}</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="{it['num']}">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
               __STATUS_OPTS_{it['num']}__
             </select>
@@ -207,6 +207,17 @@ def render_tabs(months: list) -> str:
     )
 
 
+def hebrew_date_string(iso: str) -> str:
+    """Return Hebrew date with gematria, e.g. 'ז' בסיוון תשפ"ו'."""
+    try:
+        y, m, d = [int(x) for x in iso.split('-')]
+        from pyluach.dates import GregorianDate
+        hd = GregorianDate(y, m, d).to_heb()
+        return hd.hebrew_date_string()
+    except Exception:
+        return ''
+
+
 def render_modal_data(items: list) -> str:
     slim = []
     for it in items:
@@ -215,6 +226,7 @@ def render_modal_data(items: list) -> str:
             'num': it['num'],
             'date': it['date_iso'],
             'day': it['day'],
+            'heb_date': hebrew_date_string(it['date_iso']),
             'type_key': it['type_key'],
             'type_label': tc['label'],
             'type_accent': tc['accent'],
@@ -229,28 +241,19 @@ def render_modal_data(items: list) -> str:
 
 THEME_TOKENS = {
     'zeliger': {
-        # TV-dashboard aligned palette (parking + zoom + trends): pure black + #00B4F0 + #34D399 + #FCD34D
-        'bg': '#000000',          # Pure black — matches TV dashboard exactly
-        'paper': '#0A0A0A',       # Near-black card surface
-        'paper-2': '#141414',     # Slightly lighter for cells
-        'paper-3': '#080808',     # Friday / dim
-        'paper-4': '#1A1A1A',     # Saturday darker
-        'ink': '#FFFFFF',         # Pure white text (TV)
-        'ink-soft': 'rgba(255,255,255,0.72)',
-        'ink-faint': 'rgba(255,255,255,0.36)',
-        'ink-mute': 'rgba(255,255,255,0.50)',
-        'border': 'rgba(255,255,255,0.08)',
-        'border-soft': 'rgba(255,255,255,0.04)',
-        'accent-primary': '#00B4F0',     # TV cyan-blue (parking strip / brand)
-        'accent-secondary': '#34D399',   # TV green (status / approved)
-        'accent-warm': '#F87171',
-        'gold': '#FCD34D',                # TV yellow (Google Trends)
-        'shadow-sm': '0 1px 2px rgba(0,0,0,0.4)',
-        'shadow-md': '0 4px 20px rgba(0,0,0,0.45)',
-        'shadow-lg': '0 20px 60px rgba(0,0,0,0.6)',
+        # Original Zeliger navy-dark palette (restored at user request — keep prior design language)
+        'bg': '#07101F', 'paper': '#0F1A2E', 'paper-2': '#14223A',
+        'paper-3': '#0C1828', 'paper-4': '#18253F',
+        'ink': '#F1F5F9', 'ink-soft': '#94A3B8', 'ink-faint': '#475569', 'ink-mute': '#64748B',
+        'border': '#1E2D45', 'border-soft': '#182338',
+        'accent-primary': '#67E8F9', 'accent-secondary': '#A78BFA', 'accent-warm': '#FB7185',
+        'gold': '#FACC15',
+        'shadow-sm': '0 1px 2px rgba(0,0,0,0.3)',
+        'shadow-md': '0 4px 20px rgba(0,0,0,0.35)',
+        'shadow-lg': '0 20px 60px rgba(0,0,0,0.5)',
         'font-he': "'Rubik', system-ui, -apple-system, sans-serif",
-        'font-en': "'Rubik', system-ui, -apple-system, sans-serif",
-        'font': "'Rubik', system-ui, sans-serif",
+        'font-en': "'Inter', system-ui, -apple-system, sans-serif",
+        'font': "'Inter', 'Rubik', system-ui, sans-serif",
     },
     'uria': {
         # Uria Berman brand kit - DARK aubergine mode
@@ -868,20 +871,32 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* TV-DASHBOARD HEADER: bare bottom-border, no glass panel — matches TV's <header> exactly. */
+/* Restored Zeliger header: glass panel with cyan accent strip */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 4px 18px;
+  padding: 22px 30px;
   gap: 32px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 18px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
 }
 .header-meta-label {
   font-family: var(--font-en);
@@ -987,24 +1002,26 @@ body.theme-uria .header-brand { filter: none; }
   letter-spacing: 0.01em;
   margin-top: 2px;
 }
-.share-btn {
+.share-btn,
+.pdf-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  color: var(--accent-cyan);              /* TV cyan-blue #00B4F0 */
-  background: rgba(0,180,240,0.13);
-  border: 1px solid rgba(0,180,240,0.55);
+  font-weight: 700;
+  color: #FACC15;                         /* Restored yellow (previous version) */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.share-btn:hover {
-  background: rgba(0,180,240,0.22);
-  border-color: var(--accent-cyan);
+.share-btn:hover,
+.pdf-btn:hover {
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -1036,25 +1053,7 @@ body.theme-uria .header-brand { filter: none; }
   align-items: center;
   gap: 8px;
 }
-.pdf-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-he);
-  font-size: 12px;
-  font-weight: 500;
-  color: #FCD34D;                          /* TV gold */
-  background: rgba(252,211,77,0.13);
-  border: 1px solid rgba(252,211,77,0.55);
-  padding: 6px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.pdf-btn:hover {
-  background: rgba(252,211,77,0.22);
-  border-color: #FCD34D;
-}
+/* .pdf-btn merged into .share-btn rule above */
 /* Print styles - PDF download via browser print */
 @media print {
   body {
@@ -1278,26 +1277,29 @@ body.view-mode .cell-status {
 .cell.has-content {
   cursor: pointer;
 }
-/* TV-dashboard pill style: cell tinted by content-type accent (color/22 bg, color/55 border).
-   This is the SAME pattern as parking + Google Trends + Zoom cards on the TV. */
+/* Uniform CYAN glow on all content cells (original design — type differentiation via chip only). */
 .cell.has-content {
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.55);
+  background:
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.08),
-    0 8px 28px rgba(0,0,0,0.45);
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
-/* Type accent: --type-c for chip color, --type-rgb for cell tint */
-.cell.type-post     { --type-c: #00B4F0; --type-rgb: 0,180,240; }
-.cell.type-carousel { --type-c: #34D399; --type-rgb: 52,211,153; }
-.cell.type-story    { --type-c: #FCD34D; --type-rgb: 252,211,77; }
-.cell.type-reel     { --type-c: #FFB68A; --type-rgb: 255,182,138; }
+/* Type accent via the chip only — original family */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  background: rgba(var(--type-rgb, 0,180,240), 0.22);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.90);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.20),
-    0 0 24px rgba(var(--type-rgb, 0,180,240), 0.30),
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
@@ -1479,17 +1481,18 @@ body.view-mode .cell-status {
   gap: 6px;
   width: 100%;
 }
-/* TV-dashboard PILL: tinted bg + colored text + colored border (NOT solid bg). */
+/* Original solid type chip — dark text on bright color */
 .cell-type-chip {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 600;
-  color: var(--type-c);
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border: 1px solid rgba(var(--type-rgb, 0,180,240), 0.50);
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--type-c);
+  border: none;
   padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
 }
 .cell-warning {
   font-size: 11px;
@@ -1525,33 +1528,39 @@ body.view-mode .cell-status {
   border-top: 1px solid rgba(255,255,255,0.24);
   width: calc(100% + 20px);
 }
-.cell-status-row {
-  display: flex;
+/* STATUS PILL — single integrated chip: glowing dot + colored text + colored border.
+   The dot is INSIDE the pill, sitting next to the status word ("בעבודה" / "אושר" / etc).
+   Border = current status color. Background = same color @ 12% tint. */
+.cell-status-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 6px;
-  width: 100%;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
+  transition: all 0.15s ease;
 }
-.cell-status-label {
-  font-family: var(--font-he);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-  text-transform: none;
+.cell-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
 }
 .cell-status {
   font-family: var(--font-he);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 18px 3px 9px;
-  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 12px 0 0;
+  border: none;
   cursor: pointer;
   appearance: none;
-  border: 1px solid transparent;
+  color: var(--status-c, #94A3B8);
   letter-spacing: 0.01em;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
   background-size: 4px 4px;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -1649,31 +1658,94 @@ body.view-mode .cell-status {
 .modal-head-left .date-row .dot {
   width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
 }
-.modal-status {
+/* Modal date block: יום א' · 25.5.26 · ז' סיוון תשפ"ו */
+.modal-publish-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.modal-date-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.modal-weekday { color: var(--ink); }
+.modal-greg {
+  font-family: var(--font-en);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.modal-heb {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 12px;
+}
+/* Separator before status — hyphen in Zeliger, × in Uria */
+.modal-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-faint);
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  width: 16px;
+  text-align: center;
+}
+.modal-sep-x {
+  color: #FF6B35;
+  font-weight: 700;
+  font-size: 22px;
+}
+/* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
+.modal-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
 }
-.status-select {
+.modal-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
+}
+.modal-status-pill .status-text {
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  background: var(--paper-2);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  padding: 4px 28px 4px 10px;
-  border-radius: 999px;
+  font-weight: 700;
+  color: var(--status-c, #94A3B8);
+  letter-spacing: 0.01em;
+}
+.modal-status-pill .status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: var(--status-c, #94A3B8);
+  padding: 0 14px 0 0;
   cursor: pointer;
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
-  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-  background-size: 5px 5px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
+  background-size: 4px 4px;
   background-repeat: no-repeat;
 }
-.status-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  box-shadow: 0 0 6px currentColor;
-}
+.modal-status-pill .status-select:focus { outline: none; }
+.modal-status-pill .status-select option { background: var(--paper); color: var(--ink); }
 
 .modal-close {
   background: rgba(148,163,184,0.08);
@@ -2056,16 +2128,15 @@ window.shareView = function(btn) {
   });
 };
 
-/* ---------- Status decoration on cells (read from localStorage) ---------- */
+/* ---------- Status decoration on cells (read from localStorage) ----------
+   Paints the wrapper .cell-status-pill via CSS var --status-c. Border + dot + text
+   all derive from this single variable, so they stay perfectly in sync. */
 function paintStatus(selectEl) {
   const status = selectEl.value;
   const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-  selectEl.style.color = c;
-  selectEl.style.borderColor = c;
-  selectEl.style.borderWidth = '2px';
-  selectEl.style.borderStyle = 'solid';
-  selectEl.style.fontWeight = '700';
-  selectEl.style.background = `color-mix(in srgb, ${c} 12%, transparent)`;
+  const pill = selectEl.closest('.cell-status-pill');
+  if (pill) pill.style.setProperty('--status-c', c);
+  else { selectEl.style.color = c; }
 }
 
 function applyStatusToCells() {
@@ -2308,16 +2379,25 @@ function openModal(num) {
   const inner = document.getElementById('modal-inner');
 
   const isView = isViewMode();
+  const isUriaMode = document.body.classList.contains('theme-uria');
+  const sepChar = isUriaMode ? '×' : '–';
+  const sepCls = isUriaMode ? 'modal-sep modal-sep-x' : 'modal-sep';
+  const statusColor = STATUS_COLORS[status] || '#94A3B8';
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
         <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
-        <div class="date-row">
-          <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
-          <span class="dot"></span>
-          <span class="modal-status">
-            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; box-shadow:0 0 8px ${STATUS_COLORS[status]};"></span>
+        <div class="date-row" dir="rtl">
+          <span class="modal-publish-label">תאריך פרסום:</span>
+          <span class="modal-date-block">
+            <span class="modal-weekday">יום ${escapeHtml(it.day)}</span>
+            <span class="modal-greg">${formatDateHe(it.date)}</span>
+            ${it.heb_date ? `<span class="modal-heb">${escapeHtml(it.heb_date)}</span>` : ''}
+          </span>
+          <span class="${sepCls}">${sepChar}</span>
+          <span class="modal-status-pill" id="modalStatusPill" style="--status-c:${statusColor};">
+            <span class="modal-status-dot"></span>
             ${isView
               ? `<span class="status-text">${escapeHtml(status)}</span>`
               : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
@@ -2364,16 +2444,15 @@ function openModal(num) {
   // View mode = no interactivity, exit early
   if (isViewMode()) return;
 
-  // Wire up status select
+  // Wire up status select — repaint the modal status pill (border + dot + text all from --status-c)
   const sel = document.getElementById('statusSelect');
-  const dot = document.getElementById('statusDot');
+  const modalPill = document.getElementById('modalStatusPill');
   if (sel) {
     sel.addEventListener('change', () => {
       const v = sel.value;
       setLocal(num, 'status', v);
       const c = STATUS_COLORS[v] || '#94A3B8';
-      dot.style.background = c;
-      dot.style.boxShadow = `0 0 8px ${c}`;
+      if (modalPill) modalPill.style.setProperty('--status-c', c);
       applyStatusToCells();
     });
   }
@@ -2562,7 +2641,8 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
             '</a>'
         )
         # English brand name + × separator (brand-kit signature). Name clickable → WhatsApp.
-        wa_text = 'היי אוריה! ראיתי את הגאנט שעשית, רוצה לדבר.'
+        # Text is verbatim from the CV (uria-berman-cv) — single source of truth.
+        wa_text = 'היי אוריה! ראיתי את קורות החיים שלך, רוצה לדבר.'
         wa_url = f'https://wa.me/972548825232?text={urllib.parse.quote(wa_text)}'
         footer_text = (
             '<span class="footer-built">Built by</span>'

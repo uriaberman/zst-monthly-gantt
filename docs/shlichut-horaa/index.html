@@ -10,28 +10,28 @@
 <style>
 :root {
   /* Theme: zeliger */
-  --bg:        #000000;
-  --paper:     #0A0A0A;
-  --paper-2:   #141414;
-  --paper-3:   #080808;
-  --paper-4:   #1A1A1A;
-  --ink:       #FFFFFF;
-  --ink-soft:  rgba(255,255,255,0.72);
-  --ink-faint: rgba(255,255,255,0.36);
-  --ink-mute:  rgba(255,255,255,0.50);
-  --border:    rgba(255,255,255,0.08);
-  --border-soft: rgba(255,255,255,0.04);
-  --accent-cyan: #00B4F0;
-  --accent-primary: #00B4F0;
-  --accent-secondary: #34D399;
-  --accent-warm: #F87171;
-  --gold:      #FCD34D;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.45);
-  --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
+  --bg:        #07101F;
+  --paper:     #0F1A2E;
+  --paper-2:   #14223A;
+  --paper-3:   #0C1828;
+  --paper-4:   #18253F;
+  --ink:       #F1F5F9;
+  --ink-soft:  #94A3B8;
+  --ink-faint: #475569;
+  --ink-mute:  #64748B;
+  --border:    #1E2D45;
+  --border-soft: #182338;
+  --accent-cyan: #67E8F9;
+  --accent-primary: #67E8F9;
+  --accent-secondary: #A78BFA;
+  --accent-warm: #FB7185;
+  --gold:      #FACC15;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
   --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
-  --font-en: 'Rubik', system-ui, -apple-system, sans-serif;
-  --font: 'Rubik', system-ui, sans-serif;
+  --font-en: 'Inter', system-ui, -apple-system, sans-serif;
+  --font: 'Inter', 'Rubik', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -54,20 +54,32 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* TV-DASHBOARD HEADER: bare bottom-border, no glass panel — matches TV's <header> exactly. */
+/* Restored Zeliger header: glass panel with cyan accent strip */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 4px 18px;
+  padding: 22px 30px;
   gap: 32px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 18px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
 }
 .header-meta-label {
   font-family: var(--font-en);
@@ -173,24 +185,26 @@ body.theme-uria .header-brand { filter: none; }
   letter-spacing: 0.01em;
   margin-top: 2px;
 }
-.share-btn {
+.share-btn,
+.pdf-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  color: var(--accent-cyan);              /* TV cyan-blue #00B4F0 */
-  background: rgba(0,180,240,0.13);
-  border: 1px solid rgba(0,180,240,0.55);
+  font-weight: 700;
+  color: #FACC15;                         /* Restored yellow (previous version) */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
-.share-btn:hover {
-  background: rgba(0,180,240,0.22);
-  border-color: var(--accent-cyan);
+.share-btn:hover,
+.pdf-btn:hover {
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -222,25 +236,7 @@ body.theme-uria .header-brand { filter: none; }
   align-items: center;
   gap: 8px;
 }
-.pdf-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-he);
-  font-size: 12px;
-  font-weight: 500;
-  color: #FCD34D;                          /* TV gold */
-  background: rgba(252,211,77,0.13);
-  border: 1px solid rgba(252,211,77,0.55);
-  padding: 6px 14px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.pdf-btn:hover {
-  background: rgba(252,211,77,0.22);
-  border-color: #FCD34D;
-}
+/* .pdf-btn merged into .share-btn rule above */
 /* Print styles - PDF download via browser print */
 @media print {
   body {
@@ -464,26 +460,29 @@ body.view-mode .cell-status {
 .cell.has-content {
   cursor: pointer;
 }
-/* TV-dashboard pill style: cell tinted by content-type accent (color/22 bg, color/55 border).
-   This is the SAME pattern as parking + Google Trends + Zoom cards on the TV. */
+/* Uniform CYAN glow on all content cells (original design — type differentiation via chip only). */
 .cell.has-content {
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.55);
+  background:
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.08),
-    0 8px 28px rgba(0,0,0,0.45);
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.14);
 }
-/* Type accent: --type-c for chip color, --type-rgb for cell tint */
-.cell.type-post     { --type-c: #00B4F0; --type-rgb: 0,180,240; }
-.cell.type-carousel { --type-c: #34D399; --type-rgb: 52,211,153; }
-.cell.type-story    { --type-c: #FCD34D; --type-rgb: 252,211,77; }
-.cell.type-reel     { --type-c: #FFB68A; --type-rgb: 255,182,138; }
+/* Type accent via the chip only — original family */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
 .cell.has-content:hover {
-  background: rgba(var(--type-rgb, 0,180,240), 0.22);
-  border-color: rgba(var(--type-rgb, 0,180,240), 0.90);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
   box-shadow:
-    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.20),
-    0 0 24px rgba(var(--type-rgb, 0,180,240), 0.30),
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
@@ -665,17 +664,18 @@ body.view-mode .cell-status {
   gap: 6px;
   width: 100%;
 }
-/* TV-dashboard PILL: tinted bg + colored text + colored border (NOT solid bg). */
+/* Original solid type chip — dark text on bright color */
 .cell-type-chip {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 600;
-  color: var(--type-c);
-  background: rgba(var(--type-rgb, 0,180,240), 0.13);
-  border: 1px solid rgba(var(--type-rgb, 0,180,240), 0.50);
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--type-c);
+  border: none;
   padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
 }
 .cell-warning {
   font-size: 11px;
@@ -711,33 +711,39 @@ body.view-mode .cell-status {
   border-top: 1px solid rgba(255,255,255,0.24);
   width: calc(100% + 20px);
 }
-.cell-status-row {
-  display: flex;
+/* STATUS PILL — single integrated chip: glowing dot + colored text + colored border.
+   The dot is INSIDE the pill, sitting next to the status word ("בעבודה" / "אושר" / etc).
+   Border = current status color. Background = same color @ 12% tint. */
+.cell-status-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 6px;
-  width: 100%;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
+  transition: all 0.15s ease;
 }
-.cell-status-label {
-  font-family: var(--font-he);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: 0.02em;
-  text-transform: none;
+.cell-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
 }
 .cell-status {
   font-family: var(--font-he);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 18px 3px 9px;
-  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 12px 0 0;
+  border: none;
   cursor: pointer;
   appearance: none;
-  border: 1px solid transparent;
+  color: var(--status-c, #94A3B8);
   letter-spacing: 0.01em;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: calc(100% - 10px) 50%, calc(100% - 6px) 50%;
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
   background-size: 4px 4px;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -835,31 +841,94 @@ body.view-mode .cell-status {
 .modal-head-left .date-row .dot {
   width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
 }
-.modal-status {
+/* Modal date block: יום א' · 25.5.26 · ז' סיוון תשפ"ו */
+.modal-publish-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.modal-date-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.modal-weekday { color: var(--ink); }
+.modal-greg {
+  font-family: var(--font-en);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.modal-heb {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 12px;
+}
+/* Separator before status — hyphen in Zeliger, × in Uria */
+.modal-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-faint);
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  width: 16px;
+  text-align: center;
+}
+.modal-sep-x {
+  color: #FF6B35;
+  font-weight: 700;
+  font-size: 22px;
+}
+/* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
+.modal-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
 }
-.status-select {
+.modal-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
+}
+.modal-status-pill .status-text {
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 500;
-  background: var(--paper-2);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  padding: 4px 28px 4px 10px;
-  border-radius: 999px;
+  font-weight: 700;
+  color: var(--status-c, #94A3B8);
+  letter-spacing: 0.01em;
+}
+.modal-status-pill .status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: var(--status-c, #94A3B8);
+  padding: 0 14px 0 0;
   cursor: pointer;
   appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%), linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
-  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-  background-size: 5px 5px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
+  background-size: 4px 4px;
   background-repeat: no-repeat;
 }
-.status-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  box-shadow: 0 0 6px currentColor;
-}
+.modal-status-pill .status-select:focus { outline: none; }
+.modal-status-pill .status-select option { background: var(--paper); color: var(--ink); }
 
 .modal-close {
   background: rgba(148,163,184,0.08);
@@ -1208,7 +1277,7 @@ body.theme-uria .footer-link:hover {
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
-        <span class="legend-chip"><span class="sw" style="background:#00B4F0;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#34D399;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#FCD34D;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FFB68A;"></span>רילס</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
       </div>
       <div class="legend-divider"></div>
       <div class="legend-group">
@@ -1249,8 +1318,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">הראיון של נעמה קלר</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="1">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1266,8 +1335,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">פעימת סטוריז מההכשרה</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="2">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1286,8 +1355,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">חששות ושאלות השליחים</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="3">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1312,8 +1381,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">איך המשפחה והסביבה הגיבה?</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="4">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1332,8 +1401,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">3 דברים שאתגעגע אליהם בחופש הגדול</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="5">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1349,8 +1418,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">מה למדתי השנה - סרטוני שליחים</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="6">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1375,8 +1444,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">חידון ישראלי - תלמידים מהעולם</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="7">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1395,8 +1464,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">Tell me without telling me - שליח מישראל</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="8">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1424,8 +1493,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">POV של תלמידים - השבוע האחרון</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="9">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1456,8 +1525,8 @@ body.theme-uria .footer-link:hover {
         </div>
         <div class="cell-title">Best 5 Moments of the Year</div>
         <div class="cell-footer">
-          <div class="cell-status-row">
-            <span class="cell-status-label">סטטוס:</span>
+          <div class="cell-status-pill" data-num="10">
+            <span class="cell-status-dot"></span>
             <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
               <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
             </select>
@@ -1495,7 +1564,7 @@ body.theme-uria .footer-link:hover {
 </div>
 
 <script>
-const ITEMS_DATA = [{"num": 1, "date": "2026-06-01", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "הראיון של נעמה קלר", "short_explanation": "ראיון של נעמה קלר מתוך יום ההכשרה במוזיאון אנו - פתיחת חודש שמסכמת שנת שליחות.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 2, "date": "2026-06-02", "day": "ג'", "type_key": "story", "type_label": "סטורי", "type_accent": "#FCD34D", "type_soft": "rgba(252,211,77,0.13)", "title": "פעימת סטוריז מההכשרה", "short_explanation": "פעימת סטוריז עם תמונות אותנטיות מתוך יום ההכשרה - שיתוף רגעים אינטימיים מהיום.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 3, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "חששות ושאלות השליחים", "short_explanation": "רילס מתוך יום ההכשרה - חששות ושאלות אמיתיות של שליחים לפני יציאתם, וגם 3 הדברים שיתגעגעו אליהם.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 4, "date": "2026-06-08", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "איך המשפחה והסביבה הגיבה?", "short_explanation": "רילס שמראה איך תגובות המשפחה והסביבה השפיעו על השליחים לפני שיצאו לדרך.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 5, "date": "2026-06-10", "day": "ד'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#34D399", "type_soft": "rgba(52,211,153,0.13)", "title": "3 דברים שאתגעגע אליהם בחופש הגדול", "short_explanation": "קרוסלה עם כמה שליחים שמראים 3 דברים שיתגעגעו אליהם מהשליחות בחופש הגדול - אישי, חם, אנושי.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "מה למדתי השנה - סרטוני שליחים", "short_explanation": "סרטוני סלפי של שליחים שמשתפים מה הם עצמם למדו השנה - היפוך כיוון משמעותי שמייצר עומק.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-06-15", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "חידון ישראלי - תלמידים מהעולם", "short_explanation": "חידון ישראלי מצולם בין שתי קבוצות תלמידים מהעולם - שאלות על ישראל, יהדות וזהות, באווירה מגניבה וקלילה.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-06-17", "day": "ד'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "Tell me without telling me - שליח מישראל", "short_explanation": "טרנד מוכר 'Tell me without telling me' - ילדים מראים בלי לומר שהיה להם שליח מישראל. הומור עדין שיתאהבו בו.", "source": "", "status": "בעבודה"}, {"num": 9, "date": "2026-06-22", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "POV של תלמידים - השבוע האחרון", "short_explanation": "תלמידים מצלמים בעצמם את השבוע האחרון עם השליחים שלהם - POV אותנטי שמראה את הקשר האישי שנוצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-06-28", "day": "א'", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#34D399", "type_soft": "rgba(52,211,153,0.13)", "title": "Best 5 Moments of the Year", "short_explanation": "קרוסלה מסכמת: תלמידים, מורים, הורים ואנשים מהקהילה בוחרים את 5 הרגעים הכי בלתי נשכחים מהשנה.", "source": "", "status": "בעבודה"}];
+const ITEMS_DATA = [{"num": 1, "date": "2026-06-01", "day": "ב'", "heb_date": "ט״ז סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "הראיון של נעמה קלר", "short_explanation": "ראיון של נעמה קלר מתוך יום ההכשרה במוזיאון אנו - פתיחת חודש שמסכמת שנת שליחות.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 2, "date": "2026-06-02", "day": "ג'", "heb_date": "י״ז סיון תשפ״ו", "type_key": "story", "type_label": "סטורי", "type_accent": "#C4B5FD", "type_soft": "rgba(196,181,253,0.14)", "title": "פעימת סטוריז מההכשרה", "short_explanation": "פעימת סטוריז עם תמונות אותנטיות מתוך יום ההכשרה - שיתוף רגעים אינטימיים מהיום.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 3, "date": "2026-06-04", "day": "ה'", "heb_date": "י״ט סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חששות ושאלות השליחים", "short_explanation": "רילס מתוך יום ההכשרה - חששות ושאלות אמיתיות של שליחים לפני יציאתם, וגם 3 הדברים שיתגעגעו אליהם.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 4, "date": "2026-06-08", "day": "ב'", "heb_date": "כ״ג סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "איך המשפחה והסביבה הגיבה?", "short_explanation": "רילס שמראה איך תגובות המשפחה והסביבה השפיעו על השליחים לפני שיצאו לדרך.", "source": "יום ההכשרה במוזיאון אנו", "status": "בעבודה"}, {"num": 5, "date": "2026-06-10", "day": "ד'", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "3 דברים שאתגעגע אליהם בחופש הגדול", "short_explanation": "קרוסלה עם כמה שליחים שמראים 3 דברים שיתגעגעו אליהם מהשליחות בחופש הגדול - אישי, חם, אנושי.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-06-11", "day": "ה'", "heb_date": "כ״ו סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מה למדתי השנה - סרטוני שליחים", "short_explanation": "סרטוני סלפי של שליחים שמשתפים מה הם עצמם למדו השנה - היפוך כיוון משמעותי שמייצר עומק.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-06-15", "day": "ב'", "heb_date": "ל׳ סיון תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "חידון ישראלי - תלמידים מהעולם", "short_explanation": "חידון ישראלי מצולם בין שתי קבוצות תלמידים מהעולם - שאלות על ישראל, יהדות וזהות, באווירה מגניבה וקלילה.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-06-17", "day": "ד'", "heb_date": "ב׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "Tell me without telling me - שליח מישראל", "short_explanation": "טרנד מוכר 'Tell me without telling me' - ילדים מראים בלי לומר שהיה להם שליח מישראל. הומור עדין שיתאהבו בו.", "source": "", "status": "בעבודה"}, {"num": 9, "date": "2026-06-22", "day": "ב'", "heb_date": "ז׳ תמוז תשפ״ו", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "POV של תלמידים - השבוע האחרון", "short_explanation": "תלמידים מצלמים בעצמם את השבוע האחרון עם השליחים שלהם - POV אותנטי שמראה את הקשר האישי שנוצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-06-28", "day": "א'", "heb_date": "י״ג תמוז תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "Best 5 Moments of the Year", "short_explanation": "קרוסלה מסכמת: תלמידים, מורים, הורים ואנשים מהקהילה בוחרים את 5 הרגעים הכי בלתי נשכחים מהשנה.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'שליחות_הוראה';
 
@@ -1545,16 +1614,15 @@ window.shareView = function(btn) {
   });
 };
 
-/* ---------- Status decoration on cells (read from localStorage) ---------- */
+/* ---------- Status decoration on cells (read from localStorage) ----------
+   Paints the wrapper .cell-status-pill via CSS var --status-c. Border + dot + text
+   all derive from this single variable, so they stay perfectly in sync. */
 function paintStatus(selectEl) {
   const status = selectEl.value;
   const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
-  selectEl.style.color = c;
-  selectEl.style.borderColor = c;
-  selectEl.style.borderWidth = '2px';
-  selectEl.style.borderStyle = 'solid';
-  selectEl.style.fontWeight = '700';
-  selectEl.style.background = `color-mix(in srgb, ${c} 12%, transparent)`;
+  const pill = selectEl.closest('.cell-status-pill');
+  if (pill) pill.style.setProperty('--status-c', c);
+  else { selectEl.style.color = c; }
 }
 
 function applyStatusToCells() {
@@ -1797,16 +1865,25 @@ function openModal(num) {
   const inner = document.getElementById('modal-inner');
 
   const isView = isViewMode();
+  const isUriaMode = document.body.classList.contains('theme-uria');
+  const sepChar = isUriaMode ? '×' : '–';
+  const sepCls = isUriaMode ? 'modal-sep modal-sep-x' : 'modal-sep';
+  const statusColor = STATUS_COLORS[status] || '#94A3B8';
   inner.innerHTML = `
     <div class="modal-head">
       <div class="modal-head-left">
         <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
         <h2>${escapeHtml(it.title)}</h2>
-        <div class="date-row">
-          <span>${formatDateHe(it.date)} (יום ${escapeHtml(it.day)})</span>
-          <span class="dot"></span>
-          <span class="modal-status">
-            <span class="status-dot" id="statusDot" style="background:${STATUS_COLORS[status]}; box-shadow:0 0 8px ${STATUS_COLORS[status]};"></span>
+        <div class="date-row" dir="rtl">
+          <span class="modal-publish-label">תאריך פרסום:</span>
+          <span class="modal-date-block">
+            <span class="modal-weekday">יום ${escapeHtml(it.day)}</span>
+            <span class="modal-greg">${formatDateHe(it.date)}</span>
+            ${it.heb_date ? `<span class="modal-heb">${escapeHtml(it.heb_date)}</span>` : ''}
+          </span>
+          <span class="${sepCls}">${sepChar}</span>
+          <span class="modal-status-pill" id="modalStatusPill" style="--status-c:${statusColor};">
+            <span class="modal-status-dot"></span>
             ${isView
               ? `<span class="status-text">${escapeHtml(status)}</span>`
               : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
@@ -1853,16 +1930,15 @@ function openModal(num) {
   // View mode = no interactivity, exit early
   if (isViewMode()) return;
 
-  // Wire up status select
+  // Wire up status select — repaint the modal status pill (border + dot + text all from --status-c)
   const sel = document.getElementById('statusSelect');
-  const dot = document.getElementById('statusDot');
+  const modalPill = document.getElementById('modalStatusPill');
   if (sel) {
     sel.addEventListener('change', () => {
       const v = sel.value;
       setLocal(num, 'status', v);
       const c = STATUS_COLORS[v] || '#94A3B8';
-      dot.style.background = c;
-      dot.style.boxShadow = `0 0 8px ${c}`;
+      if (modalPill) modalPill.style.setProperty('--status-c', c);
       applyStatusToCells();
     });
   }
