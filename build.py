@@ -3043,8 +3043,8 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
             '</a>'
         )
         # English brand name + × separator (brand-kit signature). Name clickable → WhatsApp.
-        # Text is verbatim from the CV (uria-berman-cv) — single source of truth.
-        wa_text = 'היי אוריה! ראיתי את קורות החיים שלך, רוצה לדבר.'
+        # Text is verbatim from CV v2 (uria-berman-cv/public/v2/index.html) — the canonical "דברו איתי" CTA.
+        wa_text = 'היי אוריה, קורות החיים שלך - וואו! בא לי שנעשה דברים מעניינים יחד.'
         wa_url = f'https://wa.me/972548825232?text={urllib.parse.quote(wa_text)}'
         footer_text = (
             '<span class="footer-built">Built by</span>'
