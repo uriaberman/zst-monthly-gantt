@@ -10,7 +10,7 @@ Premium dark mode monthly Gantt viewer for Seliger Shomron clients.
 - Modal: editable copy (right) + image dropzone (left), localStorage persistence
 - Status dropdown per cell with localStorage persistence
 """
-import sys, io, json, html, argparse, base64, calendar
+import sys, io, json, html, argparse, base64, calendar, urllib.parse
 from datetime import date
 from pathlib import Path
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -18,12 +18,12 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 from pyluach.dates import GregorianDate
 
 
-# 4 content types - cool family (cyan/teal/lavender/rose)
+# 4 content types - TV-dashboard palette (cyan/green/yellow/peach)
 TYPE_COLORS = {
-    'post':     {'accent': '#67E8F9', 'soft': 'rgba(103,232,249,0.14)', 'label': 'פוסט'},
-    'carousel': {'accent': '#5EEAD4', 'soft': 'rgba(94,234,212,0.14)',  'label': 'קרוסלה'},
-    'story':    {'accent': '#C4B5FD', 'soft': 'rgba(196,181,253,0.14)', 'label': 'סטורי'},
-    'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
+    'post':     {'accent': '#00B4F0', 'soft': 'rgba(0,180,240,0.13)',   'label': 'פוסט'},
+    'carousel': {'accent': '#34D399', 'soft': 'rgba(52,211,153,0.13)',  'label': 'קרוסלה'},
+    'story':    {'accent': '#FCD34D', 'soft': 'rgba(252,211,77,0.13)',  'label': 'סטורי'},
+    'reel':     {'accent': '#FFB68A', 'soft': 'rgba(255,182,138,0.13)', 'label': 'רילס'},
 }
 
 # Statuses - distinct hues that stay visible on light tray
@@ -229,18 +229,28 @@ def render_modal_data(items: list) -> str:
 
 THEME_TOKENS = {
     'zeliger': {
-        'bg': '#07101F', 'paper': '#0F1A2E', 'paper-2': '#14223A',
-        'paper-3': '#0C1828', 'paper-4': '#18253F',
-        'ink': '#F1F5F9', 'ink-soft': '#94A3B8', 'ink-faint': '#475569', 'ink-mute': '#64748B',
-        'border': '#1E2D45', 'border-soft': '#182338',
-        'accent-primary': '#67E8F9', 'accent-secondary': '#A78BFA', 'accent-warm': '#FB7185',
-        'gold': '#FBBF24',
-        'shadow-sm': '0 1px 2px rgba(0,0,0,0.3)',
-        'shadow-md': '0 4px 20px rgba(0,0,0,0.35)',
-        'shadow-lg': '0 20px 60px rgba(0,0,0,0.5)',
+        # TV-dashboard aligned palette (parking + zoom + trends): pure black + #00B4F0 + #34D399 + #FCD34D
+        'bg': '#000000',          # Pure black — matches TV dashboard exactly
+        'paper': '#0A0A0A',       # Near-black card surface
+        'paper-2': '#141414',     # Slightly lighter for cells
+        'paper-3': '#080808',     # Friday / dim
+        'paper-4': '#1A1A1A',     # Saturday darker
+        'ink': '#FFFFFF',         # Pure white text (TV)
+        'ink-soft': 'rgba(255,255,255,0.72)',
+        'ink-faint': 'rgba(255,255,255,0.36)',
+        'ink-mute': 'rgba(255,255,255,0.50)',
+        'border': 'rgba(255,255,255,0.08)',
+        'border-soft': 'rgba(255,255,255,0.04)',
+        'accent-primary': '#00B4F0',     # TV cyan-blue (parking strip / brand)
+        'accent-secondary': '#34D399',   # TV green (status / approved)
+        'accent-warm': '#F87171',
+        'gold': '#FCD34D',                # TV yellow (Google Trends)
+        'shadow-sm': '0 1px 2px rgba(0,0,0,0.4)',
+        'shadow-md': '0 4px 20px rgba(0,0,0,0.45)',
+        'shadow-lg': '0 20px 60px rgba(0,0,0,0.6)',
         'font-he': "'Rubik', system-ui, -apple-system, sans-serif",
-        'font-en': "'Inter', system-ui, -apple-system, sans-serif",
-        'font': "'Inter', 'Rubik', system-ui, sans-serif",
+        'font-en': "'Rubik', system-ui, -apple-system, sans-serif",
+        'font': "'Rubik', system-ui, sans-serif",
     },
     'uria': {
         # Uria Berman brand kit - DARK aubergine mode
@@ -445,25 +455,22 @@ body.theme-uria .month-picker-label { color: #C4B5FD; }
 body.theme-uria .month-select { color: #FAFAFA; }
 body.theme-uria .month-select option { background: #160730; color: #FAFAFA; }
 body.theme-uria .month-picker-arrow { color: #22D3EE; }
-body.theme-uria .share-btn {
-  color: #0A0418;                         /* Dark text on FLAT tangerine */
-  background: #FF6B35;                    /* Brand tangerine - solid */
-  border-color: #FF6B35;
-  font-weight: 800;
-}
-body.theme-uria .share-btn:hover {
-  background: #FF8A65;
-  border-color: #FF8A65;
-}
+/* Uria buttons - IDENTICAL pair: both filled brand tangerine.
+   Share + PDF look exactly the same. Single visual language. */
+body.theme-uria .share-btn,
 body.theme-uria .pdf-btn {
-  color: #FF6B35;                         /* Tangerine outline variant for contrast */
-  background: rgba(255,107,53,0.06);
-  border-color: rgba(255,107,53,0.50);
-  font-weight: 800;
+  color: #FAFAFA !important;
+  background: #FF6B35 !important;
+  border: 1px solid #FF6B35 !important;
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  padding: 7px 16px !important;
 }
+body.theme-uria .share-btn:hover,
 body.theme-uria .pdf-btn:hover {
-  background: rgba(255,107,53,0.18);
-  border-color: #FF6B35;
+  background: #FF8A65 !important;
+  border-color: #FF8A65 !important;
 }
 body.theme-uria .h1-label { color: #FAFAFA; background: transparent; padding: 0; }
 body.theme-uria .header-titles .count-pill {
@@ -585,28 +592,29 @@ body.theme-uria .h1-label {
 }
 body.theme-uria .h1-sep {
   display: inline-flex !important;
-  align-items: center;
+  align-items: center;          /* Vertically center with text */
   justify-content: center;
   width: auto !important;
-  height: auto !important;
+  height: 1em !important;        /* Match h1 line-box so × sits on baseline like a hyphen */
   background: transparent !important;
   box-shadow: none !important;
-  margin: 0 8px !important;
+  margin: 0 10px !important;
 }
 body.theme-uria .h1-sep .x-box-mini {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
-  color: #FF6B35;             /* Brand tangerine × — bigger, playful */
+  color: #FF6B35;             /* Brand tangerine × acting as a hyphen separator */
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 900;
-  font-size: 40px;            /* Big and fun (was 24) */
-  line-height: 0.7;
+  font-weight: 700;
+  font-size: 28px;             /* Sits on baseline like an em-dash, not floating */
+  line-height: 1;
   letter-spacing: 0;
-  transform: translateY(2px);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 body.theme-uria .h1-sep .x-box-mini:hover {
-  transform: translateY(2px) rotate(90deg);
+  transform: rotate(90deg);
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -649,14 +657,18 @@ body.theme-uria .footer-built {
   letter-spacing: 0.18em;
 }
 body.theme-uria .footer-x {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: #FF6B35;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 900;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 22px;
   line-height: 1;
-  margin: 0 2px;
+  margin: 0 4px;
+  height: 1em;             /* Snap to baseline like a separator */
+  vertical-align: middle;
 }
 body.theme-uria .footer-brand {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -665,6 +677,21 @@ body.theme-uria .footer-brand {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 14px;
+  text-decoration: none;
+}
+body.theme-uria .footer-link-wa {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  color: #FAFAFA;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+body.theme-uria .footer-link-wa:hover {
+  color: #FF6B35;
+  border-bottom-color: #FF6B35;
 }
 body.theme-uria .footer-period {
   display: inline-block;
@@ -841,41 +868,29 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* TV-DASHBOARD STYLE HEADER (Zeliger): glass panel with cyan accent strip */
+/* TV-DASHBOARD HEADER: bare bottom-border, no glass panel — matches TV's <header> exactly. */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 30px;
+  padding: 16px 4px 18px;
   gap: 32px;
-  background:
-    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
-    var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
-  margin-bottom: 16px;
-  overflow: hidden;
-}
-.header::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
-  box-shadow: 0 0 14px rgba(103,232,249,0.55);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 18px;
 }
 .header-meta-label {
   font-family: var(--font-en);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--accent-cyan);
-  opacity: 0.85;
+  opacity: 0.95;
 }
 .header-brand {
   display: flex;
@@ -978,18 +993,18 @@ body.theme-uria .header-brand { filter: none; }
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 700;
-  color: #FACC15;                         /* Zeliger secondary: yellow */
-  background: rgba(250,204,21,0.10);
-  border: 1px solid rgba(250,204,21,0.40);
+  font-weight: 500;
+  color: var(--accent-cyan);              /* TV cyan-blue #00B4F0 */
+  background: rgba(0,180,240,0.13);
+  border: 1px solid rgba(0,180,240,0.55);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .share-btn:hover {
-  background: rgba(250,204,21,0.20);
-  border-color: #FACC15;
+  background: rgba(0,180,240,0.22);
+  border-color: var(--accent-cyan);
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -1027,18 +1042,18 @@ body.theme-uria .header-brand { filter: none; }
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 700;
-  color: #FACC15;                         /* Zeliger secondary: yellow */
-  background: rgba(250,204,21,0.10);
-  border: 1px solid rgba(250,204,21,0.40);
+  font-weight: 500;
+  color: #FCD34D;                          /* TV gold */
+  background: rgba(252,211,77,0.13);
+  border: 1px solid rgba(252,211,77,0.55);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .pdf-btn:hover {
-  background: rgba(250,204,21,0.20);
-  border-color: #FACC15;
+  background: rgba(252,211,77,0.22);
+  border-color: #FCD34D;
 }
 /* Print styles - PDF download via browser print */
 @media print {
@@ -1263,30 +1278,26 @@ body.view-mode .cell-status {
 .cell.has-content {
   cursor: pointer;
 }
-/* Truly LIT-UP content cells - illuminated CYAN tiles on the dark grid.
-   Uniform cyan glow across all content types - differentiation comes from the chip. */
+/* TV-dashboard pill style: cell tinted by content-type accent (color/22 bg, color/55 border).
+   This is the SAME pattern as parking + Google Trends + Zoom cards on the TV. */
 .cell.has-content {
-  background:
-    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
-  border-color: rgba(103,232,249,0.55);
+  background: rgba(var(--type-rgb, 0,180,240), 0.13);
+  border-color: rgba(var(--type-rgb, 0,180,240), 0.55);
   box-shadow:
-    0 0 0 1px rgba(103,232,249,0.10),
-    0 0 32px rgba(103,232,249,0.18),
-    0 8px 28px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.14);
+    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.08),
+    0 8px 28px rgba(0,0,0,0.45);
 }
-/* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
-.cell.type-post     { --type-c: #67E8F9; }
-.cell.type-carousel { --type-c: #5EEAD4; }
-.cell.type-story    { --type-c: #C4B5FD; }
-.cell.type-reel     { --type-c: #FDA4AF; }
+/* Type accent: --type-c for chip color, --type-rgb for cell tint */
+.cell.type-post     { --type-c: #00B4F0; --type-rgb: 0,180,240; }
+.cell.type-carousel { --type-c: #34D399; --type-rgb: 52,211,153; }
+.cell.type-story    { --type-c: #FCD34D; --type-rgb: 252,211,77; }
+.cell.type-reel     { --type-c: #FFB68A; --type-rgb: 255,182,138; }
 .cell.has-content:hover {
-  background:
-    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
-  border-color: rgba(255,255,255,0.7);
+  background: rgba(var(--type-rgb, 0,180,240), 0.22);
+  border-color: rgba(var(--type-rgb, 0,180,240), 0.90);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.15),
-    0 0 36px rgba(255,255,255,0.1),
+    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.20),
+    0 0 24px rgba(var(--type-rgb, 0,180,240), 0.30),
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
@@ -1302,6 +1313,29 @@ body.view-mode .cell-status {
   background: rgba(103,232,249,0.20) !important;
   box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 26px rgba(103,232,249,0.5) !important;
   transform: scale(1.03);
+}
+/* Iron rule visual: hovering past date during drag = blocked */
+.cell.drop-blocked {
+  border-color: rgba(239,68,68,0.55) !important;
+  background: rgba(239,68,68,0.10) !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+.cell.drop-blocked::after {
+  content: 'תאריך עבר ✕';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #DC2626;
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 20;
 }
 .cell.drop-target.saturday,
 .cell.drop-target.holiday {
@@ -1445,17 +1479,17 @@ body.view-mode .cell-status {
   gap: 6px;
   width: 100%;
 }
+/* TV-dashboard PILL: tinted bg + colored text + colored border (NOT solid bg). */
 .cell-type-chip {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 700;
-  color: #0B1220;
-  background: var(--type-c);
-  border: none;
+  font-weight: 600;
+  color: var(--type-c);
+  background: rgba(var(--type-rgb, 0,180,240), 0.13);
+  border: 1px solid rgba(var(--type-rgb, 0,180,240), 0.50);
   padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
+  letter-spacing: 0.02em;
 }
 .cell-warning {
   font-size: 11px;
@@ -2065,12 +2099,28 @@ let dragSourceCell = null;
 
 function isViewModeStrict() { return document.body.classList.contains('view-mode'); }
 
+function todayIsoIsrael() {
+  // YYYY-MM-DD in Israel timezone (works in browser without date-fns-tz)
+  const opts = { timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const parts = new Intl.DateTimeFormat('en-CA', opts).formatToParts(new Date());
+  const y = parts.find(p => p.type === 'year').value;
+  const m = parts.find(p => p.type === 'month').value;
+  const d = parts.find(p => p.type === 'day').value;
+  return `${y}-${m}-${d}`;
+}
+
+function isPastIso(iso) {
+  // Iron rule: cannot drop on a date that has already passed chronologically
+  return iso < todayIsoIsrael();
+}
+
 function setupDragAndDrop() {
   if (isViewModeStrict()) return;  // No drag in view mode
 
   document.addEventListener('dragstart', (e) => {
     const cell = e.target.closest('.cell.has-content');
     if (!cell) return;
+    // Iron rule: can't even pick up from past dates (won't have content to move forward)
     dragSourceCell = cell;
     cell.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
@@ -2085,17 +2135,23 @@ function setupDragAndDrop() {
 
   document.addEventListener('dragend', () => {
     document.querySelectorAll('.dragging').forEach(c => c.classList.remove('dragging'));
-    document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
     dragSourceCell = null;
   });
 
   document.addEventListener('dragover', (e) => {
     const cell = e.target.closest('.cell:not(.outside)');
     if (!cell || cell === dragSourceCell) return;
+    // Iron rule: cannot drop on a past date
+    if (isPastIso(cell.dataset.iso)) {
+      cell.classList.add('drop-blocked');
+      e.dataTransfer.dropEffect = 'none';
+      return;
+    }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    document.querySelectorAll('.drop-target').forEach(c => {
-      if (c !== cell) c.classList.remove('drop-target');
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => {
+      if (c !== cell) { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); }
     });
     cell.classList.add('drop-target');
   });
@@ -2104,7 +2160,13 @@ function setupDragAndDrop() {
     e.preventDefault();
     const target = e.target.closest('.cell:not(.outside)');
     if (!target || target === dragSourceCell) {
-      document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+      document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
+      return;
+    }
+    // Iron rule: cannot drop on a past date (silent reject - hover already showed it)
+    if (isPastIso(target.dataset.iso)) {
+      target.classList.remove('drop-target');
+      target.classList.remove('drop-blocked');
       return;
     }
 
@@ -2499,12 +2561,15 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger') -> str:
             '</div>'
             '</a>'
         )
-        # English brand name + × separator (brand-kit signature)
+        # English brand name + × separator (brand-kit signature). Name clickable → WhatsApp.
+        wa_text = 'היי אוריה! ראיתי את הגאנט שעשית, רוצה לדבר.'
+        wa_url = f'https://wa.me/972548825232?text={urllib.parse.quote(wa_text)}'
         footer_text = (
             '<span class="footer-built">Built by</span>'
             '<span class="footer-x">×</span>'
-            '<span class="footer-brand">Uria Berman</span>'
+            f'<a class="footer-brand footer-link-wa" href="{wa_url}" target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman'
             '<span class="footer-period">.</span>'
+            '</a>'
         )
     else:
         logo_tag = (

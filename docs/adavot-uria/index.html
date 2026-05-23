@@ -54,41 +54,29 @@ body {
   padding: 24px 32px 36px;
 }
 
-/* TV-DASHBOARD STYLE HEADER (Zeliger): glass panel with cyan accent strip */
+/* TV-DASHBOARD HEADER: bare bottom-border, no glass panel — matches TV's <header> exactly. */
 .header {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 30px;
+  padding: 16px 4px 18px;
   gap: 32px;
-  background:
-    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
-    var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
-  margin-bottom: 16px;
-  overflow: hidden;
-}
-.header::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
-  box-shadow: 0 0 14px rgba(103,232,249,0.55);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 18px;
 }
 .header-meta-label {
   font-family: var(--font-en);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--accent-cyan);
-  opacity: 0.85;
+  opacity: 0.95;
 }
 .header-brand {
   display: flex;
@@ -191,18 +179,18 @@ body.theme-uria .header-brand { filter: none; }
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 700;
-  color: #FACC15;                         /* Zeliger secondary: yellow */
-  background: rgba(250,204,21,0.10);
-  border: 1px solid rgba(250,204,21,0.40);
+  font-weight: 500;
+  color: var(--accent-cyan);              /* TV cyan-blue #00B4F0 */
+  background: rgba(0,180,240,0.13);
+  border: 1px solid rgba(0,180,240,0.55);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .share-btn:hover {
-  background: rgba(250,204,21,0.20);
-  border-color: #FACC15;
+  background: rgba(0,180,240,0.22);
+  border-color: var(--accent-cyan);
 }
 .share-btn.copied {
   background: rgba(34,197,94,0.18);
@@ -240,18 +228,18 @@ body.theme-uria .header-brand { filter: none; }
   gap: 6px;
   font-family: var(--font-he);
   font-size: 12px;
-  font-weight: 700;
-  color: #FACC15;                         /* Zeliger secondary: yellow */
-  background: rgba(250,204,21,0.10);
-  border: 1px solid rgba(250,204,21,0.40);
+  font-weight: 500;
+  color: #FCD34D;                          /* TV gold */
+  background: rgba(252,211,77,0.13);
+  border: 1px solid rgba(252,211,77,0.55);
   padding: 6px 14px;
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .pdf-btn:hover {
-  background: rgba(250,204,21,0.20);
-  border-color: #FACC15;
+  background: rgba(252,211,77,0.22);
+  border-color: #FCD34D;
 }
 /* Print styles - PDF download via browser print */
 @media print {
@@ -476,30 +464,26 @@ body.view-mode .cell-status {
 .cell.has-content {
   cursor: pointer;
 }
-/* Truly LIT-UP content cells - illuminated CYAN tiles on the dark grid.
-   Uniform cyan glow across all content types - differentiation comes from the chip. */
+/* TV-dashboard pill style: cell tinted by content-type accent (color/22 bg, color/55 border).
+   This is the SAME pattern as parking + Google Trends + Zoom cards on the TV. */
 .cell.has-content {
-  background:
-    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
-  border-color: rgba(103,232,249,0.55);
+  background: rgba(var(--type-rgb, 0,180,240), 0.13);
+  border-color: rgba(var(--type-rgb, 0,180,240), 0.55);
   box-shadow:
-    0 0 0 1px rgba(103,232,249,0.10),
-    0 0 32px rgba(103,232,249,0.18),
-    0 8px 28px rgba(0,0,0,0.45),
-    inset 0 1px 0 rgba(255,255,255,0.14);
+    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.08),
+    0 8px 28px rgba(0,0,0,0.45);
 }
-/* Type accent only via the chip - retain --type-c as CSS var per cell for chip use */
-.cell.type-post     { --type-c: #67E8F9; }
-.cell.type-carousel { --type-c: #5EEAD4; }
-.cell.type-story    { --type-c: #C4B5FD; }
-.cell.type-reel     { --type-c: #FDA4AF; }
+/* Type accent: --type-c for chip color, --type-rgb for cell tint */
+.cell.type-post     { --type-c: #00B4F0; --type-rgb: 0,180,240; }
+.cell.type-carousel { --type-c: #34D399; --type-rgb: 52,211,153; }
+.cell.type-story    { --type-c: #FCD34D; --type-rgb: 252,211,77; }
+.cell.type-reel     { --type-c: #FFB68A; --type-rgb: 255,182,138; }
 .cell.has-content:hover {
-  background:
-    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
-  border-color: rgba(255,255,255,0.7);
+  background: rgba(var(--type-rgb, 0,180,240), 0.22);
+  border-color: rgba(var(--type-rgb, 0,180,240), 0.90);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,0.15),
-    0 0 36px rgba(255,255,255,0.1),
+    0 0 0 1px rgba(var(--type-rgb, 0,180,240), 0.20),
+    0 0 24px rgba(var(--type-rgb, 0,180,240), 0.30),
     0 16px 40px rgba(0,0,0,0.55),
     inset 0 1px 0 rgba(255,255,255,0.25);
   transform: translateY(-2px);
@@ -515,6 +499,29 @@ body.view-mode .cell-status {
   background: rgba(103,232,249,0.20) !important;
   box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 26px rgba(103,232,249,0.5) !important;
   transform: scale(1.03);
+}
+/* Iron rule visual: hovering past date during drag = blocked */
+.cell.drop-blocked {
+  border-color: rgba(239,68,68,0.55) !important;
+  background: rgba(239,68,68,0.10) !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+.cell.drop-blocked::after {
+  content: 'תאריך עבר ✕';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #DC2626;
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 20;
 }
 .cell.drop-target.saturday,
 .cell.drop-target.holiday {
@@ -658,17 +665,17 @@ body.view-mode .cell-status {
   gap: 6px;
   width: 100%;
 }
+/* TV-dashboard PILL: tinted bg + colored text + colored border (NOT solid bg). */
 .cell-type-chip {
   font-family: var(--font-he);
   font-size: 10px;
-  font-weight: 700;
-  color: #0B1220;
-  background: var(--type-c);
-  border: none;
+  font-weight: 600;
+  color: var(--type-c);
+  background: rgba(var(--type-rgb, 0,180,240), 0.13);
+  border: 1px solid rgba(var(--type-rgb, 0,180,240), 0.50);
   padding: 3px 12px;
   border-radius: 999px;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
+  letter-spacing: 0.02em;
 }
 .cell-warning {
   font-size: 11px;
@@ -1325,25 +1332,22 @@ body.theme-uria .month-picker-label { color: #C4B5FD; }
 body.theme-uria .month-select { color: #FAFAFA; }
 body.theme-uria .month-select option { background: #160730; color: #FAFAFA; }
 body.theme-uria .month-picker-arrow { color: #22D3EE; }
-body.theme-uria .share-btn {
-  color: #0A0418;                         /* Dark text on FLAT tangerine */
-  background: #FF6B35;                    /* Brand tangerine - solid */
-  border-color: #FF6B35;
-  font-weight: 800;
-}
-body.theme-uria .share-btn:hover {
-  background: #FF8A65;
-  border-color: #FF8A65;
-}
+/* Uria buttons - IDENTICAL pair: both filled brand tangerine.
+   Share + PDF look exactly the same. Single visual language. */
+body.theme-uria .share-btn,
 body.theme-uria .pdf-btn {
-  color: #FF6B35;                         /* Tangerine outline variant for contrast */
-  background: rgba(255,107,53,0.06);
-  border-color: rgba(255,107,53,0.50);
-  font-weight: 800;
+  color: #FAFAFA !important;
+  background: #FF6B35 !important;
+  border: 1px solid #FF6B35 !important;
+  font-family: 'Rubik', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  padding: 7px 16px !important;
 }
+body.theme-uria .share-btn:hover,
 body.theme-uria .pdf-btn:hover {
-  background: rgba(255,107,53,0.18);
-  border-color: #FF6B35;
+  background: #FF8A65 !important;
+  border-color: #FF8A65 !important;
 }
 body.theme-uria .h1-label { color: #FAFAFA; background: transparent; padding: 0; }
 body.theme-uria .header-titles .count-pill {
@@ -1465,28 +1469,29 @@ body.theme-uria .h1-label {
 }
 body.theme-uria .h1-sep {
   display: inline-flex !important;
-  align-items: center;
+  align-items: center;          /* Vertically center with text */
   justify-content: center;
   width: auto !important;
-  height: auto !important;
+  height: 1em !important;        /* Match h1 line-box so × sits on baseline like a hyphen */
   background: transparent !important;
   box-shadow: none !important;
-  margin: 0 8px !important;
+  margin: 0 10px !important;
 }
 body.theme-uria .h1-sep .x-box-mini {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
-  color: #FF6B35;             /* Brand tangerine × — bigger, playful */
+  color: #FF6B35;             /* Brand tangerine × acting as a hyphen separator */
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 900;
-  font-size: 40px;            /* Big and fun (was 24) */
-  line-height: 0.7;
+  font-weight: 700;
+  font-size: 28px;             /* Sits on baseline like an em-dash, not floating */
+  line-height: 1;
   letter-spacing: 0;
-  transform: translateY(2px);
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 body.theme-uria .h1-sep .x-box-mini:hover {
-  transform: translateY(2px) rotate(90deg);
+  transform: rotate(90deg);
 }
 body.theme-uria .h1-client {
   color: #FAFAFA;
@@ -1529,14 +1534,18 @@ body.theme-uria .footer-built {
   letter-spacing: 0.18em;
 }
 body.theme-uria .footer-x {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: #FF6B35;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 900;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 22px;
   line-height: 1;
-  margin: 0 2px;
+  margin: 0 4px;
+  height: 1em;             /* Snap to baseline like a separator */
+  vertical-align: middle;
 }
 body.theme-uria .footer-brand {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1545,6 +1554,21 @@ body.theme-uria .footer-brand {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-size: 14px;
+  text-decoration: none;
+}
+body.theme-uria .footer-link-wa {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  color: #FAFAFA;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+body.theme-uria .footer-link-wa:hover {
+  color: #FF6B35;
+  border-bottom-color: #FF6B35;
 }
 body.theme-uria .footer-period {
   display: inline-block;
@@ -1715,7 +1739,7 @@ body.theme-uria .modal-section h3 {
     <div class="legend">
       <div class="legend-group">
         <span class="legend-label">סוג תוכן</span>
-        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
+        <span class="legend-chip"><span class="sw" style="background:#00B4F0;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#34D399;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#FCD34D;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FFB68A;"></span>רילס</span>
       </div>
       <div class="legend-divider"></div>
       <div class="legend-group">
@@ -2461,7 +2485,7 @@ body.theme-uria .modal-section h3 {
     
   </div>
 
-  <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><span class="footer-brand">Uria Berman</span><span class="footer-period">.</span></div>
+  <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%21%20%D7%A8%D7%90%D7%99%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%94%D7%92%D7%90%D7%A0%D7%98%20%D7%A9%D7%A2%D7%A9%D7%99%D7%AA%2C%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%9C%D7%93%D7%91%D7%A8." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
 </div>
 
 <div class="modal-bg" id="modal">
@@ -2469,7 +2493,7 @@ body.theme-uria .modal-section h3 {
 </div>
 
 <script>
-const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1,000 בחודש", "short_explanation": "בוחרים בנתון התהליך המתמשך - 1,000 פצועים חדשים מצטרפים לטיפול אגף השיקום מדי חודש. 33 ביום.", "source": "כלכליסט (מצטט אגף השיקום) | calcalist.co.il/local_news/article/eec33ub7s", "status": "בעבודה"}, {"num": 2, "date": "2026-05-21", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "שירה (מייצג): השנה שלא ישנתי", "short_explanation": "פתיחה רכה של עמוד \"קולות מהשטח\" לתקופה. בת זוג של פצוע - הקבוצה הכי מוסתרת מבני המשפחה.", "source": "", "status": "בעבודה"}, {"num": 3, "date": "2026-05-22", "day": "ו' - ערב שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "10 הדברות של בן משפחת פצוע", "short_explanation": "חג שבועות = חג קבלת תורה, חג של 10 הדברות. ניקח את הסמליות החגיגית ונייצר 10 הדברות חדשות - 10 משפטים שכל בן משפחה של פצוע צריך לזכור.", "source": "", "status": "בעבודה"}, {"num": 4, "date": "2026-05-23", "day": "ש' - שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך השנה?", "short_explanation": "יום שני של שבועות. במקום עוד פוסט תוכן - פוסט engagement.", "source": "", "status": "בעבודה"}, {"num": 5, "date": "2026-05-24", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8.3 מיליארד מול 12 טיפולים", "short_explanation": "תקציב אגף השיקום עלה ב-53% ב-2026 ועומד על 8.3 מיליארד שקל. בו זמנית, אמא של פצוע מקבלת 12 טיפולים פסיכולוגיים.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-05-25", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "מי שואל את האמא?", "short_explanation": "מקור הפוסט הוא הנתון \"412,000 בני משפחה דרגה ראשונה מול 11,500 שמקבלים מענה\". 30 שניות motion graphics על רקע כהה.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-05-26", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני לא מרגישה אשמה שאני לא חולה?\"", "short_explanation": "פעם בשבוע, יום ג', שאלה אנונימית מהפורומים + תשובה קצרה. הפינה בונה ציפייה ושייכות.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-05-28", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "25,274 ילדים", "short_explanation": "פוסט שני בסדרה - אגרוף רגשי. הדור הצעיר.", "source": "המוסד לביטוח לאומי | btl.gov.il/benefits/Victims_of_Hostilities/Pages/default.aspx", "status": "בעבודה"}, {"num": 9, "date": "2026-05-30", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "פורום אחים - דיווח שטח", "short_explanation": "דיווח מהשטח של מפגש פורום אחים שהתקיים השבוע. סיכום חם וקצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-05-31", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "חודש בריאות נפש נסגר. אצלנו זה כל חודש.", "short_explanation": "מאי הוא חודש המודעות לבריאות נפש בעולם (Mental Health Awareness Month). הוא נגמר.", "source": "", "status": "בעבודה"}, {"num": 11, "date": "2026-06-01", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "31,000 פצועי נפש", "short_explanation": "פוסט שלישי בסדרה. נתון רשמי ומדהים מאגף השיקום: 31,000 ישראלים מטופלים היום על פגיעות נפש.", "source": "אגף השיקום מש\"ב, יום ההוקרה 2025 | publichealth.doctorsonly.co.il/2025/12/360044/", "status": "בעבודה"}, {"num": 12, "date": "2026-06-02", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?\"", "short_explanation": "הפינה השבועית, שאלה מס' 2. הפעם מאמא של פצוע, שמתמודדת עם ילדים נוספים שמרגישים שקופים בגלל ההתעסקות בפצוע.", "source": "", "status": "בעבודה"}, {"num": 13, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "אבא לא בוכה", "short_explanation": "רייל שני בסדרה. 45 שניות.", "source": "", "status": "בעבודה"}, {"num": 14, "date": "2026-06-05", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אחים ואחיות - אין להם שורה בחוק", "short_explanation": "הפעם בהרחבה: אחים ואחיות של פצועי צה\"ל אינם מופיעים בחוק הנכים כזכאים לטיפול נפשי במימון המדינה. רק במקרים חריגים.", "source": "Ynet (מצטט תשובה רשמית של מש\"ב) | ynet.co.il/laisha/article/sjt0wo2z1l", "status": "בעבודה"}, {"num": 15, "date": "2026-06-06", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "גיא (מייצג), אח של פצוע", "short_explanation": "עדות מייצגת של אח של פצוע. גיא בן 19, אחיו הגדול נפצע ב-7.10.", "source": "", "status": "בעבודה"}, {"num": 16, "date": "2026-06-07", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "1 מ-7 בני זוג", "short_explanation": "פוסט רביעי בסדרה. נתון מבוסס מחקרי אורך peer-reviewed של פרופ' רחל דקל וצבי סולומון - מובילי המחקר העולמיים בפוסט-טראומה משנית.", "source": "PMC peer-reviewed - דקל וסולומון | pmc.ncbi.nlm.nih.gov/articles/PMC2080512/", "status": "בעבודה"}, {"num": 17, "date": "2026-06-08", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפעם האחרונה שלא קמתי באמצע הלילה?\"", "short_explanation": "הפינה השבועית, שאלה מס' 3. מבת זוג של פצוע נפש.", "source": "", "status": "בעבודה"}, {"num": 18, "date": "2026-06-10", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "8 אבות בחדר. לראשונה.", "short_explanation": "דיווח שטח על פתיחת פורום האבות. עד עכשיו, אבות הגיעו רק לפורום ההורים המעורב, ולפעמים לא הגיעו בכלל.", "source": "", "status": "בעבודה"}, {"num": 19, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "₪46 לשעה", "short_explanation": "רייל שלישי. 30 שניות motion על נתון אדווקסי-כלכלי: ₪46 לשעת ליווי סיעודי לפצוע 100%+.", "source": "", "status": "בעבודה"}, {"num": 20, "date": "2026-06-12", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "דיווח שטח מהפורום השבועי", "short_explanation": "דיווח שטח רגיל מהפורום השבועי - \"חמישי בנחלים\". פעילות עם משפחות שמגיעות באופן קבוע.", "source": "", "status": "בעבודה"}, {"num": 21, "date": "2026-06-13", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מאיה, 7, ציירה את אבא", "short_explanation": "עדות חזותית. ילדים של פצועים הם הקבוצה הכי שקופה.", "source": "", "status": "בעבודה"}, {"num": 22, "date": "2026-06-14", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "873 בכיסא גלגלים", "short_explanation": "פוסט חמישי בסדרה - הקונקרטי ביותר. 873 פצועי צה\"ל מטופלים היום בכיסא גלגלים.", "source": "אגף השיקום + מקור ראשון | makorrishon.co.il/news/defence/article/219969", "status": "בעבודה"}, {"num": 23, "date": "2026-06-16", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "בראש חודש סופרים. גם אנחנו.", "short_explanation": "פוסט סיכום חודשי לראש חודש תמוז. החודש שבר אדוות לעצמנו, ומה הצלחנו השבוע/החודש - בלי דרמה, בלי המעטה.", "source": "", "status": "בעבודה"}, {"num": 24, "date": "2026-06-17", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"איך אני מתחיל יום שלא תלוי בו?\"", "short_explanation": "הפינה השבועית #4. הפעם מאבא של פצוע.", "source": "", "status": "בעבודה"}, {"num": 25, "date": "2026-06-18", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "60 דקות בשבוע", "short_explanation": "רייל #4 בסדרה. 45 שניות motion על נתון אדווקסי קשה: בני זוג של פצועי נפש מקבלים מהמדינה רק 60 דקות של טיפול נפשי בשבוע.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 26, "date": "2026-06-19", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "60 דקות בשבוע", "short_explanation": "מבוסס על הקופי המוכן מהקובץ של היום (פוסט 09 - \"ידעתם ש...\"). הקופי הראשי קצר ומדויק.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 27, "date": "2026-06-20", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מתנדבת השבוע", "short_explanation": "דיוקן מתנדב/ת בקהילה. השבוע - מי שמגיעה כל חמישי לפעילות.", "source": "", "status": "בעבודה"}, {"num": 28, "date": "2026-06-21", "day": "א' - יום אבא", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "אבא של פצוע - 24/7", "short_explanation": "יום אבא הבינלאומי (יום ראשון השלישי של יוני בארה\"ב). אדוות לוקחת את הזווית: אבא של פצוע הוא אבא 24/7 - הוא לא רק האבא של הילדים שלו, הוא הופך לאבא של הבית, לאבא של ההחלטות הכלכליות, לאבא של ההסעות...", "source": "", "status": "בעבודה"}, {"num": 29, "date": "2026-06-22", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "5 שנים אחרי", "short_explanation": "הפוסט השישי והאחרון בסדרת \"מאחורי המספרים יש אדוות\". מבוסס על הקופי המוכן (פוסט 05) - מחקר אורך peer-reviewed שעקב אחרי הורי לוחמים שהשתתפו בלחימה הפעילה.", "source": "European Journal of Psychotraumatology, 2023 | tandfonline.com/doi/full/10.1080/20008066.2023.2235983", "status": "בעבודה"}, {"num": 30, "date": "2026-06-23", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "\"מתי הפסקתי לבכות מול הילדים? וזה טוב?\"", "short_explanation": "הפינה השבועית האחרונה לתקופה. הפעם מאמא של פצוע, שמתמודדת עם השאלה - מתי הפסיקה לבכות מול הילדים?", "source": "", "status": "בעבודה"}, {"num": 31, "date": "2026-06-25", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FDA4AF", "type_soft": "rgba(253,164,175,0.14)", "title": "6 מספרים. 6 שבועות. סיפור אחד.", "short_explanation": "סיכום של 6 הפוסטים של \"מאחורי המספרים יש אדוות\". 60 שניות.", "source": "", "status": "בעבודה"}, {"num": 32, "date": "2026-06-26", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "תורם מספר", "short_explanation": "הקול הראשון מהקהל שמעבר לקהילה הפנימית. תורם של אדוות (מייצג) מספר למה הוא תורם.", "source": "", "status": "בעבודה"}, {"num": 33, "date": "2026-06-28", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "כולם מטפלים בפצוע. אנחנו במשפחה.", "short_explanation": "פוסט בידול מותגי קלאסי. מציג את ההבדל בין אדוות לבין כל הארגונים האחרים שעוסקים בפצועי צה\"ל.", "source": "ספר המותג של אדוות (V1, 12.4.26)", "status": "בעבודה"}, {"num": 34, "date": "2026-06-30", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה ראינו ב-6 שבועות", "short_explanation": "פוסט סגירה לתקופה. 30 ביוני.", "source": "", "status": "בעבודה"}];
+const ITEMS_DATA = [{"num": 1, "date": "2026-05-20", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "1,000 בחודש", "short_explanation": "בוחרים בנתון התהליך המתמשך - 1,000 פצועים חדשים מצטרפים לטיפול אגף השיקום מדי חודש. 33 ביום.", "source": "כלכליסט (מצטט אגף השיקום) | calcalist.co.il/local_news/article/eec33ub7s", "status": "בעבודה"}, {"num": 2, "date": "2026-05-21", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "שירה (מייצג): השנה שלא ישנתי", "short_explanation": "פתיחה רכה של עמוד \"קולות מהשטח\" לתקופה. בת זוג של פצוע - הקבוצה הכי מוסתרת מבני המשפחה.", "source": "", "status": "בעבודה"}, {"num": 3, "date": "2026-05-22", "day": "ו' - ערב שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "10 הדברות של בן משפחת פצוע", "short_explanation": "חג שבועות = חג קבלת תורה, חג של 10 הדברות. ניקח את הסמליות החגיגית ונייצר 10 הדברות חדשות - 10 משפטים שכל בן משפחה של פצוע צריך לזכור.", "source": "", "status": "בעבודה"}, {"num": 4, "date": "2026-05-23", "day": "ש' - שבועות", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מה הביכורים שלך השנה?", "short_explanation": "יום שני של שבועות. במקום עוד פוסט תוכן - פוסט engagement.", "source": "", "status": "בעבודה"}, {"num": 5, "date": "2026-05-24", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "8.3 מיליארד מול 12 טיפולים", "short_explanation": "תקציב אגף השיקום עלה ב-53% ב-2026 ועומד על 8.3 מיליארד שקל. בו זמנית, אמא של פצוע מקבלת 12 טיפולים פסיכולוגיים.", "source": "", "status": "בעבודה"}, {"num": 6, "date": "2026-05-25", "day": "ב'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "מי שואל את האמא?", "short_explanation": "מקור הפוסט הוא הנתון \"412,000 בני משפחה דרגה ראשונה מול 11,500 שמקבלים מענה\". 30 שניות motion graphics על רקע כהה.", "source": "", "status": "בעבודה"}, {"num": 7, "date": "2026-05-26", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני לא מרגישה אשמה שאני לא חולה?\"", "short_explanation": "פעם בשבוע, יום ג', שאלה אנונימית מהפורומים + תשובה קצרה. הפינה בונה ציפייה ושייכות.", "source": "", "status": "בעבודה"}, {"num": 8, "date": "2026-05-28", "day": "ה'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "25,274 ילדים", "short_explanation": "פוסט שני בסדרה - אגרוף רגשי. הדור הצעיר.", "source": "המוסד לביטוח לאומי | btl.gov.il/benefits/Victims_of_Hostilities/Pages/default.aspx", "status": "בעבודה"}, {"num": 9, "date": "2026-05-30", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "פורום אחים - דיווח שטח", "short_explanation": "דיווח מהשטח של מפגש פורום אחים שהתקיים השבוע. סיכום חם וקצר.", "source": "", "status": "בעבודה"}, {"num": 10, "date": "2026-05-31", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "חודש בריאות נפש נסגר. אצלנו זה כל חודש.", "short_explanation": "מאי הוא חודש המודעות לבריאות נפש בעולם (Mental Health Awareness Month). הוא נגמר.", "source": "", "status": "בעבודה"}, {"num": 11, "date": "2026-06-01", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "31,000 פצועי נפש", "short_explanation": "פוסט שלישי בסדרה. נתון רשמי ומדהים מאגף השיקום: 31,000 ישראלים מטופלים היום על פגיעות נפש.", "source": "אגף השיקום מש\"ב, יום ההוקרה 2025 | publichealth.doctorsonly.co.il/2025/12/360044/", "status": "בעבודה"}, {"num": 12, "date": "2026-06-02", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני מסבירה לאחים הקטנים שאני אוהבת אותם אותו דבר?\"", "short_explanation": "הפינה השבועית, שאלה מס' 2. הפעם מאמא של פצוע, שמתמודדת עם ילדים נוספים שמרגישים שקופים בגלל ההתעסקות בפצוע.", "source": "", "status": "בעבודה"}, {"num": 13, "date": "2026-06-04", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "אבא לא בוכה", "short_explanation": "רייל שני בסדרה. 45 שניות.", "source": "", "status": "בעבודה"}, {"num": 14, "date": "2026-06-05", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "אחים ואחיות - אין להם שורה בחוק", "short_explanation": "הפעם בהרחבה: אחים ואחיות של פצועי צה\"ל אינם מופיעים בחוק הנכים כזכאים לטיפול נפשי במימון המדינה. רק במקרים חריגים.", "source": "Ynet (מצטט תשובה רשמית של מש\"ב) | ynet.co.il/laisha/article/sjt0wo2z1l", "status": "בעבודה"}, {"num": 15, "date": "2026-06-06", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "גיא (מייצג), אח של פצוע", "short_explanation": "עדות מייצגת של אח של פצוע. גיא בן 19, אחיו הגדול נפצע ב-7.10.", "source": "", "status": "בעבודה"}, {"num": 16, "date": "2026-06-07", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "1 מ-7 בני זוג", "short_explanation": "פוסט רביעי בסדרה. נתון מבוסס מחקרי אורך peer-reviewed של פרופ' רחל דקל וצבי סולומון - מובילי המחקר העולמיים בפוסט-טראומה משנית.", "source": "PMC peer-reviewed - דקל וסולומון | pmc.ncbi.nlm.nih.gov/articles/PMC2080512/", "status": "בעבודה"}, {"num": 17, "date": "2026-06-08", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"מתי הפעם האחרונה שלא קמתי באמצע הלילה?\"", "short_explanation": "הפינה השבועית, שאלה מס' 3. מבת זוג של פצוע נפש.", "source": "", "status": "בעבודה"}, {"num": 18, "date": "2026-06-10", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "8 אבות בחדר. לראשונה.", "short_explanation": "דיווח שטח על פתיחת פורום האבות. עד עכשיו, אבות הגיעו רק לפורום ההורים המעורב, ולפעמים לא הגיעו בכלל.", "source": "", "status": "בעבודה"}, {"num": 19, "date": "2026-06-11", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "₪46 לשעה", "short_explanation": "רייל שלישי. 30 שניות motion על נתון אדווקסי-כלכלי: ₪46 לשעת ליווי סיעודי לפצוע 100%+.", "source": "", "status": "בעבודה"}, {"num": 20, "date": "2026-06-12", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "דיווח שטח מהפורום השבועי", "short_explanation": "דיווח שטח רגיל מהפורום השבועי - \"חמישי בנחלים\". פעילות עם משפחות שמגיעות באופן קבוע.", "source": "", "status": "בעבודה"}, {"num": 21, "date": "2026-06-13", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מאיה, 7, ציירה את אבא", "short_explanation": "עדות חזותית. ילדים של פצועים הם הקבוצה הכי שקופה.", "source": "", "status": "בעבודה"}, {"num": 22, "date": "2026-06-14", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "873 בכיסא גלגלים", "short_explanation": "פוסט חמישי בסדרה - הקונקרטי ביותר. 873 פצועי צה\"ל מטופלים היום בכיסא גלגלים.", "source": "אגף השיקום + מקור ראשון | makorrishon.co.il/news/defence/article/219969", "status": "בעבודה"}, {"num": 23, "date": "2026-06-16", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "בראש חודש סופרים. גם אנחנו.", "short_explanation": "פוסט סיכום חודשי לראש חודש תמוז. החודש שבר אדוות לעצמנו, ומה הצלחנו השבוע/החודש - בלי דרמה, בלי המעטה.", "source": "", "status": "בעבודה"}, {"num": 24, "date": "2026-06-17", "day": "ד'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"איך אני מתחיל יום שלא תלוי בו?\"", "short_explanation": "הפינה השבועית #4. הפעם מאבא של פצוע.", "source": "", "status": "בעבודה"}, {"num": 25, "date": "2026-06-18", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "60 דקות בשבוע", "short_explanation": "רייל #4 בסדרה. 45 שניות motion על נתון אדווקסי קשה: בני זוג של פצועי נפש מקבלים מהמדינה רק 60 דקות של טיפול נפשי בשבוע.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 26, "date": "2026-06-19", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "60 דקות בשבוע", "short_explanation": "מבוסס על הקופי המוכן מהקובץ של היום (פוסט 09 - \"ידעתם ש...\"). הקופי הראשי קצר ומדויק.", "source": "אגף השיקום מש\"ב | shikum.mod.gov.il/family/support/therapy", "status": "בעבודה"}, {"num": 27, "date": "2026-06-20", "day": "ש'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מתנדבת השבוע", "short_explanation": "דיוקן מתנדב/ת בקהילה. השבוע - מי שמגיעה כל חמישי לפעילות.", "source": "", "status": "בעבודה"}, {"num": 28, "date": "2026-06-21", "day": "א' - יום אבא", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "אבא של פצוע - 24/7", "short_explanation": "יום אבא הבינלאומי (יום ראשון השלישי של יוני בארה\"ב). אדוות לוקחת את הזווית: אבא של פצוע הוא אבא 24/7 - הוא לא רק האבא של הילדים שלו, הוא הופך לאבא של הבית, לאבא של ההחלטות הכלכליות, לאבא של ההסעות...", "source": "", "status": "בעבודה"}, {"num": 29, "date": "2026-06-22", "day": "ב'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "5 שנים אחרי", "short_explanation": "הפוסט השישי והאחרון בסדרת \"מאחורי המספרים יש אדוות\". מבוסס על הקופי המוכן (פוסט 05) - מחקר אורך peer-reviewed שעקב אחרי הורי לוחמים שהשתתפו בלחימה הפעילה.", "source": "European Journal of Psychotraumatology, 2023 | tandfonline.com/doi/full/10.1080/20008066.2023.2235983", "status": "בעבודה"}, {"num": 30, "date": "2026-06-23", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "\"מתי הפסקתי לבכות מול הילדים? וזה טוב?\"", "short_explanation": "הפינה השבועית האחרונה לתקופה. הפעם מאמא של פצוע, שמתמודדת עם השאלה - מתי הפסיקה לבכות מול הילדים?", "source": "", "status": "בעבודה"}, {"num": 31, "date": "2026-06-25", "day": "ה'", "type_key": "reel", "type_label": "רילס", "type_accent": "#FFB68A", "type_soft": "rgba(255,182,138,0.13)", "title": "6 מספרים. 6 שבועות. סיפור אחד.", "short_explanation": "סיכום של 6 הפוסטים של \"מאחורי המספרים יש אדוות\". 60 שניות.", "source": "", "status": "בעבודה"}, {"num": 32, "date": "2026-06-26", "day": "ו'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "תורם מספר", "short_explanation": "הקול הראשון מהקהל שמעבר לקהילה הפנימית. תורם של אדוות (מייצג) מספר למה הוא תורם.", "source": "", "status": "בעבודה"}, {"num": 33, "date": "2026-06-28", "day": "א'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "כולם מטפלים בפצוע. אנחנו במשפחה.", "short_explanation": "פוסט בידול מותגי קלאסי. מציג את ההבדל בין אדוות לבין כל הארגונים האחרים שעוסקים בפצועי צה\"ל.", "source": "ספר המותג של אדוות (V1, 12.4.26)", "status": "בעבודה"}, {"num": 34, "date": "2026-06-30", "day": "ג'", "type_key": "post", "type_label": "פוסט", "type_accent": "#00B4F0", "type_soft": "rgba(0,180,240,0.13)", "title": "מה ראינו ב-6 שבועות", "short_explanation": "פוסט סגירה לתקופה. 30 ביוני.", "source": "", "status": "בעבודה"}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'עמותת_אדוות';
 
@@ -2562,12 +2586,28 @@ let dragSourceCell = null;
 
 function isViewModeStrict() { return document.body.classList.contains('view-mode'); }
 
+function todayIsoIsrael() {
+  // YYYY-MM-DD in Israel timezone (works in browser without date-fns-tz)
+  const opts = { timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const parts = new Intl.DateTimeFormat('en-CA', opts).formatToParts(new Date());
+  const y = parts.find(p => p.type === 'year').value;
+  const m = parts.find(p => p.type === 'month').value;
+  const d = parts.find(p => p.type === 'day').value;
+  return `${y}-${m}-${d}`;
+}
+
+function isPastIso(iso) {
+  // Iron rule: cannot drop on a date that has already passed chronologically
+  return iso < todayIsoIsrael();
+}
+
 function setupDragAndDrop() {
   if (isViewModeStrict()) return;  // No drag in view mode
 
   document.addEventListener('dragstart', (e) => {
     const cell = e.target.closest('.cell.has-content');
     if (!cell) return;
+    // Iron rule: can't even pick up from past dates (won't have content to move forward)
     dragSourceCell = cell;
     cell.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
@@ -2582,17 +2622,23 @@ function setupDragAndDrop() {
 
   document.addEventListener('dragend', () => {
     document.querySelectorAll('.dragging').forEach(c => c.classList.remove('dragging'));
-    document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
     dragSourceCell = null;
   });
 
   document.addEventListener('dragover', (e) => {
     const cell = e.target.closest('.cell:not(.outside)');
     if (!cell || cell === dragSourceCell) return;
+    // Iron rule: cannot drop on a past date
+    if (isPastIso(cell.dataset.iso)) {
+      cell.classList.add('drop-blocked');
+      e.dataTransfer.dropEffect = 'none';
+      return;
+    }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    document.querySelectorAll('.drop-target').forEach(c => {
-      if (c !== cell) c.classList.remove('drop-target');
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => {
+      if (c !== cell) { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); }
     });
     cell.classList.add('drop-target');
   });
@@ -2601,7 +2647,13 @@ function setupDragAndDrop() {
     e.preventDefault();
     const target = e.target.closest('.cell:not(.outside)');
     if (!target || target === dragSourceCell) {
-      document.querySelectorAll('.drop-target').forEach(c => c.classList.remove('drop-target'));
+      document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
+      return;
+    }
+    // Iron rule: cannot drop on a past date (silent reject - hover already showed it)
+    if (isPastIso(target.dataset.iso)) {
+      target.classList.remove('drop-target');
+      target.classList.remove('drop-blocked');
       return;
     }
 
