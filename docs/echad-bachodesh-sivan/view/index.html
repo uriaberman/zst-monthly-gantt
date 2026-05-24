@@ -2746,7 +2746,11 @@ function openModal(num) {
   if (!it) return;
 
   const status = getLocal(num, 'status', it.status || 'בעבודה');
-  const savedCopy = getLocal(num, 'copy', '');
+  // PRIORITY: localStorage draft (if user has edited locally) → fall back to copy_final from data.json
+  // (the caption extracted from the brief). Otherwise the modal would show empty even though
+  // data.json already has the caption — that's the 24.5.26 regression that lost data.
+  const localCopy = getLocal(num, 'copy', null);
+  const savedCopy = (localCopy !== null && localCopy !== '') ? localCopy : (it.copy_final || '');
   // PRIORITY: file-based media baked into the item at build time (visible to the client).
   // Falls back to localStorage drafts only if no files exist on disk.
   let savedImages;

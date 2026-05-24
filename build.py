@@ -252,9 +252,12 @@ def render_modal_data(items: list) -> str:
             'status': it['status'],
             'media_files': it.get('media_files', []),
             # Visual copy per slide — the TEXT that appears ON each visual.
-            # For posts: usually 1 slide entry with {primary, secondary, small}.
-            # For carousels: N entries, first usually has {primary, secondary} (cover), rest have {copy}.
             'slides': it.get('slides', []),
+            # The accompanying caption (קופי נלווה) — the social-post text.
+            # CRITICAL: threaded through so the modal's textarea pre-populates from data.json
+            # when there's no localStorage draft. Otherwise the modal shows empty and the
+            # copy that was extracted from the brief disappears (24.5.26 regression).
+            'copy_final': it.get('copy_final', ''),
         })
     return json.dumps(slim, ensure_ascii=False)
 
@@ -3197,7 +3200,11 @@ function openModal(num) {
   if (!it) return;
 
   const status = getLocal(num, 'status', it.status || 'בעבודה');
-  const savedCopy = getLocal(num, 'copy', '');
+  // PRIORITY: localStorage draft (if user has edited locally) → fall back to copy_final from data.json
+  // (the caption extracted from the brief). Otherwise the modal would show empty even though
+  // data.json already has the caption — that's the 24.5.26 regression that lost data.
+  const localCopy = getLocal(num, 'copy', null);
+  const savedCopy = (localCopy !== null && localCopy !== '') ? localCopy : (it.copy_final || '');
   // PRIORITY: file-based media baked into the item at build time (visible to the client).
   // Falls back to localStorage drafts only if no files exist on disk.
   let savedImages;
