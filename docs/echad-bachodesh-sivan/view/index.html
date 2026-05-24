@@ -1,0 +1,2978 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>אחד בחודש | גאנט 17.5 - 15.6.2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Theme: zeliger */
+  --bg:        #07101F;
+  --paper:     #0F1A2E;
+  --paper-2:   #14223A;
+  --paper-3:   #0C1828;
+  --paper-4:   #18253F;
+  --ink:       #F1F5F9;
+  --ink-soft:  #94A3B8;
+  --ink-faint: #475569;
+  --ink-mute:  #64748B;
+  --border:    #1E2D45;
+  --border-soft: #182338;
+  --accent-cyan: #67E8F9;
+  --accent-primary: #67E8F9;
+  --accent-secondary: #A78BFA;
+  --accent-warm: #FB7185;
+  --gold:      #FACC15;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+  --font-he: 'Rubik', system-ui, -apple-system, sans-serif;
+  --font-en: 'Inter', system-ui, -apple-system, sans-serif;
+  --font: 'Inter', 'Rubik', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; }
+body {
+  font-family: var(--font);
+  direction: rtl;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 24px 32px 36px;
+}
+
+/* Restored Zeliger header: glass panel with cyan accent strip */
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 30px;
+  gap: 32px;
+  background:
+    linear-gradient(90deg, rgba(103,232,249,0.07) 0%, rgba(103,232,249,0.02) 50%, transparent 100%),
+    var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md), 0 0 40px rgba(103,232,249,0.04);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent-cyan) 0%, rgba(103,232,249,0.3) 100%);
+  box-shadow: 0 0 14px rgba(103,232,249,0.55);
+}
+.header-meta-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  opacity: 0.95;
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  filter: invert(1) hue-rotate(180deg) brightness(1.05);
+}
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.brand-link:hover { opacity: 0.85; transform: translateY(-1px); }
+body.theme-uria .header-brand { filter: none; }
+.header img.logo {
+  height: 46px;
+  width: auto;
+  display: block;
+}
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;          /* In RTL, flex-end = visual LEFT — block hugs left edge */
+  gap: 4px;
+  flex: 1;
+}
+.header-titles h1 {
+  margin: 0;
+  font-family: var(--font-he);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;                /* Title flows naturally RTL: גאנט חודשי · שליחות הוראה reads right-to-left */
+}
+.period-mini {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+.period-mini .period-greg {
+  font-family: var(--font-he);
+  color: var(--accent-cyan);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.period-mini .period-dot {
+  color: var(--ink-faint);
+  font-weight: 400;
+  opacity: 0.6;
+}
+.period-mini .period-heb {
+  font-family: var(--font-he);
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+body.theme-uria .period-mini .period-greg { color: #C4B5FD; }
+body.theme-uria .period-mini .period-heb { color: #FF8A65; }
+body.theme-uria .period-mini .period-dot { color: rgba(255,255,255,0.35); }
+.h1-label {
+  color: var(--accent-cyan);
+  font-weight: 700;
+  font-size: 26px;
+}
+.h1-sep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6px;
+  height: 6px;
+  background: var(--accent-cyan);
+  color: transparent;
+  font-size: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(103,232,249,0.55);
+  margin: 0 4px;
+}
+.h1-client { color: var(--ink); font-size: 26px; font-weight: 700; }
+.header-titles .period {
+  font-family: var(--font-en);
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.header-titles .hint {
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.01em;
+}
+.header-hint {
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.01em;
+  margin-top: 2px;
+}
+.share-btn,
+.pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  color: #FACC15;                         /* Restored yellow (previous version) */
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.40);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.share-btn:hover,
+.pdf-btn:hover {
+  background: rgba(250,204,21,0.20);
+  border-color: #FACC15;
+}
+.share-btn.copied {
+  background: rgba(34,197,94,0.18);
+  border-color: #22C55E;
+  color: #22C55E;
+}
+.share-btn.disabled,
+.share-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(148,163,184,0.08);
+  border-color: rgba(148,163,184,0.30);
+  color: var(--ink-mute);
+}
+.share-btn.disabled:hover { background: rgba(148,163,184,0.08); border-color: rgba(148,163,184,0.30); }
+.restore-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: #FBBF24;
+  background: rgba(251,191,36,0.10);
+  border: 1px solid rgba(251,191,36,0.35);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.restore-btn.visible { display: inline-flex; }
+.restore-btn:hover {
+  background: rgba(251,191,36,0.20);
+  border-color: #FBBF24;
+}
+.header-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+/* .pdf-btn merged into .share-btn rule above */
+/* Print styles - PDF download via browser print */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .control-cluster, .modal-bg, .modal { display: none !important; }
+  .header-hint { display: none !important; }
+  .cell.has-content { box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell { box-shadow: none !important; }
+  .controls { page-break-after: avoid; }
+  .month { page-break-inside: avoid; box-shadow: none !important; border: 1px solid #999 !important; }
+  .cell-open { display: none; }
+  .footer { background: #FFFFFF !important; color: #666 !important; }
+}
+body.view-mode .restore-btn { display: none !important; }
+body.view-mode .cell.has-content { cursor: pointer; }
+body.view-mode .cell[draggable] { -webkit-user-drag: none; }
+/* In view-mode: hide share/restore buttons + edit hint, show a badge */
+body.view-mode .share-btn,
+body.view-mode .restore-btn,
+body.view-mode .header-hint { display: none !important; }
+body.view-mode .control-cluster::before {
+  content: 'מצב צפייה · ללא עריכה';
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-inline-end: 6px;
+}
+body.theme-uria.view-mode .control-cluster::before {
+  color: #FF6B35;
+  background: rgba(255,107,53,0.08);
+  border-color: rgba(255,107,53,0.40);
+}
+/* In view-mode: hide status dropdown in cells, show as static pill */
+body.view-mode .cell-status {
+  pointer-events: none;
+  appearance: none;
+  background-image: none;
+  padding-left: 9px;
+}
+
+/* CONTROLS ROW: legend (right in RTL) + cluster of action buttons + month-picker (left in RTL) */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.control-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* MONTH PICKER (dropdown, left side) */
+.month-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 12px 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.month-picker:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px var(--accent-cyan), 0 0 16px rgba(103,232,249,0.18);
+}
+.month-picker-label {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.month-select {
+  font-family: var(--font-he);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 4px 4px 4px 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  direction: rtl;
+  text-align: right;
+  min-width: 110px;
+}
+.month-select option {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-he);
+}
+.month-picker-arrow {
+  color: var(--accent-cyan);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* LEGEND */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 8px 16px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.legend-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+.legend-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.legend-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  background: rgba(148,163,184,0.08);
+  border-radius: 8px;
+  text-transform: none;
+}
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink);
+}
+.legend-chip .sw {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+.legend-chip .sw.round { border-radius: 50%; }
+
+/* MONTH (one at a time via tabs) */
+.month {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px 20px;
+  box-shadow: var(--shadow-md);
+  display: none;
+}
+.month.active { display: block; }
+
+/* WEEKDAY HEADER */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.wd {
+  text-align: center;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 4px 0 6px;
+  letter-spacing: 0.04em;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* CELL - whole cell is the content card. Type color tints the whole cell. */
+.cell {
+  position: relative;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 158px;
+  padding: 10px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+.cell:hover {
+  border-color: rgba(148,163,184,0.4);
+  transform: translateY(-1px);
+}
+
+/* Type-tinted cells (content present) */
+.cell.has-content {
+  cursor: pointer;
+}
+/* Uniform CYAN glow on all content cells (original design — type differentiation via chip only). */
+.cell.has-content {
+  background:
+    linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+  border-color: rgba(103,232,249,0.55);
+  box-shadow:
+    0 0 0 1px rgba(103,232,249,0.10),
+    0 0 32px rgba(103,232,249,0.18),
+    0 8px 28px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+}
+/* Type accent via the chip only — original family */
+.cell.type-post     { --type-c: #67E8F9; }
+.cell.type-carousel { --type-c: #5EEAD4; }
+.cell.type-story    { --type-c: #C4B5FD; }
+.cell.type-reel     { --type-c: #FDA4AF; }
+.cell.has-content:hover {
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.22) 55%, rgba(255,255,255,0.12) 100%);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.15),
+    0 0 36px rgba(255,255,255,0.1),
+    0 16px 40px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+.cell.has-content { cursor: grab; }
+.cell.has-content:active { cursor: grabbing; }
+.cell.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+.cell.drop-target {
+  border-color: var(--accent-cyan) !important;
+  background: rgba(103,232,249,0.20) !important;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 26px rgba(103,232,249,0.5) !important;
+  transform: scale(1.03);
+}
+/* Iron rule visual: hovering past date during drag = blocked */
+.cell.drop-blocked {
+  border-color: rgba(239,68,68,0.55) !important;
+  background: rgba(239,68,68,0.10) !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+.cell.drop-blocked::after {
+  content: 'תאריך עבר ✕';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #DC2626;
+  color: #FFFFFF;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 20;
+}
+.cell.drop-target.saturday,
+.cell.drop-target.holiday {
+  border-color: #FBBF24 !important;
+  box-shadow: 0 0 0 2px #FBBF24, 0 0 26px rgba(251,191,36,0.5) !important;
+}
+.cell.drop-target::after {
+  content: '↓ שחרר כאן';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--accent-cyan);
+  padding: 6px 14px;
+  border-radius: 999px;
+  z-index: 10;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.cell.drop-target.saturday::after,
+.cell.drop-target.holiday::after {
+  content: '⚠ שבת/חג - שחרר אם בכוונה';
+  background: #FBBF24;
+}
+
+.cell.friday:not(.has-content) {
+  background: var(--paper-3);
+}
+.cell.saturday:not(.has-content) {
+  background: rgba(251,191,36,0.03);
+  border-color: rgba(251,191,36,0.14);
+}
+.cell.outside {
+  background: transparent !important;
+  border-color: var(--border-soft) !important;
+}
+.cell.outside .cell-head { opacity: 0.35; }
+.cell.outside .cell-body { display: none; }
+.cell.outside .cell-num,
+.cell.outside .cell-heb { color: var(--ink-faint); }
+
+.cell.holiday::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 14px 14px 0 0;
+  border-color: var(--gold) transparent transparent transparent;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Today indicator - distinct from cell type colors. Default = amber-yellow for Zeliger.
+   Badge appears AS A FLOATING TAB above the cell (doesn't overlap Hebrew date). */
+.cell.is-today {
+  border-color: #FACC15 !important;
+  box-shadow: 0 0 0 2px #FACC15, 0 0 32px rgba(250,204,21,0.5) !important;
+  animation: today-pulse 2.5s ease-in-out infinite;
+  overflow: visible !important;
+}
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px #FACC15, 0 0 24px rgba(250,204,21,0.4); }
+  50% { box-shadow: 0 0 0 2px #FACC15, 0 0 40px rgba(250,204,21,0.7); }
+}
+.cell.is-today .cell-num {
+  color: #FACC15;
+  font-weight: 700;
+}
+.cell.is-today::after {
+  content: 'היום';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FACC15;
+  color: #0B1220;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(250,204,21,0.45);
+  white-space: nowrap;
+}
+
+/* CELL HEAD: numbers, dates */
+.cell-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(148,163,184,0.1);
+  min-height: 28px;
+}
+.cell-num {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.cell-heb {
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.cell-hol {
+  width: 100%;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+.cell-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  flex: 1;
+  padding-top: 4px;
+}
+
+/* INDIVIDUAL ITEM CARD — each post/story/etc inside a cell is its own draggable card.
+   Lets the user move ONE item without affecting the others on the same day. */
+.cell-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 2px;
+  border-radius: 8px;
+  cursor: grab;
+  transition: all 0.15s ease;
+}
+.cell-item:active { cursor: grabbing; }
+.cell-item.dragging { opacity: 0.4; transform: scale(0.96); }
+.cell.multi-item .cell-item:not(:last-child) {
+  border-bottom: 1px dashed rgba(255,255,255,0.18);
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+.cell.multi-item .cell-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.cell.multi-item .cell-item .cell-footer {
+  margin-left: -8px;
+  margin-right: -8px;
+  margin-bottom: -2px;
+}
+body.view-mode .cell-item { cursor: pointer; }
+body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
+body.theme-uria .cell.multi-item .cell-item:not(:last-child) {
+  border-bottom-color: rgba(255,107,53,0.20);
+}
+
+.cell-type-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+/* Original solid type chip — dark text on bright color */
+.cell-type-chip {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--type-c);
+  border: none;
+  padding: 3px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--type-c) 35%, transparent);
+}
+.cell-warning {
+  font-size: 11px;
+  color: #FBBF24;
+  cursor: help;
+}
+.cell-title {
+  font-family: var(--font-he);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+  text-align: center;
+  padding: 6px 4px 4px;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bottom action zone - FULL-WIDTH tray that hits the cell's outer edges exactly */
+.cell-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: auto;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: -9px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.14);
+  border-top: 1px solid rgba(255,255,255,0.24);
+  width: calc(100% + 20px);
+}
+/* STATUS PILL — single integrated chip: glowing dot + colored text + colored border.
+   The dot is INSIDE the pill, sitting next to the status word ("בעבודה" / "אושר" / etc).
+   Border = current status color. Background = same color @ 12% tint. */
+.cell-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
+  transition: all 0.15s ease;
+}
+.cell-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
+}
+.cell-status {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 12px 0 0;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  color: var(--status-c, #94A3B8);
+  letter-spacing: 0.01em;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  transition: all 0.15s ease;
+}
+.cell-status:focus { outline: none; }
+.cell-status option { background: var(--paper); color: var(--ink); }
+
+.cell-open {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: #0B1220;
+  background: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+  width: 100%;
+  text-align: center;
+}
+.cell-open:hover {
+  background: var(--type-c, #67E8F9);
+  border-color: var(--type-c, #67E8F9);
+  color: #0B1220;
+}
+
+/* (item-card legacy CSS removed - cell IS the card now) */
+
+/* MODAL */
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 16, 31, 0.78);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 40px 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  direction: rtl;
+}
+.modal-head {
+  padding: 26px 32px 22px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+.modal-head-left .modal-pill {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.modal-head-left h2 {
+  margin: 0;
+  font-family: var(--font-he);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.modal-head-left .date-row {
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.modal-head-left .date-row .dot {
+  width: 4px; height: 4px; border-radius: 50%; background: var(--ink-mute);
+}
+/* Modal date block: יום א' · 25.5.26 · ז' סיוון תשפ"ו */
+.modal-publish-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.modal-date-block {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.modal-weekday { color: var(--ink); }
+.modal-greg {
+  font-family: var(--font-en);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.modal-heb {
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 12px;
+}
+/* Separator before status — hyphen in Zeliger, × in Uria.
+   Centered with the adjacent pills (date-block + status-pill ≈ 28px tall). */
+.modal-sep {
+  display: inline-flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-faint);
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  height: 28px;
+  width: 22px;
+  text-align: center;
+  vertical-align: middle;
+}
+.modal-sep-x {
+  color: #FF6B35;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1;
+  /* Same height/align as .modal-sep — stays centered with date + status pills */
+}
+/* Modal status pill: SAME pattern as the cell pill (colored border, dot inside, colored text) */
+.modal-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 10px;
+  border-radius: 999px;
+  border: 2px solid var(--status-c, #94A3B8);
+  background: color-mix(in srgb, var(--status-c, #94A3B8) 12%, transparent);
+}
+.modal-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--status-c, #94A3B8);
+  box-shadow: 0 0 8px var(--status-c, #94A3B8);
+  flex-shrink: 0;
+}
+.modal-status-pill .status-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--status-c, #94A3B8);
+  letter-spacing: 0.01em;
+}
+.modal-status-pill .status-select {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: var(--status-c, #94A3B8);
+  padding: 0 14px 0 0;
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 4px) 50%, calc(100% - 0px) 50%;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+}
+.modal-status-pill .status-select:focus { outline: none; }
+.modal-status-pill .status-select option { background: var(--paper); color: var(--ink); }
+
+.modal-close {
+  background: rgba(148,163,184,0.08);
+  border: 1px solid var(--border);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: rgba(148,163,184,0.18);
+  color: var(--ink);
+}
+
+.modal-body { padding: 22px 32px 32px; }
+
+/* ONE-LINE explanation + source row */
+.modal-explainline {
+  font-family: var(--font-he);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 8px;
+  padding: 14px 18px;
+  background: rgba(103,232,249,0.06);
+  border-right: 3px solid rgba(103,232,249,0.6);
+  border-radius: 8px;
+}
+.modal-source {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+  padding: 0 4px;
+  direction: rtl;
+  text-align: right;
+}
+.modal-source-label {
+  color: var(--ink-mute);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.status-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* PRIMARY ROW: image dropzone (left) + accompanying copy (right) */
+.modal-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+@media (max-width: 820px) { .modal-primary { grid-template-columns: 1fr; } }
+
+/* MEDIA ZONE: multi-slot gallery with per-type aspect ratio (1:1 or 9:16) + lightbox */
+.media-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.media-zone-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.media-zone-label-text { color: var(--ink); }
+.media-zone-spec {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  letter-spacing: 0.04em;
+}
+body.theme-uria .media-zone-spec { color: #FF6B35; }
+/* MEDIA GRID — 5 columns per row, supports up to MAX_MEDIA_SLOTS (10) cards */
+.media-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, 1fr);
+  align-content: start;
+}
+@media (max-width: 720px) {
+  .media-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .media-grid { grid-template-columns: repeat(2, 1fr); }
+}
+/* Each card = slot + actions bar BELOW */
+.media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.media-slot {
+  position: relative;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  background: var(--paper-2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+.media-slot.ratio-1-1 { aspect-ratio: 1 / 1; }
+.media-slot.ratio-9-16 { aspect-ratio: 9 / 16; }
+/* Action bar BELOW each image card */
+.media-actions {
+  display: flex;
+  gap: 6px;
+}
+.media-act {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.media-act svg { width: 12px; height: 12px; }
+.media-act-replace:hover {
+  background: rgba(103,232,249,0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+.media-act-trash:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: #EF4444;
+  color: #EF4444;
+}
+.media-replace-input { display: none; }
+body.theme-uria .media-act { background: rgba(255,255,255,0.03); border-color: #2D1759; color: #C4B5FD; }
+body.theme-uria .media-act-replace:hover { background: rgba(34,211,238,0.14); border-color: #22D3EE; color: #22D3EE; }
+body.theme-uria .media-act-trash:hover { background: rgba(255,107,53,0.14); border-color: #FF6B35; color: #FF6B35; }
+.media-slot.has-image { border-style: solid; border-color: var(--accent-cyan); }
+.media-slot .media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+}
+/* media-remove button removed — replaced by .media-actions bar below the card */
+.media-slot-num {
+  position: absolute;
+  bottom: 6px; right: 6px;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.20);
+  color: #FFFFFF;
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.media-slot-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 12px 10px;
+}
+.media-slot-add:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.06);
+}
+.media-slot-add.drag-over {
+  border-color: var(--accent-cyan);
+  background: rgba(103,232,249,0.14);
+  border-style: solid;
+}
+.media-slot-add .media-file-input { display: none; }
+.media-slot-add .media-add-icon {
+  width: 28px; height: 28px;
+  color: var(--ink-mute);
+}
+.media-slot-add .media-add-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.media-slot-add .media-add-sub {
+  font-family: var(--font-en);
+  font-size: 10px;
+  color: var(--ink-mute);
+  letter-spacing: 0.06em;
+}
+.media-slot-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-empty-text {
+  font-family: var(--font-he);
+  font-size: 12px;
+  color: var(--ink-mute);
+}
+/* Uria overrides for media slots */
+body.theme-uria .media-slot { background: rgba(255,255,255,0.02); border-color: #2D1759; }
+body.theme-uria .media-slot.has-image { border-color: #FF6B35; }
+body.theme-uria .media-slot-add:hover { border-color: #FF6B35; background: rgba(255,107,53,0.06); }
+body.theme-uria .media-slot-add.drag-over { border-color: #FF6B35; background: rgba(255,107,53,0.14); }
+body.theme-uria .media-slot-add .media-add-icon { color: #C4B5FD; }
+body.theme-uria .media-slot-add .media-add-text { color: #C4B5FD; }
+body.theme-uria .media-slot-add .media-add-sub { color: #8B7BA5; }
+
+/* LIGHTBOX (click image → fullscreen view) */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+}
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #FFFFFF;
+  border-radius: 50%;
+  width: 48px; height: 48px;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255,255,255,0.18);
+}
+.lightbox-close { top: 24px; left: 24px; }
+.lightbox-prev { left: 24px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 24px; top: 50%; transform: translateY(-50%); }
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.copy-area {
+  display: flex;
+  flex-direction: column;
+}
+.copy-area label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.copy-area textarea {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 18px;
+  resize: none;
+  flex: 1;
+  min-height: 280px;
+  direction: rtl;
+  text-align: right;
+  transition: border-color 0.15s ease;
+}
+.copy-area textarea:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+}
+.copy-area textarea::placeholder { color: var(--ink-faint); }
+.copy-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.copy-save-btn {
+  font-family: var(--font-he);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0B1220;
+  background: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.01em;
+}
+.copy-save-btn:hover {
+  background: #38BDF8;
+  border-color: #38BDF8;
+}
+.copy-save-btn.is-dirty {
+  background: #FBBF24;
+  border-color: #FBBF24;
+  color: #0B1220;
+}
+.copy-save-btn.saved-flash {
+  background: #22C55E;
+  border-color: #22C55E;
+  color: #0B1220;
+}
+.copy-saved {
+  font-family: var(--font-he);
+  font-size: 11.5px;
+  color: var(--ink-mute);
+  text-align: left;
+  min-height: 14px;
+}
+
+/* View-mode read-only copy area */
+.copy-view {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 280px;
+  white-space: pre-wrap;
+  direction: rtl;
+  text-align: right;
+}
+.dz-empty {
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+/* SECONDARY: original explanation + 2x3 options collapsible */
+.modal-section {
+  margin-bottom: 22px;
+}
+.modal-section:last-child { margin-bottom: 0; }
+.modal-section > h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.explanation {
+  font-family: var(--font-he);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+}
+
+details.collapsible {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--paper-2);
+  margin-bottom: 12px;
+}
+details.collapsible > summary {
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+details.collapsible > summary::-webkit-details-marker { display: none; }
+details.collapsible > summary::after {
+  content: '+';
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+details.collapsible[open] > summary::after { content: '−'; }
+details.collapsible > .pair {
+  padding: 0 18px 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 700px) { details.collapsible > .pair { grid-template-columns: 1fr; } }
+.pair-item {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.pair-item .pair-label {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.pair-item .pair-text {
+  font-family: var(--font-he);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+
+/* DRAFT BAR — appears when there are unpublished local changes */
+.draft-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(250,204,21,0.10);
+  border: 1px solid rgba(250,204,21,0.45);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 14px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 600;
+  color: #FACC15;
+}
+.draft-bar[hidden] { display: none !important; }
+.draft-bar-actions { display: inline-flex; gap: 8px; }
+.draft-bar-publish {
+  background: #FACC15;
+  color: #0B1220;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.draft-bar-publish:hover { background: #EAB308; }
+.draft-bar-discard {
+  background: transparent;
+  color: #FACC15;
+  border: 1px solid rgba(250,204,21,0.45);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.draft-bar-discard:hover { background: rgba(250,204,21,0.10); }
+.draft-bar.publish-busy {
+  background: rgba(103,232,249,0.10); border-color: rgba(103,232,249,0.45); color: var(--accent-cyan);
+}
+.draft-bar.publish-busy .draft-bar-publish {
+  background: var(--accent-cyan); color: var(--bg); cursor: progress; opacity: 0.7;
+}
+.draft-bar.publish-success {
+  background: rgba(52,211,153,0.10); border-color: rgba(52,211,153,0.45); color: #34D399;
+}
+.draft-bar.publish-success .draft-bar-publish {
+  background: #34D399; color: var(--bg);
+}
+.draft-bar.publish-error {
+  background: rgba(239,68,68,0.10); border-color: rgba(239,68,68,0.45); color: #EF4444;
+}
+.draft-bar.publish-error .draft-bar-publish {
+  background: #EF4444; color: #FFFFFF;
+}
+body.theme-uria .draft-bar { background: rgba(255,107,53,0.10); border-color: rgba(255,107,53,0.45); color: #FF8A65; }
+body.theme-uria .draft-bar-publish { background: #FF6B35; color: #FAFAFA; }
+body.theme-uria .draft-bar-publish:hover { background: #FF8A65; }
+body.theme-uria .draft-bar-discard { color: #FF8A65; border-color: rgba(255,107,53,0.45); }
+body.theme-uria .draft-bar-discard:hover { background: rgba(255,107,53,0.10); }
+
+/* FOOTER META: last updated + view-mode badge */
+.footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 10px 4px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  color: var(--ink-mute);
+  border-top: 1px solid var(--border);
+}
+.footer-meta .last-updated {
+  font-family: var(--font-he);
+  font-weight: 500;
+}
+.footer-meta .last-updated #lastUpdatedTime {
+  font-family: var(--font-en);
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 4px;
+}
+.footer-meta .view-mode-badge {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(103,232,249,0.08);
+  border: 1px solid rgba(103,232,249,0.30);
+  color: var(--accent-cyan);
+}
+body.view-mode .footer-meta .view-mode-badge {
+  background: rgba(167,139,250,0.08);
+  border-color: rgba(167,139,250,0.30);
+  color: #A78BFA;
+}
+body.theme-uria .footer-meta .view-mode-badge {
+  background: rgba(34,211,238,0.08);
+  border-color: rgba(34,211,238,0.30);
+  color: #22D3EE;
+}
+body.theme-uria.view-mode .footer-meta .view-mode-badge {
+  background: rgba(255,107,53,0.08);
+  border-color: rgba(255,107,53,0.40);
+  color: #FF6B35;
+}
+
+.footer {
+  margin-top: 12px;
+  text-align: center;
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-brand {
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-inline-start: 6px;
+}
+.footer-link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+.footer-link:hover {
+  color: #FACC15;
+  text-decoration: underline;
+}
+body.theme-uria .footer-link {
+  color: #22D3EE;
+}
+body.theme-uria .footer-link:hover {
+  color: #FF6B35;
+}
+</style>
+</head>
+<body class="theme-zeliger view-mode">
+<div class="page">
+  <header class="header">
+    <div class="header-brand">
+      <a class="brand-link" href="https://zst.co.il/" target="_blank" rel="noopener" title="זליגר שומרון"><img class="logo" src="data:image/png;base64,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" alt="Zeliger Shomron" /></a>
+    </div>
+    <div class="header-titles">
+      <div class="period-mini"><span class="period-greg" id="periodGreg">מאי 2026</span><span class="period-dot">·</span><span class="period-heb" id="periodHeb">אייר תשפ״ו</span></div>
+      <h1><span class="h1-label">גאנט חודשי</span><span class="h1-sep">·</span><span class="h1-client">אחד בחודש</span></h1>
+      <span class="header-hint">לחץ על קוביה לצפייה בפרטים</span>
+    </div>
+  </header>
+
+  
+
+  <div class="controls">
+    
+    <div class="legend">
+      <div class="legend-group">
+        <span class="legend-label">סוג תוכן</span>
+        <span class="legend-chip"><span class="sw" style="background:#67E8F9;"></span>פוסט</span><span class="legend-chip"><span class="sw" style="background:#5EEAD4;"></span>קרוסלה</span><span class="legend-chip"><span class="sw" style="background:#C4B5FD;"></span>סטורי</span><span class="legend-chip"><span class="sw" style="background:#FDA4AF;"></span>רילס</span>
+      </div>
+      <div class="legend-divider"></div>
+      <div class="legend-group">
+        <span class="legend-label">סטטוס</span>
+        <span class="legend-chip"><span class="sw round" style="background:#3B82F6; box-shadow:0 0 6px #3B82F680;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span>
+      </div>
+    </div>
+    
+    <div class="control-cluster">
+      
+      <div class="month-picker"><span class="month-picker-label">חודש</span><select class="month-select" aria-label="בחר חודש"><option value="2026-05" selected>מאי 2026</option><option value="2026-06">יוני 2026</option></select><svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+  </div>
+
+  <div class="months-container">
+    
+    <section class="month active" data-month="2026-05">
+      <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-04-26">
+      <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">ט׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-04-27">
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-04-28">
+      <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״א</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-04-29">
+      <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ב</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-04-30">
+      <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">י״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-05-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">י״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-05-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-05-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-05">
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-06">
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-07">
+      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-05-08">
+      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-05-09">
+      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ב</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-05-10">
+      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-11">
+      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-12">
+      <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ה</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-13">
+      <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-14">
+      <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-05-15">
+      <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">כ״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-05-16">
+      <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">כ״ט</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-05-17">
+      <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">א׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-18">
+      <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ב׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-19">
+      <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ג׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-20">
+      <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ד׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-05-21">
+      <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ה׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday holiday" data-iso="2026-05-22">
+      <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ו׳</div><div class="cell-hol">שבועות</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-05-23">
+      <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ז׳</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-05-24">
+      <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ח׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-post type-post" data-iso="2026-05-25">
+      <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">ט׳</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="1" data-iso="2026-05-25" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">עמך עמי - רות הגיורת</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="1">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="1">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-05-26">
+      <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-05-27">
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-carousel" data-num="2" data-iso="2026-05-27" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">קרוסלה</span>
+            
+          </div>
+          <div class="cell-title">למה אוכלים חלב? - 6 הסברים</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="2">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="2">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-05-28">
+      <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ב</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-05-29">
+      <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-05-30">
+      <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">י״ד</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-05-31">
+      <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="3" data-iso="2026-05-31" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">מזל תאומים - שניים שמתחברים לאחד</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="3">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="3">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell outside" data-iso="2026-06-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-06-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-06-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-06-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside friday" data-iso="2026-06-05">
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside saturday" data-iso="2026-06-06">
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div></div></div>
+    </section>
+    
+    <section class="month" data-month="2026-06">
+      <div class="weekdays"><div class="wd">ראשון</div><div class="wd">שני</div><div class="wd">שלישי</div><div class="wd">רביעי</div><div class="wd">חמישי</div><div class="wd">שישי</div><div class="wd">שבת</div></div>
+      <div class="grid"><div class="week"><div class="cell outside" data-iso="2026-05-31">
+      <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-06-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-carousel" data-num="4" data-iso="2026-06-03" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">קרוסלה</span>
+            
+          </div>
+          <div class="cell-title">הישראליות שב-7 המינים</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="4">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="4">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-05">
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-06">
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-06-07">
+      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="5" data-iso="2026-06-07" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">טקס הביכורים הקיבוצי</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="5">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="5">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-08">
+      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-09">
+      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-06-10">
+      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-carousel" data-num="6" data-iso="2026-06-10" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">קרוסלה</span>
+            
+          </div>
+          <div class="cell-title">חג בלבן - למה אנחנו אוהבים את שבועות</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="6">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="6">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-11">
+      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-12">
+      <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-13">
+      <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-06-14">
+      <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="7" data-iso="2026-06-14" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">מה הביכורים שלך?</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="7">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="7">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-15">
+      <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-16">
+      <div class="cell-head"><div class="cell-num">16</div><div class="cell-heb">א׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-17">
+      <div class="cell-head"><div class="cell-num">17</div><div class="cell-heb">ב׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-18">
+      <div class="cell-head"><div class="cell-num">18</div><div class="cell-heb">ג׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-19">
+      <div class="cell-head"><div class="cell-num">19</div><div class="cell-heb">ד׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-20">
+      <div class="cell-head"><div class="cell-num">20</div><div class="cell-heb">ה׳</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-21">
+      <div class="cell-head"><div class="cell-num">21</div><div class="cell-heb">ו׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-22">
+      <div class="cell-head"><div class="cell-num">22</div><div class="cell-heb">ז׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-23">
+      <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ח׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-24">
+      <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ט׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-25">
+      <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-26">
+      <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י״א</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-27">
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״ב</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell" data-iso="2026-06-28">
+      <div class="cell-head"><div class="cell-num">28</div><div class="cell-heb">י״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-29">
+      <div class="cell-head"><div class="cell-num">29</div><div class="cell-heb">י״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-30">
+      <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">ט״ו</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-01">
+      <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside" data-iso="2026-07-02">
+      <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside friday" data-iso="2026-07-03">
+      <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell outside saturday" data-iso="2026-07-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div></div></div>
+    </section>
+    
+  </div>
+
+  <div class="footer-meta">
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 11:01</span></span>
+    <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
+  </div>
+  <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+const ITEMS_DATA = [{"num": 1, "date": "2026-05-25", "day": "ב", "heb_date": "ט׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "עמך עמי - רות הגיורת", "short_explanation": "המואבייה שהחליטה להיות ישראלית והפכה לסבתא הגדולה של דוד המלך. השתייכות ליהדות היא לפעמים בחירה, לא רק תעודת לידה.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 1", "status": "בעבודה", "media_files": []}, {"num": 2, "date": "2026-05-27", "day": "ד", "heb_date": "י״א סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "למה אוכלים חלב? - 6 הסברים", "short_explanation": "אחרי 3,000 שנה יש תשובה למי ששואל למה כולנו פתאום אוכלים גבינה צהובה. קרוסלה של 7 שקפים שמסבירה את כל הגרסאות בהומור קליל.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 3", "status": "בעבודה", "media_files": []}, {"num": 3, "date": "2026-05-31", "day": "א", "heb_date": "ט״ו סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מזל תאומים - שניים שמתחברים לאחד", "short_explanation": "החודש שבו ניגודים לא מתחרים - הם מתחתנים. סיוון מציג שני שונים שחולקים אותו מקור: לוחות הברית כפולים, רחל ולאה, יעקב ועשו, רות ונעמי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 4", "status": "בעבודה", "media_files": []}, {"num": 4, "date": "2026-06-03", "day": "ד", "heb_date": "י״ח סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "הישראליות שב-7 המינים", "short_explanation": "שבעת המינים הם תעודת זהות חקלאית ואישיותית של עם ישראל. קרוסלה של 9 שקפים: חיטה, שעורה, גפן, תאנה, רימון, זית, תמר - וחיבור לאופי הישראלי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 5", "status": "בעבודה", "media_files": []}, {"num": 5, "date": "2026-06-07", "day": "א", "heb_date": "כ״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "טקס הביכורים הקיבוצי", "short_explanation": "מ-1920 ועד היום, קיבוצי ישראל מקיימים בשבועות את טקס הביכורים: ילדים עם סלי פירות, שירי שדה, שמלות לבנות. נשחזר ונספר על המנהג.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 8", "status": "בעבודה", "media_files": []}, {"num": 6, "date": "2026-06-10", "day": "ד", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "חג בלבן - למה אנחנו אוהבים את שבועות", "short_explanation": "מוטיב החולצה הלבנה והחגיגית מחובר למוטיבים של חג השבועות. קרוסלה: גבינה, מפה, שמלות ביכורים, נרות, חולצה לבנה - והקשר שלהם לחג.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 9", "status": "בעבודה", "media_files": []}, {"num": 7, "date": "2026-06-14", "day": "א", "heb_date": "כ״ט סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך?", "short_explanation": "בעבר ביכורים היו פירות ראשונים שמביאים בשבועות. היום? ילד ראשון, דירה ראשונה, ספר ראשון, חברה ראשונה. שאלה פתוחה לעוקבים: 'מה הביכורים שלך השנה?'", "source": "אחד בחודש - סיוון פ\"ו - רעיון 10", "status": "בעבודה", "media_files": []}];
+const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
+const CLIENT_KEY = 'אחד_בחודש';
+const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
+const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
+const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/echad-bachodesh-sivan/view/';
+const LAST_UPDATED = '24.05.26, 11:01';
+
+const STATUS_COLORS = {
+  'בעבודה': '#3B82F6',
+  'בעיצוב': '#F97316',
+  'ממתין לאישור': '#EAB308',
+  'אושר': '#22C55E',
+};
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
+
+/* ---------- localStorage helpers (per-client, per-item) ---------- */
+function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
+function getLocal(num, field, fallback) {
+  try { return localStorage.getItem(lsKey(num, field)) ?? fallback; } catch (e) { return fallback; }
+}
+function setLocal(num, field, value) {
+  try { localStorage.setItem(lsKey(num, field), value); } catch (e) {}
+}
+
+/* ---------- View mode (baked into HTML at build time + legacy URL ?mode=view) ---------- */
+function isViewMode() {
+  if (VIEW_MODE_BAKED) return true;  // The Viewer HTML always returns true
+  return new URLSearchParams(window.location.search).get('mode') === 'view';
+}
+if (isViewMode()) document.body.classList.add('view-mode');
+
+/* Download as PDF - uses browser print dialog with print-friendly CSS */
+window.downloadPDF = function() {
+  window.print();
+};
+
+/* Share with client = copy the dedicated Viewer URL (different file, frozen, read-only).
+   Adds ?v=<unix-time> cache-buster so the client always lands on the freshly published HTML
+   (without it, GitHub Pages CDN can serve a stale copy for up to ~10 minutes). */
+window.shareView = function(btn) {
+  let url = VIEWER_URL;
+  if (!url) {
+    const base = window.location.href.replace(/[/]?(view[/]?)?(\?.*)?(#.*)?$/, '/');
+    url = base + 'view/';
+  }
+  const sep = url.includes('?') ? '&' : '?';
+  url = `${url}${sep}v=${Date.now()}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.querySelector('span').textContent;
+    btn.querySelector('span').textContent = '✓ הקישור הועתק';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.querySelector('span').textContent = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    prompt('העתק את הקישור הבא ושלח ללקוח:', url);
+  });
+};
+
+/* ===========================================================================
+   PUBLISH WORKFLOW — one-click via GitHub API
+   ===========================================================================
+   When user clicks "פרסם שינויים":
+     1. Collect draft changes from localStorage
+     2. Get GitHub PAT from localStorage (prompt one-time if missing)
+     3. Fetch current data.json from GitHub
+     4. Merge changes into data.json
+     5. Commit via GitHub API (single API call, ~1 second)
+     6. GitHub Action auto-rebuilds HTMLs (~60-90 seconds)
+     7. Pages redeploys
+
+   The user never leaves the Editor URL. Status indicator shows progress.
+   If anything fails: clear error + user can bring the issue to chat. */
+
+const GITHUB_REPO  = 'uriaberman/zst-monthly-gantt';
+const GITHUB_BRANCH = 'main';
+const PAT_STORAGE_KEY = 'gantt:github-pat';
+
+function getStoredPAT() {
+  try { return localStorage.getItem(PAT_STORAGE_KEY) || ''; } catch (e) { return ''; }
+}
+
+function setStoredPAT(token) {
+  try { localStorage.setItem(PAT_STORAGE_KEY, token); } catch (e) {}
+}
+
+function clearStoredPAT() {
+  try { localStorage.removeItem(PAT_STORAGE_KEY); } catch (e) {}
+}
+
+function promptForPAT() {
+  const instructions = (
+    'נדרש GitHub Personal Access Token חד-פעמי.\n\n' +
+    '1. פתח: https://github.com/settings/tokens?type=beta\n' +
+    '2. "Generate new token (fine-grained)"\n' +
+    '3. Repository access: רק zst-monthly-gantt\n' +
+    '4. Permissions: Contents: Read & write\n' +
+    '5. העתק את הטוקן והדבק כאן:'
+  );
+  const token = prompt(instructions, '');
+  if (token && token.trim().length > 10) {
+    setStoredPAT(token.trim());
+    return token.trim();
+  }
+  return null;
+}
+
+async function ghApiRequest(path, opts = {}) {
+  const token = getStoredPAT();
+  if (!token) throw new Error('NO_TOKEN');
+  const r = await fetch(`https://api.github.com${path}`, {
+    ...opts,
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `Bearer ${token}`,
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...(opts.headers || {}),
+    },
+  });
+  if (r.status === 401) { clearStoredPAT(); throw new Error('BAD_TOKEN'); }
+  if (!r.ok) throw new Error(`GH_API_${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */) {
+  const bar = document.getElementById('draftBar');
+  if (!bar) return;
+  const text = bar.querySelector('.draft-bar-text');
+  const publishBtn = bar.querySelector('.draft-bar-publish');
+  if (text) text.textContent = stateText;
+  if (publishBtn) {
+    publishBtn.disabled = kind === 'busy';
+    if (kind === 'busy')        publishBtn.textContent = '⏳ מפרסם…';
+    else if (kind === 'success') publishBtn.textContent = '✅ פורסם';
+    else if (kind === 'error')   publishBtn.textContent = '↻ נסה שוב';
+    else                         publishBtn.textContent = '📤 פרסם שינויים';
+  }
+  bar.classList.toggle('publish-busy',    kind === 'busy');
+  bar.classList.toggle('publish-success', kind === 'success');
+  bar.classList.toggle('publish-error',   kind === 'error');
+}
+
+/* Apply browser draft to the data.json structure that GitHub stores */
+function mergeChangesIntoData(serverData, drafts) {
+  const out = JSON.parse(JSON.stringify(serverData));
+  const byNum = {};
+  out.items.forEach(it => { byNum[String(it.num)] = it; });
+  for (const [numStr, draft] of Object.entries(drafts)) {
+    const it = byNum[numStr];
+    if (!it) continue;
+    if (draft.date)   it.date_iso     = draft.date;
+    if (draft.status) it.status       = draft.status;
+    if (draft.copy)   it.copy_final   = draft.copy;
+  }
+  return out;
+}
+
+window.requestPublish = async function() {
+  const draftChanges = collectDraftChanges();
+  if (Object.keys(draftChanges.items).length === 0) {
+    alert('אין שינויים בטיוטה לפרסום.');
+    return;
+  }
+
+  // 1. Ensure we have a PAT
+  let token = getStoredPAT();
+  if (!token) {
+    token = promptForPAT();
+    if (!token) {
+      alert('פרסום בוטל — אין טוקן.');
+      return;
+    }
+  }
+
+  setPublishStatus('שולח שינויים ל-GitHub…', 'busy');
+
+  try {
+    // 2. Identify which data file we're updating (depends on slug & CLIENT_KEY)
+    //    For now, derive from the URL: /<slug>/ → pilots/<slug>/data.json
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    // pathParts is like ['zst-monthly-gantt', 'shlichut-horaa'] or similar; the slug is the last segment
+    const slug = pathParts[pathParts.length - 1];
+    const dataPath = `pilots/${slug}/data.json`;
+
+    // 3. Fetch current data.json from GitHub (need its SHA to update)
+    const fileMeta = await ghApiRequest(`/repos/${GITHUB_REPO}/contents/${encodeURIComponent(dataPath)}?ref=${GITHUB_BRANCH}`);
+    const currentB64 = fileMeta.content.replace(/\n/g, '');
+    const currentBytes = atob(currentB64);
+    const currentText = decodeURIComponent(escape(currentBytes));
+    const currentData = JSON.parse(currentText);
+
+    // 4. Apply local drafts
+    const newData = mergeChangesIntoData(currentData, draftChanges.items);
+    const newText = JSON.stringify(newData, null, 2);
+    // Base64-encode the UTF-8 text
+    const newB64 = btoa(unescape(encodeURIComponent(newText)));
+
+    // 5. Commit the new data.json
+    const summary = Object.entries(draftChanges.items)
+      .map(([num, d]) => `#${num}: ${Object.keys(d).join('+')}`)
+      .join(', ');
+    await ghApiRequest(`/repos/${GITHUB_REPO}/contents/${encodeURIComponent(dataPath)}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: `${slug}: publish draft (${summary})`,
+        content: newB64,
+        sha: fileMeta.sha,
+        branch: GITHUB_BRANCH,
+      }),
+    });
+
+    // 6. Success on GitHub side — clear local drafts (they're now in the source of truth).
+    discardLocalDraftsSilent();
+    // 7. Now WAIT for the GitHub Action to rebuild + Pages to serve the new HTML
+    //    before we let the user share the link. Otherwise the client sees old content.
+    setShareEnabled(false);
+    const expectedAfter = LAST_UPDATED;  // The CURRENT published_at; new build will be newer
+    pollDeploy(VIEWER_URL || (window.location.pathname + 'view/'), expectedAfter);
+    return;
+
+  } catch (err) {
+    console.error(err);
+    let msg = 'שגיאה בפרסום.';
+    if (err.message === 'NO_TOKEN')   msg = 'הפרסום בוטל — לא הוזן טוקן.';
+    else if (err.message === 'BAD_TOKEN') msg = 'הטוקן פג / נדחה. נסה שוב.';
+    else if (err.message.startsWith('GH_API_')) msg = 'GitHub API החזיר שגיאה: ' + err.message;
+    setPublishStatus(msg + ' לעזרה — חזור לצ\'אט עם Claude.', 'error');
+  }
+};
+
+/* Lock / unlock the "שיתוף" button. Locked = the link still points to stale content. */
+function setShareEnabled(enabled) {
+  const btn = document.getElementById('shareBtn');
+  if (!btn) return;
+  btn.disabled = !enabled;
+  btn.classList.toggle('disabled', !enabled);
+  const span = btn.querySelector('span');
+  if (!enabled) {
+    if (span && !span.dataset.origText) span.dataset.origText = span.textContent;
+    if (span) span.textContent = '⏳ ממתין לפריסה…';
+    btn.title = 'הפריסה עדיין רצה. תוכל לשתף ברגע שהבר ייצבע ירוק.';
+  } else {
+    if (span && span.dataset.origText) { span.textContent = span.dataset.origText; delete span.dataset.origText; }
+    btn.title = 'העתק קישור צפייה ללקוח';
+  }
+}
+
+/* Poll the Viewer URL until its lastUpdatedTime is newer than what we had pre-publish.
+   That's our signal that the GitHub Action finished, Pages redeployed, and the client
+   will now see the new content. Only THEN we re-enable Share. */
+async function pollDeploy(viewerUrl, expectedAfter) {
+  if (!viewerUrl) {
+    setPublishStatus('✅ פורסם. רענן ידנית בעוד כדקה.', 'success');
+    setShareEnabled(true);
+    return;
+  }
+  const start = Date.now();
+  const MAX_WAIT_MS = 5 * 60 * 1000;  // 5 minutes hard ceiling
+  setPublishStatus('⏳ פורסם ל-GitHub. ממתין שה-Action ייצור HTML חדש (כדקה)…', 'busy');
+
+  let attempt = 0;
+  const tick = async () => {
+    attempt++;
+    const elapsed = Math.round((Date.now() - start) / 1000);
+    try {
+      const r = await fetch(viewerUrl + '?nc=' + Date.now(), { cache: 'no-store' });
+      const html = await r.text();
+      const m = html.match(/id="lastUpdatedTime"[^>]*>([^<]+)</);
+      const liveStamp = m ? m[1].trim() : '';
+      if (liveStamp && liveStamp !== expectedAfter) {
+        setPublishStatus(`✅ העדכון חי בכתובת הלקוח (${elapsed} שניות). אפשר לשתף.`, 'success');
+        setShareEnabled(true);
+        return;
+      }
+    } catch (e) { /* network blips: try again */ }
+
+    if (Date.now() - start > MAX_WAIT_MS) {
+      setPublishStatus(`⚠ עברו ${elapsed} שניות והעדכון לא נראה ב-Viewer. בדוק את Actions ב-GitHub.`, 'error');
+      setShareEnabled(true);  // Don't lock forever
+      return;
+    }
+    setPublishStatus(`⏳ ממתין לפריסה… (${elapsed} שניות) — בדרך כלל לוקח 60-90 שניות.`, 'busy');
+    setTimeout(tick, 8000);
+  };
+  setTimeout(tick, 12000);  // First check after 12s (Action checkout + setup takes that long)
+}
+
+/* Clear local drafts without confirmation (called after successful publish) */
+function discardLocalDraftsSilent() {
+  ITEMS_DATA.forEach(it => {
+    try { localStorage.removeItem(lsKey(it.num, 'date_override')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
+  });
+}
+
+window.discardDraft = function() {
+  if (!confirm('לבטל את כל השינויים שטרם פורסמו?')) return;
+  ITEMS_DATA.forEach(it => {
+    try { localStorage.removeItem(lsKey(it.num, 'date_override')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
+    try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
+  });
+  location.reload();
+};
+
+/* Collect all unpublished changes from localStorage into a structured payload */
+function collectDraftChanges() {
+  const items = {};
+  ITEMS_DATA.forEach(it => {
+    const num = it.num;
+    const draft = {};
+    const d = getLocal(num, 'date_override', null);
+    if (d && d !== it.date) draft.date = d;
+    const s = getLocal(num, 'status', null);
+    if (s && s !== it.status) draft.status = s;
+    const c = getLocal(num, 'copy', null);
+    if (c) draft.copy = c;
+    if (Object.keys(draft).length > 0) items[num] = draft;
+  });
+  return { items: items };
+}
+
+/* Show the draft bar whenever there are local changes (Editor only) */
+function updateDraftBar() {
+  if (VIEW_MODE_BAKED) return;  // viewer never shows the bar
+  const bar = document.getElementById('draftBar');
+  if (!bar) return;
+  const ch = collectDraftChanges();
+  const count = Object.keys(ch.items).length;
+  bar.hidden = count === 0;
+  const text = bar.querySelector('.draft-bar-text');
+  if (text && count > 0) {
+    text.textContent = `⚠ יש לך ${count} שינוי${count > 1 ? 'ים' : ''} בטיוטה — הלקוח עדיין לא רואה אותם`;
+  }
+}
+
+/* ---------- Status decoration on cells (read from localStorage) ----------
+   Paints the wrapper .cell-status-pill via CSS var --status-c. Border + dot + text
+   all derive from this single variable, so they stay perfectly in sync. */
+function paintStatus(selectEl) {
+  const status = selectEl.value;
+  const c = STATUS_COLORS[status] || STATUS_COLORS['בעבודה'];
+  const pill = selectEl.closest('.cell-status-pill');
+  if (pill) pill.style.setProperty('--status-c', c);
+  else { selectEl.style.color = c; }
+}
+
+function applyStatusToCells() {
+  document.querySelectorAll('.cell-status').forEach(sel => {
+    const num = parseInt(sel.dataset.num);
+    const status = getLocal(num, 'status', itemsByNum[num]?.status || 'בעבודה');
+    sel.value = status;
+    paintStatus(sel);
+  });
+}
+
+/* Wire cell-status changes */
+document.addEventListener('change', (e) => {
+  if (e.target.classList.contains('cell-status')) {
+    const sel = e.target;
+    const num = parseInt(sel.dataset.num);
+    setLocal(num, 'status', sel.value);
+    paintStatus(sel);
+    updateDraftBar();
+  }
+});
+
+/* ---------- Today highlight ---------- */
+function highlightToday() {
+  const now = new Date();
+  const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
+}
+
+/* ---------- Drag & Drop (item-level) ---------- */
+let dragSourceItem = null;
+function sourceCellOf(item) { return item ? item.closest('.cell') : null; }
+
+function isViewModeStrict() { return document.body.classList.contains('view-mode'); }
+
+function todayIsoIsrael() {
+  // YYYY-MM-DD in Israel timezone (works in browser without date-fns-tz)
+  const opts = { timeZone: 'Asia/Jerusalem', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const parts = new Intl.DateTimeFormat('en-CA', opts).formatToParts(new Date());
+  const y = parts.find(p => p.type === 'year').value;
+  const m = parts.find(p => p.type === 'month').value;
+  const d = parts.find(p => p.type === 'day').value;
+  return `${y}-${m}-${d}`;
+}
+
+function isPastIso(iso) {
+  // Iron rule: cannot drop on a date that has already passed chronologically
+  return iso < todayIsoIsrael();
+}
+
+function setupDragAndDrop() {
+  if (isViewModeStrict()) return;  // No drag in view mode
+
+  // Drag operates on individual .cell-item elements (NOT the whole cell).
+  // This way, if a day has multiple posts, the user can move just one of them.
+  document.addEventListener('dragstart', (e) => {
+    const item = e.target.closest('.cell-item');
+    if (!item) return;
+    dragSourceItem = item;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      num: parseInt(item.dataset.num),
+      iso: item.dataset.iso
+    }));
+  });
+
+  document.addEventListener('dragend', () => {
+    document.querySelectorAll('.dragging').forEach(c => c.classList.remove('dragging'));
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
+    dragSourceItem = null;
+  });
+
+  document.addEventListener('dragover', (e) => {
+    const cell = e.target.closest('.cell:not(.outside)');
+    const srcCell = sourceCellOf(dragSourceItem);
+    if (!cell || cell === srcCell) return;
+    if (isPastIso(cell.dataset.iso)) {
+      cell.classList.add('drop-blocked');
+      e.dataTransfer.dropEffect = 'none';
+      return;
+    }
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => {
+      if (c !== cell) { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); }
+    });
+    cell.classList.add('drop-target');
+  });
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const target = e.target.closest('.cell:not(.outside)');
+    const srcCell = sourceCellOf(dragSourceItem);
+    if (!target || target === srcCell) {
+      document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
+      return;
+    }
+    // Iron rule: cannot drop on a past date (silent reject - hover already showed it)
+    if (isPastIso(target.dataset.iso)) {
+      target.classList.remove('drop-target');
+      target.classList.remove('drop-blocked');
+      return;
+    }
+
+    let data;
+    try { data = JSON.parse(e.dataTransfer.getData('application/json')); }
+    catch (err) { return; }
+
+    const srcNum = data.num;
+    const tgtIso = target.dataset.iso;
+
+    // Warn if dropping on Shabbat or holiday
+    if (target.classList.contains('saturday') || target.classList.contains('holiday')) {
+      const where = target.classList.contains('holiday') ? 'חג' : 'שבת';
+      if (!confirm(`היעד הוא ${where}. בטוח שלהעביר תוכן ליום הזה?`)) {
+        target.classList.remove('drop-target');
+        return;
+      }
+    }
+
+    // ITEM-LEVEL move: just place the source item on the target's date.
+    // Target's existing items stay where they are (a day can hold multiple posts).
+    // No more "swap" — the user explicitly drags one item; the destination grows.
+    setLocal(srcNum, 'date_override', tgtIso);
+    location.reload();
+  });
+}
+
+/* ---------- Apply date overrides on page load (item-level moves) ----------
+   New behavior (v9.1+):
+     • Each draft moves ONE item, not a whole cell.
+     • Destination day grows by 1 if it already had items (multi-item day).
+     • Source day shrinks by 1; if now 0 items it becomes empty.
+   This is the only correct behavior when a single day can hold multiple posts. */
+function applyDateOverrides() {
+  const moves = [];
+  ITEMS_DATA.forEach(item => {
+    const override = getLocal(item.num, 'date_override', null);
+    if (override && override !== item.date) {
+      moves.push({ num: item.num, fromIso: item.date, toIso: override });
+    }
+  });
+  if (moves.length === 0) return;
+  document.getElementById('restoreBtn')?.classList.add('visible');
+
+  moves.forEach(({ num, fromIso, toIso }) => {
+    // 1. Find the item element by num (may already have been moved by an earlier override)
+    const itemEl = document.querySelector(`.cell-item[data-num="${num}"]`);
+    if (!itemEl) return;
+    const sourceCell = itemEl.closest('.cell');
+    const targetCell = document.querySelector(`.cell[data-iso="${toIso}"]:not(.outside)`);
+    if (!sourceCell || !targetCell || sourceCell === targetCell) return;
+    const targetBody = targetCell.querySelector('.cell-body');
+    if (!targetBody) return;
+
+    // 2. Update the item's own data-iso to its new home
+    itemEl.dataset.iso = toIso;
+
+    // 3. Move the item DOM node into the target cell-body
+    targetBody.appendChild(itemEl);
+
+    // 4. Recompute classes for SOURCE cell after the move
+    refreshCellChrome(sourceCell);
+    // 5. Recompute classes for TARGET cell after the move
+    refreshCellChrome(targetCell);
+  });
+
+  applyStatusToCells();  // Reapply status painting after DOM shuffle
+}
+
+/* Recompute .has-content, .multi-item, and .type-X classes on a cell based on its current children */
+function refreshCellChrome(cell) {
+  if (!cell) return;
+  const items = cell.querySelectorAll('.cell-item');
+  // Strip all type-X classes
+  ['type-post', 'type-carousel', 'type-story', 'type-reel'].forEach(c => cell.classList.remove(c));
+  cell.classList.remove('has-content');
+  cell.classList.remove('multi-item');
+  if (items.length === 0) return;
+  cell.classList.add('has-content');
+  if (items.length > 1) cell.classList.add('multi-item');
+  // Inherit each item's type — cell glow comes from the FIRST item's type
+  items.forEach(it => {
+    const tc = Array.from(it.classList).find(c => c.startsWith('type-'));
+    if (tc) cell.classList.add(tc);
+  });
+}
+
+window.restoreOriginal = function() {
+  if (!confirm('להחזיר את כל התכנים למיקומם המקורי?')) return;
+  ITEMS_DATA.forEach(item => {
+    try { localStorage.removeItem(lsKey(item.num, 'date_override')); } catch (e) {}
+  });
+  location.reload();
+};
+
+/* ---------- Month picker (dropdown) + dynamic period label ---------- */
+function updatePeriodLabel(monthKey) {
+  const meta = MONTHS_META[monthKey];
+  if (!meta) return;
+  const gregEl = document.getElementById('periodGreg');
+  const hebEl = document.getElementById('periodHeb');
+  if (gregEl) gregEl.textContent = meta.greg;
+  if (hebEl) hebEl.textContent = meta.heb;
+}
+
+const monthSelect = document.querySelector('.month-select');
+if (monthSelect) {
+  monthSelect.addEventListener('change', () => {
+    const m = monthSelect.value;
+    document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
+    updatePeriodLabel(m);
+    try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
+  });
+  try {
+    const saved = localStorage.getItem('gantt:active-month:' + CLIENT_KEY);
+    if (saved && [...monthSelect.options].some(o => o.value === saved)) {
+      monthSelect.value = saved;
+      document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
+      updatePeriodLabel(saved);
+    }
+  } catch (e) {}
+}
+
+/* ---------- Modal ---------- */
+function openModal(num) {
+  const it = itemsByNum[num];
+  if (!it) return;
+
+  const status = getLocal(num, 'status', it.status || 'בעבודה');
+  const savedCopy = getLocal(num, 'copy', '');
+  // Multi-slot images: read array, fall back to legacy single 'img' for backward compat
+  const legacyImg = getLocal(num, 'img', '');
+  let savedImages = getLocal(num, 'images', null);
+  if (!Array.isArray(savedImages)) savedImages = legacyImg ? [legacyImg] : [];
+
+  const statusOpts = STATUS_ORDER.map(s =>
+    `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
+  ).join('');
+
+  const modal = document.getElementById('modal');
+  const inner = document.getElementById('modal-inner');
+
+  const isView = isViewMode();
+  const isUriaMode = document.body.classList.contains('theme-uria');
+  const sepChar = isUriaMode ? '×' : '–';
+  const sepCls = isUriaMode ? 'modal-sep modal-sep-x' : 'modal-sep';
+  const statusColor = STATUS_COLORS[status] || '#94A3B8';
+  // Media aspect ratio per content type: 1:1 for post/carousel, 9:16 for story/reel
+  const isVertical = (it.type_key === 'story' || it.type_key === 'reel');
+  const ratioCls = isVertical ? 'ratio-9-16' : 'ratio-1-1';
+  const aspectLabel = isVertical ? '9:16 · 1080×1920' : '1:1 · 1080×1080';
+  inner.innerHTML = `
+    <div class="modal-head">
+      <div class="modal-head-left">
+        <span class="modal-pill" style="background:${it.type_soft}; color:${it.type_accent}; border:1px solid ${it.type_accent}40;">${it.type_label}</span>
+        <h2>${escapeHtml(it.title)}</h2>
+        <div class="date-row" dir="rtl">
+          <span class="modal-publish-label">תאריך פרסום:</span>
+          <span class="modal-date-block">
+            <span class="modal-weekday">יום ${escapeHtml(it.day)}</span>
+            <span class="modal-greg">${formatDateHe(it.date)}</span>
+            ${it.heb_date ? `<span class="modal-heb">${escapeHtml(it.heb_date)}</span>` : ''}
+          </span>
+          <span class="${sepCls}">${sepChar}</span>
+          <span class="modal-status-pill" id="modalStatusPill" style="--status-c:${statusColor};">
+            <span class="modal-status-dot"></span>
+            ${isView
+              ? `<span class="status-text">${escapeHtml(status)}</span>`
+              : `<select class="status-select" id="statusSelect" data-num="${num}">${statusOpts}</select>`
+            }
+          </span>
+        </div>
+      </div>
+      <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      ${it.short_explanation ? `<div class="modal-explainline">${escapeHtml(it.short_explanation)}</div>` : ''}
+      ${it.source ? `<div class="modal-source"><span class="modal-source-label">מקור:</span> ${escapeHtml(it.source)}</div>` : ''}
+
+      <div class="modal-primary">
+        <div class="copy-area">
+          <label>קופי נלווה ${isView ? '' : '(ניתן לעריכה)'}</label>
+          ${isView
+            ? `<div class="copy-view">${escapeHtml(savedCopy || '— טרם נכתב קופי —')}</div>`
+            : `<textarea id="copyArea" data-num="${num}" placeholder="כתוב כאן את הקופי הסופי לפרסום...">${escapeHtml(savedCopy)}</textarea>
+               <div class="copy-actions">
+                 <button class="copy-save-btn" id="copySaveBtn">שמור קופי</button>
+                 <span class="copy-saved" id="copySaved"></span>
+               </div>`
+          }
+        </div>
+        <div class="media-zone ${ratioCls}" data-num="${num}" data-type="${it.type_key}">
+          <div class="media-zone-label">
+            <span class="media-zone-label-text">ויזואל</span>
+            <span class="media-zone-spec">${aspectLabel}</span>
+          </div>
+          <div class="media-grid" id="mediaGrid">
+            ${renderMediaSlots(num, savedImages, ratioCls, isView)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // View mode = no interactivity, exit early
+  if (isViewMode()) return;
+
+  // Wire up status select — repaint the modal status pill (border + dot + text all from --status-c)
+  const sel = document.getElementById('statusSelect');
+  const modalPill = document.getElementById('modalStatusPill');
+  if (sel) {
+    sel.addEventListener('change', () => {
+      const v = sel.value;
+      setLocal(num, 'status', v);
+      const c = STATUS_COLORS[v] || '#94A3B8';
+      if (modalPill) modalPill.style.setProperty('--status-c', c);
+      applyStatusToCells();
+      updateDraftBar();
+    });
+  }
+
+  // Wire up copy editor with explicit SAVE button (no more silent autosave)
+  const ta = document.getElementById('copyArea');
+  const saveBtn = document.getElementById('copySaveBtn');
+  const savedHint = document.getElementById('copySaved');
+  if (ta && saveBtn) {
+    let dirty = false;
+    ta.addEventListener('input', () => {
+      dirty = true;
+      saveBtn.classList.add('is-dirty');
+      saveBtn.textContent = 'שמור קופי *';
+      savedHint.textContent = '';
+    });
+    saveBtn.addEventListener('click', () => {
+      setLocal(num, 'copy', ta.value);
+      dirty = false;
+      saveBtn.classList.remove('is-dirty');
+      saveBtn.classList.add('saved-flash');
+      saveBtn.textContent = '✓ נשמר';
+      updateDraftBar();
+      savedHint.textContent = '';
+      setTimeout(() => {
+        saveBtn.classList.remove('saved-flash');
+        saveBtn.textContent = 'שמור קופי';
+      }, 1800);
+    });
+    // Ctrl/Cmd+S to save
+    ta.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveBtn.click();
+      }
+    });
+  }
+
+  // Wire up media drag/drop on the add-slot
+  setupMediaDrop(num);
+}
+
+/* ---------- Media slots (multi-image gallery, per-type aspect ratio) ----------
+   PRIORITY: file-based media (committed in repo, visible to client) over localStorage (preview only).
+   If the item has `media_files` baked in at build time → use those paths.
+   Otherwise → fall back to localStorage (Editor-side draft preview only). */
+function getImages(num) {
+  const it = itemsByNum[num];
+  if (it && Array.isArray(it.media_files) && it.media_files.length > 0) {
+    return it.media_files.slice();
+  }
+  let arr = getLocal(num, 'images', null);
+  if (!Array.isArray(arr)) {
+    const legacy = getLocal(num, 'img', '');
+    arr = legacy ? [legacy] : [];
+  }
+  return arr;
+}
+
+function saveImages(num, arr) {
+  setLocal(num, 'images', arr);
+  try { localStorage.removeItem(lsKey(num, 'img')); } catch (e) {}
+}
+
+const MAX_MEDIA_SLOTS = 10;
+
+function renderMediaSlots(num, images, ratioCls, isView) {
+  const parts = [];
+  // Existing image slots — each with its own card: image + actions (replace / trash)
+  images.forEach((src, idx) => {
+    parts.push(`
+      <div class="media-card" data-idx="${idx}" data-num="${num}">
+        <div class="media-slot ${ratioCls} has-image">
+          <img class="media-img" src="${src}" alt="ויזואל ${idx + 1}" loading="lazy"
+               onclick="openLightbox(${num}, ${idx})" />
+          <div class="media-slot-num">${idx + 1}</div>
+        </div>
+        ${!isView ? `
+          <div class="media-actions">
+            <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>החלף</span>
+            </button>
+            <input type="file" class="media-replace-input" accept="image/*"
+                   onchange="handleImageReplace(${num}, ${idx}, this.files[0])" />
+            <button class="media-act media-act-trash" title="מחק תמונה זו" onclick="event.stopPropagation(); removeImageAt(${num}, ${idx})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>מחק</span>
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `);
+  });
+  // Add-slot tile (always last when count < MAX, hidden in view mode)
+  if (!isView && images.length < MAX_MEDIA_SLOTS) {
+    parts.push(`
+      <div class="media-card media-card-add" data-num="${num}">
+        <div class="media-slot ${ratioCls} media-slot-add" onclick="triggerImageAdd(${num})">
+          <input type="file" class="media-file-input" accept="image/*" onchange="handleImageAdd(${num}, this.files[0])" />
+          <svg class="media-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <div class="media-add-text">${images.length === 0 ? 'גרור תמונה או לחץ לבחירה' : 'הוסף תמונה'}</div>
+          <div class="media-add-sub">PNG · JPG · WebP · עד ${MAX_MEDIA_SLOTS}</div>
+        </div>
+      </div>
+    `);
+  } else if (isView && images.length === 0) {
+    parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
+  }
+  return parts.join('');
+}
+
+function triggerImageReplace(num, idx) {
+  const card = document.querySelector('.media-card[data-num="' + num + '"][data-idx="' + idx + '"]');
+  if (!card) return;
+  const input = card.querySelector('.media-replace-input');
+  if (input) input.click();
+}
+
+function handleImageReplace(num, idx, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const arr = getImages(num);
+    arr[idx] = e.target.result;
+    saveImages(num, arr);
+    refreshMediaGrid(num);
+  };
+  reader.readAsDataURL(file);
+}
+
+function triggerImageAdd(num) {
+  const slot = document.querySelector('.media-slot-add[data-num="' + num + '"]');
+  if (!slot) return;
+  const input = slot.querySelector('.media-file-input');
+  if (input) input.click();
+}
+
+function handleImageAdd(num, file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const arr = getImages(num);
+  if (arr.length >= MAX_MEDIA_SLOTS) {
+    alert(`הגעת למקסימום ${MAX_MEDIA_SLOTS} תמונות לפריט`);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    arr.push(e.target.result);
+    saveImages(num, arr);
+    refreshMediaGrid(num);
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImageAt(num, idx) {
+  const arr = getImages(num);
+  arr.splice(idx, 1);
+  saveImages(num, arr);
+  refreshMediaGrid(num);
+}
+
+function refreshMediaGrid(num) {
+  const zone = document.querySelector('.media-zone[data-num="' + num + '"]');
+  if (!zone) return;
+  const grid = zone.querySelector('.media-grid');
+  const ratioCls = zone.classList.contains('ratio-9-16') ? 'ratio-9-16' : 'ratio-1-1';
+  const isView = isViewMode();
+  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView);
+  // Re-wire drag/drop on the new add-slot
+  setupMediaDrop(num);
+}
+
+function setupMediaDrop(num) {
+  const addSlot = document.querySelector('.media-slot-add[data-num="' + num + '"]');
+  if (!addSlot) return;
+  addSlot.addEventListener('dragover', (e) => { e.preventDefault(); addSlot.classList.add('drag-over'); });
+  addSlot.addEventListener('dragleave', () => addSlot.classList.remove('drag-over'));
+  addSlot.addEventListener('drop', (e) => {
+    e.preventDefault();
+    addSlot.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImageAdd(num, f);
+  });
+}
+
+/* ---------- Lightbox (click image to enlarge) ---------- */
+function openLightbox(num, idx) {
+  const arr = getImages(num);
+  if (!arr[idx]) return;
+  let lb = document.getElementById('lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'lightbox';
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+      <button class="lightbox-close" onclick="closeLightbox()" aria-label="סגור">×</button>
+      <button class="lightbox-prev" onclick="lightboxNav(-1)" aria-label="הקודם">‹</button>
+      <img class="lightbox-img" id="lightboxImg" alt="ויזואל" />
+      <button class="lightbox-next" onclick="lightboxNav(1)" aria-label="הבא">›</button>
+      <div class="lightbox-counter" id="lightboxCounter"></div>
+    `;
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+    document.body.appendChild(lb);
+  }
+  lb.dataset.num = num;
+  lb.dataset.idx = idx;
+  document.getElementById('lightboxImg').src = arr[idx];
+  document.getElementById('lightboxCounter').textContent = `${idx + 1} / ${arr.length}`;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('open');
+}
+function lightboxNav(delta) {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  const num = parseInt(lb.dataset.num);
+  const arr = getImages(num);
+  let idx = parseInt(lb.dataset.idx) + delta;
+  if (idx < 0) idx = arr.length - 1;
+  if (idx >= arr.length) idx = 0;
+  lb.dataset.idx = idx;
+  document.getElementById('lightboxImg').src = arr[idx];
+  document.getElementById('lightboxCounter').textContent = `${idx + 1} / ${arr.length}`;
+}
+document.addEventListener('keydown', (e) => {
+  const lb = document.getElementById('lightbox');
+  if (!lb || !lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxNav(-1);
+  if (e.key === 'ArrowRight') lightboxNav(1);
+});
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatDateHe(iso) {
+  const [y, m, d] = iso.split('-');
+  return `${parseInt(d)}.${parseInt(m)}.${y.slice(2)}`;
+}
+
+document.addEventListener('click', (e) => {
+  // Don't open modal if user clicked the inline status select
+  if (e.target.closest('.cell-status')) return;
+  // Explicit open button
+  const openBtn = e.target.closest('.cell-open');
+  if (openBtn) {
+    e.stopPropagation();
+    const num = parseInt(openBtn.dataset.num);
+    if (num) openModal(num);
+    return;
+  }
+  // Clicking anywhere else on a content cell opens modal
+  const cell = e.target.closest('.cell.has-content');
+  if (cell) {
+    const firstItem = cell.querySelector('[data-num]');
+    if (firstItem) {
+      const num = parseInt(firstItem.dataset.num);
+      if (num) openModal(num);
+    }
+    return;
+  }
+  if (e.target.classList.contains('modal-bg')) closeModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+highlightToday();
+applyDateOverrides();
+applyStatusToCells();
+setupDragAndDrop();
+updateDraftBar();
+</script>
+</body>
+</html>

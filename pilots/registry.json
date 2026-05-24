@@ -25,6 +25,12 @@
       "out":    "docs/adavot-uria/index.html",
       "mode":   "uria",
       "client": "עמותת אדוות (Uria demo)"
+    },
+    "echad-bachodesh-sivan": {
+      "data":   "pilots/echad-bachodesh-sivan/data.json",
+      "out":    "docs/echad-bachodesh-sivan/index.html",
+      "mode":   "zeliger",
+      "client": "אחד בחודש - סיוון תשפ\"ו"
     }
   }
 }
