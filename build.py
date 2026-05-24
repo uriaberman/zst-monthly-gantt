@@ -3037,10 +3037,16 @@ function openModal(num) {
 
   const status = getLocal(num, 'status', it.status || 'בעבודה');
   const savedCopy = getLocal(num, 'copy', '');
-  // Multi-slot images: read array, fall back to legacy single 'img' for backward compat
-  const legacyImg = getLocal(num, 'img', '');
-  let savedImages = getLocal(num, 'images', null);
-  if (!Array.isArray(savedImages)) savedImages = legacyImg ? [legacyImg] : [];
+  // PRIORITY: file-based media baked into the item at build time (visible to the client).
+  // Falls back to localStorage drafts only if no files exist on disk.
+  let savedImages;
+  if (Array.isArray(it.media_files) && it.media_files.length > 0) {
+    savedImages = it.media_files.slice();
+  } else {
+    const legacyImg = getLocal(num, 'img', '');
+    savedImages = getLocal(num, 'images', null);
+    if (!Array.isArray(savedImages)) savedImages = legacyImg ? [legacyImg] : [];
+  }
 
   const statusOpts = STATUS_ORDER.map(s =>
     `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
