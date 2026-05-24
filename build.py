@@ -3808,6 +3808,10 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
     y0, m0 = months[0]
     init_greg = f'{HEB_GREG_MONTHS[m0]} {y0}'
     init_heb = f'{hebrew_month_for_gregorian(y0, m0)} {hebrew_year_for_gregorian(y0, m0)}'
+    # WhatsApp/social-link preview title: "<client> | גאנט חודש M/YY" (canonical format per Uria)
+    preview_label = f'גאנט חודש {m0}/{str(y0)[-2:]}'
+    page_title = f'{client} | {preview_label}'
+    og_description = f'גאנט תוכן חודשי {init_heb} · {init_greg}'
     canonical_period_html = (
         f'<span class="period-greg" id="periodGreg">{init_greg}</span>'
         f'<span class="period-dot">·</span>'
@@ -3878,7 +3882,18 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-<title>{html.escape(client)} | גאנט {html.escape(period)}</title>
+<title>{html.escape(page_title)}</title>
+<!-- WhatsApp / Facebook / Telegram / Twitter link-preview metadata.
+     Format: "<client> | גאנט חודש M/YY" (per Uria's canonical template). -->
+<meta property="og:title" content="{html.escape(page_title)}" />
+<meta property="og:description" content="{html.escape(og_description)}" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="he_IL" />
+<meta property="og:url" content="{viewer_url if view else (viewer_url.replace('/view/', '/') if viewer_url else '')}" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{html.escape(page_title)}" />
+<meta name="twitter:description" content="{html.escape(og_description)}" />
+<meta name="description" content="{html.escape(og_description)}" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 {font_links}
