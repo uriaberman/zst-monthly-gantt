@@ -2079,7 +2079,7 @@ body.theme-uria .media-slot-add .media-add-sub { color: #8B7BA5; }
   inset: 0;
   background: rgba(0,0,0,0.92);
   backdrop-filter: blur(8px);
-  z-index: 999;
+  z-index: 2000;   /* MUST be higher than .modal-bg (1000) — lightbox opens ON TOP of modal */
   align-items: center;
   justify-content: center;
 }
