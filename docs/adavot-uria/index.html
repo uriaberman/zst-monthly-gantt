@@ -3949,10 +3949,10 @@ const MAX_MEDIA_SLOTS = 10;
 
 function renderMediaSlots(num, images, ratioCls, isView, slides) {
   const parts = [];
-  // Existing image slots — each with its own card: image + actions (replace / trash) + visual copy
+  // The visual ITSELF carries the text (designed into the image). We do NOT display
+  // the slide text as a separate block — it would be redundant with the image.
+  // slides[] data still lives in data.json for future use (print view, accessibility, search).
   images.forEach((src, idx) => {
-    const slide = (slides && slides[idx]) || {};
-    const slideCopyHtml = renderSlideCopy(slide);
     parts.push(`
       <div class="media-card" data-idx="${idx}" data-num="${num}">
         <div class="media-slot ${ratioCls} has-image">
@@ -3960,7 +3960,6 @@ function renderMediaSlots(num, images, ratioCls, isView, slides) {
                onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
         </div>
-        ${slideCopyHtml}
         ${!isView ? `
           <div class="media-actions">
             <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
