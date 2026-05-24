@@ -3755,6 +3755,37 @@ def main():
     if HOLIDAYS_2026:
         print(f'  Israeli holidays in period: {len(HOLIDAYS_2026)}')
 
+    # ============================================================
+    # CRITICAL VERIFICATION (per iron rule: media MUST render in modal)
+    # ============================================================
+    # We had a bug (24.5.2026) where pilots had media files on disk but the modal
+    # silently rendered without them because two code paths read media differently.
+    # This block detects that class of regression at BUILD time, before push.
+    if copied_main:
+        items_with_media = [it for it in data['items'] if it.get('media_files')]
+        # 1. Every item that has files on disk must have media_files baked into HTML
+        for it in data['items']:
+            num = it['num']
+            disk_files = [p for p in (pilot_dir / 'media').iterdir() if p.is_file() and p.stem.startswith(f'{num}-')]
+            baked_files = it.get('media_files', [])
+            if disk_files and not baked_files:
+                raise SystemExit(f'  VERIFY FAILED: item #{num} has {len(disk_files)} files on disk but 0 in data → would render empty modal')
+        # 2. Every baked media_files entry must be discoverable in BOTH output HTMLs as a path
+        for it in items_with_media:
+            for path in it['media_files']:
+                if path not in editor_html or path not in viewer_html:
+                    raise SystemExit(f'  VERIFY FAILED: media path "{path}" missing from {("Editor" if path not in editor_html else "Viewer")} HTML')
+        # 3. Every output media folder must have the actual file
+        for it in items_with_media:
+            for path in it['media_files']:
+                full = out_dir / path
+                if not full.exists():
+                    raise SystemExit(f'  VERIFY FAILED: {full} not on disk after build')
+                full_view = out_viewer.parent / path
+                if not full_view.exists():
+                    raise SystemExit(f'  VERIFY FAILED: {full_view} not on disk after build (viewer)')
+        print(f'  ✅ Media verification PASS — {len(items_with_media)} items, {sum(len(it["media_files"]) for it in items_with_media)} total slides')
+
 
 if __name__ == '__main__':
     main()
