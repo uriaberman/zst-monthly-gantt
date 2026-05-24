@@ -32,9 +32,10 @@ STATUS_COLORS = {
     'בעיצוב':       '#F97316',  # orange (in design)
     'ממתין לאישור': '#EAB308',  # yellow (waiting)
     'אושר':          '#22C55E',  # green (approved)
+    'נגנז':          '#6B7280',  # slate (archived — visible but disabled)
 }
 
-STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר']
+STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר', 'נגנז']
 
 HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
 
@@ -118,9 +119,12 @@ def render_cell(cell: dict) -> str:
         warning = ''
         if cell.get('is_saturday') or cell.get('holiday'):
             warning = '<span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>'
-        drag_attr = 'draggable="true"' if item_can_drag else ''
+        # Bake the is-archived class at server-render time so we don't get a flash of un-dimmed content
+        # before JS runs. The JS later toggles it if the user changes status via dropdown.
+        archived_cls = ' is-archived' if it.get('status') == 'נגנז' else ''
+        drag_attr = 'draggable="true"' if (item_can_drag and not archived_cls) else ''
         body_parts.append(f'''
-        <div class="cell-item type-{type_key}" data-num="{it['num']}" data-iso="{cell['iso']}" {drag_attr}>
+        <div class="cell-item type-{type_key}{archived_cls}" data-num="{it['num']}" data-iso="{cell['iso']}" {drag_attr}>
           <div class="cell-type-row">
             <span class="cell-type-chip">{type_label}</span>
             {warning}
@@ -1556,6 +1560,36 @@ body.view-mode .cell-status {
 }
 body.view-mode .cell-item { cursor: pointer; }
 body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
+
+/* ARCHIVED state (status === "נגנז")
+   Both Editor and Viewer show archived items dimmed with a small "נגנז" badge.
+   The status pill (with its slate color) already says "נגנז" — this just makes
+   the WHOLE card visually muted so the eye glides over it without losing it. */
+.cell-item.is-archived {
+  opacity: 0.45;
+  filter: grayscale(0.55);
+  cursor: not-allowed !important;
+  position: relative;
+}
+.cell-item.is-archived:hover { opacity: 0.65; }
+.cell-item.is-archived::after {
+  content: 'נגנז';
+  position: absolute;
+  top: -4px; right: -4px;
+  background: #6B7280;
+  color: #FFFFFF;
+  font-family: var(--font-he);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  z-index: 3;
+}
+/* In view mode the card itself stays clickable for the modal but doesn't pretend to be interactive */
+body.view-mode .cell-item.is-archived { cursor: default !important; }
 body.theme-uria .cell.multi-item .cell-item:not(:last-child) {
   border-bottom-color: rgba(255,107,53,0.20);
 }
@@ -2517,8 +2551,9 @@ const STATUS_COLORS = {
   'בעיצוב': '#F97316',
   'ממתין לאישור': '#EAB308',
   'אושר': '#22C55E',
+  'נגנז': '#6B7280',   // archived — same value as Python, see STATUS_COLORS in build.py
 };
-const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר', 'נגנז'];
 
 /* ---------- localStorage helpers (per-client, per-item) ---------- */
 function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
@@ -2852,6 +2887,10 @@ function paintStatus(selectEl) {
   const pill = selectEl.closest('.cell-status-pill');
   if (pill) pill.style.setProperty('--status-c', c);
   else { selectEl.style.color = c; }
+  // 5th status "נגנז" — toggle the is-archived class on the parent cell-item so CSS
+  // can dim the whole card (cell-level CSS handles the visual treatment)
+  const item = selectEl.closest('.cell-item');
+  if (item) item.classList.toggle('is-archived', status === 'נגנז');
 }
 
 function applyStatusToCells() {
@@ -2910,6 +2949,11 @@ function setupDragAndDrop() {
   document.addEventListener('dragstart', (e) => {
     const item = e.target.closest('.cell-item');
     if (!item) return;
+    // Archived items (status === נגנז) can't be moved — must be un-archived first
+    if (item.classList.contains('is-archived')) {
+      e.preventDefault();
+      return;
+    }
     dragSourceItem = item;
     item.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';

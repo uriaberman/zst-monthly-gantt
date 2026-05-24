@@ -711,6 +711,36 @@ body.view-mode .cell-status {
 }
 body.view-mode .cell-item { cursor: pointer; }
 body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
+
+/* ARCHIVED state (status === "נגנז")
+   Both Editor and Viewer show archived items dimmed with a small "נגנז" badge.
+   The status pill (with its slate color) already says "נגנז" — this just makes
+   the WHOLE card visually muted so the eye glides over it without losing it. */
+.cell-item.is-archived {
+  opacity: 0.45;
+  filter: grayscale(0.55);
+  cursor: not-allowed !important;
+  position: relative;
+}
+.cell-item.is-archived:hover { opacity: 0.65; }
+.cell-item.is-archived::after {
+  content: 'נגנז';
+  position: absolute;
+  top: -4px; right: -4px;
+  background: #6B7280;
+  color: #FFFFFF;
+  font-family: var(--font-he);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  z-index: 3;
+}
+/* In view mode the card itself stays clickable for the modal but doesn't pretend to be interactive */
+body.view-mode .cell-item.is-archived { cursor: default !important; }
 body.theme-uria .cell.multi-item .cell-item:not(:last-child) {
   border-bottom-color: rgba(255,107,53,0.20);
 }
@@ -1690,7 +1720,7 @@ body.theme-uria .footer-link:hover {
       <div class="legend-divider"></div>
       <div class="legend-group">
         <span class="legend-label">סטטוס</span>
-        <span class="legend-chip"><span class="sw round" style="background:#3B82F6; box-shadow:0 0 6px #3B82F680;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span>
+        <span class="legend-chip"><span class="sw round" style="background:#3B82F6; box-shadow:0 0 6px #3B82F680;"></span>בעבודה</span><span class="legend-chip"><span class="sw round" style="background:#F97316; box-shadow:0 0 6px #F9731680;"></span>בעיצוב</span><span class="legend-chip"><span class="sw round" style="background:#EAB308; box-shadow:0 0 6px #EAB30880;"></span>ממתין לאישור</span><span class="legend-chip"><span class="sw round" style="background:#22C55E; box-shadow:0 0 6px #22C55E80;"></span>אושר</span><span class="legend-chip"><span class="sw round" style="background:#6B7280; box-shadow:0 0 6px #6B728080;"></span>נגנז</span>
       </div>
     </div>
     
@@ -1735,7 +1765,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="2">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="2">צפייה ←</button>
@@ -1766,7 +1796,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="1">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="1" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="1">צפייה ←</button>
@@ -1785,7 +1815,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="4">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="4" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="4">צפייה ←</button>
@@ -1807,7 +1837,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="5">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה">בעבודה</option><option value="בעיצוב" selected>בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה">בעבודה</option><option value="בעיצוב" selected>בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="5">צפייה ←</button>
@@ -1826,7 +1856,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="6">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="6">צפייה ←</button>
@@ -1845,7 +1875,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="3">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="3">צפייה ←</button>
@@ -1870,7 +1900,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="7">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="7">צפייה ←</button>
@@ -1892,7 +1922,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="8">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="8" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option>
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="8">צפייה ←</button>
@@ -1923,7 +1953,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="9">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="9" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה">בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר" selected>אושר</option>
+                <option value="בעבודה">בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר" selected>אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="9">צפייה ←</button>
@@ -1957,7 +1987,7 @@ body.theme-uria .footer-link:hover {
             <div class="cell-status-pill" data-num="10">
               <span class="cell-status-dot"></span>
               <select class="cell-status" data-num="10" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה">בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר" selected>אושר</option>
+                <option value="בעבודה">בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר" selected>אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
             <button class="cell-open" data-num="10">צפייה ←</button>
@@ -1987,7 +2017,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:00</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:14</span></span>
     <span class="view-mode-badge">מצב עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2004,15 +2034,16 @@ const CLIENT_KEY = 'שליחות_הוראה';
 const MONTHS_META = {"2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/shlichut-horaa/view/';
-const LAST_UPDATED = '24.05.26, 12:00';
+const LAST_UPDATED = '24.05.26, 12:14';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
   'בעיצוב': '#F97316',
   'ממתין לאישור': '#EAB308',
   'אושר': '#22C55E',
+  'נגנז': '#6B7280',   // archived — same value as Python, see STATUS_COLORS in build.py
 };
-const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר'];
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר', 'נגנז'];
 
 /* ---------- localStorage helpers (per-client, per-item) ---------- */
 function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
@@ -2346,6 +2377,10 @@ function paintStatus(selectEl) {
   const pill = selectEl.closest('.cell-status-pill');
   if (pill) pill.style.setProperty('--status-c', c);
   else { selectEl.style.color = c; }
+  // 5th status "נגנז" — toggle the is-archived class on the parent cell-item so CSS
+  // can dim the whole card (cell-level CSS handles the visual treatment)
+  const item = selectEl.closest('.cell-item');
+  if (item) item.classList.toggle('is-archived', status === 'נגנז');
 }
 
 function applyStatusToCells() {
@@ -2404,6 +2439,11 @@ function setupDragAndDrop() {
   document.addEventListener('dragstart', (e) => {
     const item = e.target.closest('.cell-item');
     if (!item) return;
+    // Archived items (status === נגנז) can't be moved — must be un-archived first
+    if (item.classList.contains('is-archived')) {
+      e.preventDefault();
+      return;
+    }
     dragSourceItem = item;
     item.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
