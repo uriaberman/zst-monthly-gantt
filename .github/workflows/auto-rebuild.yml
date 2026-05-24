@@ -14,6 +14,12 @@ on:
       - 'smart_placement.py'
       - 'israeli_holidays.py'
       - 'assets/**'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'all | <slug>'
+        required: false
+        default: 'all'
 
 # Allow this workflow to push commits back to the repo
 permissions:
@@ -49,6 +55,12 @@ jobs:
       - name: Detect changed pilots
         id: changes
         run: |
+          # Manual dispatch → always rebuild all (simpler + safer)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "scope=all" >> $GITHUB_OUTPUT
+            echo "Manual dispatch → rebuild all"
+            exit 0
+          fi
           # Find changed data.json files in this push; default to "all" if other shared files changed
           shared_changed=$(git diff --name-only HEAD^ HEAD | grep -E '^(build\.py|parser\.py|smart_placement\.py|israeli_holidays\.py|pilots/registry\.json|assets/)' || true)
           data_changed=$(git diff --name-only HEAD^ HEAD | grep -E '^pilots/[^/]+/data\.json$' || true)
