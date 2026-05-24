@@ -103,34 +103,45 @@ def render_cell(cell: dict) -> str:
     if cell['holiday']:
         header_parts.append(f'<div class="cell-hol">{html.escape(cell["holiday"])}</div>')
 
+    # Multi-item support: each item inside a cell is its OWN draggable card.
+    # Drag operates on the .cell-item level, not the .cell level, so one day can hold
+    # multiple posts and the user can move just one of them.
     body_parts = []
+    item_can_drag = (not cell['is_outside'])
+    type_classes_for_cell = []
     for it in cell['items']:
         tc = TYPE_COLORS.get(it['type_key'], TYPE_COLORS['post'])
-        pillar = html.escape(it.get('pillar_label', ''))
         title = html.escape(it['title'])
         type_label = html.escape(tc['label'])
-        # Warning if content placed on Shabbat or holiday
+        type_key = html.escape(it['type_key'])
+        type_classes_for_cell.append(f'type-{type_key}')
         warning = ''
         if cell.get('is_saturday') or cell.get('holiday'):
             warning = '<span class="cell-warning" title="תוכן זה ממוקם בשבת/חג - שקול להעביר לערב חג / יום שישי">⚠</span>'
+        drag_attr = 'draggable="true"' if item_can_drag else ''
         body_parts.append(f'''
-        <div class="cell-type-row">
-          <span class="cell-type-chip">{type_label}</span>
-          {warning}
-        </div>
-        <div class="cell-title">{title}</div>
-        <div class="cell-footer">
-          <div class="cell-status-pill" data-num="{it['num']}">
-            <span class="cell-status-dot"></span>
-            <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
-              __STATUS_OPTS_{it['num']}__
-            </select>
+        <div class="cell-item type-{type_key}" data-num="{it['num']}" data-iso="{cell['iso']}" {drag_attr}>
+          <div class="cell-type-row">
+            <span class="cell-type-chip">{type_label}</span>
+            {warning}
           </div>
-          <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
+          <div class="cell-title">{title}</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="{it['num']}">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="{it['num']}" aria-label="סטטוס" onclick="event.stopPropagation()">
+                __STATUS_OPTS_{it['num']}__
+              </select>
+            </div>
+            <button class="cell-open" data-num="{it['num']}">צפייה ←</button>
+          </div>
         </div>''')
 
-    draggable_attr = 'draggable="true"' if cell['items'] and not cell['is_outside'] else ''
-    return f'''<div class="{' '.join(classes)}" data-iso="{cell['iso']}" {draggable_attr}>
+    # Keep the cell.type-X classes too (CSS uses them for the glow + chip color)
+    if type_classes_for_cell:
+        classes.extend(type_classes_for_cell)
+    multi_cls = ' multi-item' if len(cell['items']) > 1 else ''
+    return f'''<div class="{' '.join(classes)}{multi_cls}" data-iso="{cell['iso']}">
       <div class="cell-head">{''.join(header_parts)}</div>
       <div class="cell-body">{''.join(body_parts)}</div>
     </div>'''
@@ -1061,6 +1072,15 @@ body.theme-uria .period-mini .period-dot { color: rgba(255,255,255,0.35); }
   border-color: #22C55E;
   color: #22C55E;
 }
+.share-btn.disabled,
+.share-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(148,163,184,0.08);
+  border-color: rgba(148,163,184,0.30);
+  color: var(--ink-mute);
+}
+.share-btn.disabled:hover { background: rgba(148,163,184,0.08); border-color: rgba(148,163,184,0.30); }
 .restore-btn {
   display: none;
   align-items: center;
@@ -1501,10 +1521,43 @@ body.view-mode .cell-status {
 .cell-body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  align-items: stretch;
+  gap: 6px;
   flex: 1;
   padding-top: 4px;
+}
+
+/* INDIVIDUAL ITEM CARD — each post/story/etc inside a cell is its own draggable card.
+   Lets the user move ONE item without affecting the others on the same day. */
+.cell-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 2px;
+  border-radius: 8px;
+  cursor: grab;
+  transition: all 0.15s ease;
+}
+.cell-item:active { cursor: grabbing; }
+.cell-item.dragging { opacity: 0.4; transform: scale(0.96); }
+.cell.multi-item .cell-item:not(:last-child) {
+  border-bottom: 1px dashed rgba(255,255,255,0.18);
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+.cell.multi-item .cell-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.cell.multi-item .cell-item .cell-footer {
+  margin-left: -8px;
+  margin-right: -8px;
+  margin-bottom: -2px;
+}
+body.view-mode .cell-item { cursor: pointer; }
+body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
+body.theme-uria .cell.multi-item .cell-item:not(:last-child) {
+  border-bottom-color: rgba(255,107,53,0.20);
 }
 
 .cell-type-row {
@@ -2617,14 +2670,14 @@ window.requestPublish = async function() {
       }),
     });
 
-    // 6. Success — clear local drafts (they're now in the source of truth)
+    // 6. Success on GitHub side — clear local drafts (they're now in the source of truth).
     discardLocalDraftsSilent();
-    setPublishStatus('✅ פורסם בהצלחה — GitHub Action בונה מחדש (~60 שניות)', 'success');
-
-    // Poll the build until the new HTML lands (best-effort, optional)
-    setTimeout(() => {
-      setPublishStatus('הגאנט חי. רענן את הדף לראות את התוצאה.', 'success');
-    }, 60000);
+    // 7. Now WAIT for the GitHub Action to rebuild + Pages to serve the new HTML
+    //    before we let the user share the link. Otherwise the client sees old content.
+    setShareEnabled(false);
+    const expectedAfter = LAST_UPDATED;  // The CURRENT published_at; new build will be newer
+    pollDeploy(VIEWER_URL || (window.location.pathname + 'view/'), expectedAfter);
+    return;
 
   } catch (err) {
     console.error(err);
@@ -2635,6 +2688,63 @@ window.requestPublish = async function() {
     setPublishStatus(msg + ' לעזרה — חזור לצ\\'אט עם Claude.', 'error');
   }
 };
+
+/* Lock / unlock the "שיתוף" button. Locked = the link still points to stale content. */
+function setShareEnabled(enabled) {
+  const btn = document.getElementById('shareBtn');
+  if (!btn) return;
+  btn.disabled = !enabled;
+  btn.classList.toggle('disabled', !enabled);
+  const span = btn.querySelector('span');
+  if (!enabled) {
+    if (span && !span.dataset.origText) span.dataset.origText = span.textContent;
+    if (span) span.textContent = '⏳ ממתין לפריסה…';
+    btn.title = 'הפריסה עדיין רצה. תוכל לשתף ברגע שהבר ייצבע ירוק.';
+  } else {
+    if (span && span.dataset.origText) { span.textContent = span.dataset.origText; delete span.dataset.origText; }
+    btn.title = 'העתק קישור צפייה ללקוח';
+  }
+}
+
+/* Poll the Viewer URL until its lastUpdatedTime is newer than what we had pre-publish.
+   That's our signal that the GitHub Action finished, Pages redeployed, and the client
+   will now see the new content. Only THEN we re-enable Share. */
+async function pollDeploy(viewerUrl, expectedAfter) {
+  if (!viewerUrl) {
+    setPublishStatus('✅ פורסם. רענן ידנית בעוד כדקה.', 'success');
+    setShareEnabled(true);
+    return;
+  }
+  const start = Date.now();
+  const MAX_WAIT_MS = 5 * 60 * 1000;  // 5 minutes hard ceiling
+  setPublishStatus('⏳ פורסם ל-GitHub. ממתין שה-Action ייצור HTML חדש (כדקה)…', 'busy');
+
+  let attempt = 0;
+  const tick = async () => {
+    attempt++;
+    const elapsed = Math.round((Date.now() - start) / 1000);
+    try {
+      const r = await fetch(viewerUrl + '?nc=' + Date.now(), { cache: 'no-store' });
+      const html = await r.text();
+      const m = html.match(/id="lastUpdatedTime"[^>]*>([^<]+)</);
+      const liveStamp = m ? m[1].trim() : '';
+      if (liveStamp && liveStamp !== expectedAfter) {
+        setPublishStatus(`✅ העדכון חי בכתובת הלקוח (${elapsed} שניות). אפשר לשתף.`, 'success');
+        setShareEnabled(true);
+        return;
+      }
+    } catch (e) { /* network blips: try again */ }
+
+    if (Date.now() - start > MAX_WAIT_MS) {
+      setPublishStatus(`⚠ עברו ${elapsed} שניות והעדכון לא נראה ב-Viewer. בדוק את Actions ב-GitHub.`, 'error');
+      setShareEnabled(true);  // Don't lock forever
+      return;
+    }
+    setPublishStatus(`⏳ ממתין לפריסה… (${elapsed} שניות) — בדרך כלל לוקח 60-90 שניות.`, 'busy');
+    setTimeout(tick, 8000);
+  };
+  setTimeout(tick, 12000);  // First check after 12s (Action checkout + setup takes that long)
+}
 
 /* Clear local drafts without confirmation (called after successful publish) */
 function discardLocalDraftsSilent() {
@@ -2724,8 +2834,9 @@ function highlightToday() {
   document.querySelectorAll(`.cell[data-iso="${iso}"]`).forEach(c => c.classList.add('is-today'));
 }
 
-/* ---------- Drag & Drop ---------- */
-let dragSourceCell = null;
+/* ---------- Drag & Drop (item-level) ---------- */
+let dragSourceItem = null;
+function sourceCellOf(item) { return item ? item.closest('.cell') : null; }
 
 function isViewModeStrict() { return document.body.classList.contains('view-mode'); }
 
@@ -2747,32 +2858,30 @@ function isPastIso(iso) {
 function setupDragAndDrop() {
   if (isViewModeStrict()) return;  // No drag in view mode
 
+  // Drag operates on individual .cell-item elements (NOT the whole cell).
+  // This way, if a day has multiple posts, the user can move just one of them.
   document.addEventListener('dragstart', (e) => {
-    const cell = e.target.closest('.cell.has-content');
-    if (!cell) return;
-    // Iron rule: can't even pick up from past dates (won't have content to move forward)
-    dragSourceCell = cell;
-    cell.classList.add('dragging');
+    const item = e.target.closest('.cell-item');
+    if (!item) return;
+    dragSourceItem = item;
+    item.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
-    const item = cell.querySelector('[data-num]');
-    if (item) {
-      e.dataTransfer.setData('application/json', JSON.stringify({
-        num: parseInt(item.dataset.num),
-        iso: cell.dataset.iso
-      }));
-    }
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      num: parseInt(item.dataset.num),
+      iso: item.dataset.iso
+    }));
   });
 
   document.addEventListener('dragend', () => {
     document.querySelectorAll('.dragging').forEach(c => c.classList.remove('dragging'));
     document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
-    dragSourceCell = null;
+    dragSourceItem = null;
   });
 
   document.addEventListener('dragover', (e) => {
     const cell = e.target.closest('.cell:not(.outside)');
-    if (!cell || cell === dragSourceCell) return;
-    // Iron rule: cannot drop on a past date
+    const srcCell = sourceCellOf(dragSourceItem);
+    if (!cell || cell === srcCell) return;
     if (isPastIso(cell.dataset.iso)) {
       cell.classList.add('drop-blocked');
       e.dataTransfer.dropEffect = 'none';
@@ -2789,7 +2898,8 @@ function setupDragAndDrop() {
   document.addEventListener('drop', (e) => {
     e.preventDefault();
     const target = e.target.closest('.cell:not(.outside)');
-    if (!target || target === dragSourceCell) {
+    const srcCell = sourceCellOf(dragSourceItem);
+    if (!target || target === srcCell) {
       document.querySelectorAll('.drop-target, .drop-blocked').forEach(c => { c.classList.remove('drop-target'); c.classList.remove('drop-blocked'); });
       return;
     }
@@ -2816,15 +2926,10 @@ function setupDragAndDrop() {
       }
     }
 
-    // Check if target has content - swap dates
-    const tgtItem = target.querySelector('[data-num]');
+    // ITEM-LEVEL move: just place the source item on the target's date.
+    // Target's existing items stay where they are (a day can hold multiple posts).
+    // No more "swap" — the user explicitly drags one item; the destination grows.
     setLocal(srcNum, 'date_override', tgtIso);
-    if (tgtItem) {
-      const tgtNum = parseInt(tgtItem.dataset.num);
-      setLocal(tgtNum, 'date_override', data.iso);
-    }
-
-    // Reload to re-apply all overrides cleanly
     location.reload();
   });
 }
