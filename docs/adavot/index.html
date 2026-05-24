@@ -721,13 +721,16 @@ body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
   filter: grayscale(0.55);
   cursor: not-allowed !important;
   position: relative;
-  padding-top: 18px;     /* Leave room for the badge above the type-chip */
 }
 .cell-item.is-archived:hover { opacity: 0.65; }
-.cell-item.is-archived::before {
+
+/* The "נגנז" badge lives on the CELL (not the item) so it sits in the cell-head's
+   empty middle area — clearly detached from the type-chip, above the separator.
+   Modern browsers (Chrome 105+ / Firefox 121+ / Safari 15.4+) support :has(). */
+.cell:has(.cell-item.is-archived)::before {
   content: 'נגנז';
   position: absolute;
-  top: 0;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   background: #6B7280;
@@ -740,7 +743,7 @@ body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
   letter-spacing: 0.06em;
   pointer-events: none;
   box-shadow: 0 1px 3px rgba(0,0,0,0.35);
-  z-index: 3;
+  z-index: 4;
   white-space: nowrap;
 }
 /* In view mode the card itself stays clickable for the modal but doesn't pretend to be interactive */
@@ -2536,7 +2539,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:25</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:38</span></span>
     <span class="view-mode-badge">מצב עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2553,7 +2556,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
-const LAST_UPDATED = '24.05.26, 12:25';
+const LAST_UPDATED = '24.05.26, 12:38';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',

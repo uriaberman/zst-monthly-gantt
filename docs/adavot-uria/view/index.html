@@ -721,13 +721,16 @@ body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
   filter: grayscale(0.55);
   cursor: not-allowed !important;
   position: relative;
-  padding-top: 18px;     /* Leave room for the badge above the type-chip */
 }
 .cell-item.is-archived:hover { opacity: 0.65; }
-.cell-item.is-archived::before {
+
+/* The "נגנז" badge lives on the CELL (not the item) so it sits in the cell-head's
+   empty middle area — clearly detached from the type-chip, above the separator.
+   Modern browsers (Chrome 105+ / Firefox 121+ / Safari 15.4+) support :has(). */
+.cell:has(.cell-item.is-archived)::before {
   content: 'נגנז';
   position: absolute;
-  top: 0;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   background: #6B7280;
@@ -740,7 +743,7 @@ body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
   letter-spacing: 0.06em;
   pointer-events: none;
   box-shadow: 0 1px 3px rgba(0,0,0,0.35);
-  z-index: 3;
+  z-index: 4;
   white-space: nowrap;
 }
 /* In view mode the card itself stays clickable for the modal but doesn't pretend to be interactive */
@@ -3063,7 +3066,7 @@ body.theme-uria .modal-section h3 {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:25</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 12:38</span></span>
     <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%2C%20%D7%A7%D7%95%D7%A8%D7%95%D7%AA%20%D7%94%D7%97%D7%99%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9A%20-%20%D7%95%D7%95%D7%90%D7%95%21%20%D7%91%D7%90%20%D7%9C%D7%99%20%D7%A9%D7%A0%D7%A2%D7%A9%D7%94%20%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%9E%D7%A2%D7%A0%D7%99%D7%99%D7%A0%D7%99%D7%9D%20%D7%99%D7%97%D7%93." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
@@ -3080,7 +3083,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot-uria/view/';
-const LAST_UPDATED = '24.05.26, 12:25';
+const LAST_UPDATED = '24.05.26, 12:38';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
