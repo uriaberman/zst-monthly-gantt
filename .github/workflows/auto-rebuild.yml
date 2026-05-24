@@ -4,7 +4,7 @@ name: Auto-rebuild gantts on data change
 # or when build.py / registry / shared assets change. Runs build_all.py
 # to regenerate HTMLs and commits them back. Pages auto-redeploys after the commit.
 
-on:
+"on":
   push:
     paths:
       - 'pilots/**/data.json'
