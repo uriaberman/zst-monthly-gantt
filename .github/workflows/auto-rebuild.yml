@@ -45,7 +45,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          # 3.12+ required: build.py uses PEP 701 f-strings with nested triple-quotes
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
