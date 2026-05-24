@@ -2435,7 +2435,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 10:13</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 10:18</span></span>
     <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2452,7 +2452,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
-const LAST_UPDATED = '24.05.26, 10:13';
+const LAST_UPDATED = '24.05.26, 10:18';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2923,10 +2923,13 @@ function setupDragAndDrop() {
   });
 }
 
-/* ---------- Apply date overrides on page load ---------- */
+/* ---------- Apply date overrides on page load (item-level moves) ----------
+   New behavior (v9.1+):
+     • Each draft moves ONE item, not a whole cell.
+     • Destination day grows by 1 if it already had items (multi-item day).
+     • Source day shrinks by 1; if now 0 items it becomes empty.
+   This is the only correct behavior when a single day can hold multiple posts. */
 function applyDateOverrides() {
-  let movedAny = false;
-  // Build map: desiredIso → array of item nums
   const moves = [];
   ITEMS_DATA.forEach(item => {
     const override = getLocal(item.num, 'date_override', null);
@@ -2934,60 +2937,50 @@ function applyDateOverrides() {
       moves.push({ num: item.num, fromIso: item.date, toIso: override });
     }
   });
+  if (moves.length === 0) return;
+  document.getElementById('restoreBtn')?.classList.add('visible');
 
-  // Show restore button if any overrides
-  if (moves.length > 0) {
-    document.getElementById('restoreBtn')?.classList.add('visible');
-    movedAny = true;
-  }
-
-  // Apply moves - extract content from origin cells, swap or place in target
   moves.forEach(({ num, fromIso, toIso }) => {
-    const sourceItem = document.querySelector(`.cell[data-iso="${fromIso}"] [data-num="${num}"]`);
-    if (!sourceItem) return;
-    const sourceCell = sourceItem.closest('.cell');
+    // 1. Find the item element by num (may already have been moved by an earlier override)
+    const itemEl = document.querySelector(`.cell-item[data-num="${num}"]`);
+    if (!itemEl) return;
+    const sourceCell = itemEl.closest('.cell');
     const targetCell = document.querySelector(`.cell[data-iso="${toIso}"]:not(.outside)`);
     if (!sourceCell || !targetCell || sourceCell === targetCell) return;
-
-    // Move entire body content
-    const sourceBody = sourceCell.querySelector('.cell-body');
     const targetBody = targetCell.querySelector('.cell-body');
-    if (!sourceBody || !targetBody) return;
+    if (!targetBody) return;
 
-    // Capture content + type class
-    const sourceContent = sourceBody.innerHTML;
-    const sourceTypeClass = Array.from(sourceCell.classList).find(c => c.startsWith('type-'));
-    const targetContent = targetBody.innerHTML;
-    const targetTypeClass = Array.from(targetCell.classList).find(c => c.startsWith('type-'));
+    // 2. Update the item's own data-iso to its new home
+    itemEl.dataset.iso = toIso;
 
-    // Move source content to target (swap if both had content)
-    targetBody.innerHTML = sourceContent;
-    sourceBody.innerHTML = targetContent;
+    // 3. Move the item DOM node into the target cell-body
+    targetBody.appendChild(itemEl);
 
-    // Clear ALL type classes from both cells before re-adding
-    ['type-post', 'type-carousel', 'type-story', 'type-reel'].forEach(c => {
-      sourceCell.classList.remove(c);
-      targetCell.classList.remove(c);
-    });
-
-    // Target now holds source's content - apply source's type
-    targetCell.classList.add('has-content');
-    if (sourceTypeClass) targetCell.classList.add(sourceTypeClass);
-    targetCell.setAttribute('draggable', 'true');
-
-    if (targetContent.trim()) {
-      // Source now holds target's old content - apply target's type
-      sourceCell.classList.add('has-content');
-      if (targetTypeClass) sourceCell.classList.add(targetTypeClass);
-      sourceCell.setAttribute('draggable', 'true');
-    } else {
-      // Source is now empty
-      sourceCell.classList.remove('has-content');
-      sourceCell.setAttribute('draggable', 'false');
-    }
+    // 4. Recompute classes for SOURCE cell after the move
+    refreshCellChrome(sourceCell);
+    // 5. Recompute classes for TARGET cell after the move
+    refreshCellChrome(targetCell);
   });
 
-  if (movedAny) applyStatusToCells();  // Reapply status after DOM shuffle
+  applyStatusToCells();  // Reapply status painting after DOM shuffle
+}
+
+/* Recompute .has-content, .multi-item, and .type-X classes on a cell based on its current children */
+function refreshCellChrome(cell) {
+  if (!cell) return;
+  const items = cell.querySelectorAll('.cell-item');
+  // Strip all type-X classes
+  ['type-post', 'type-carousel', 'type-story', 'type-reel'].forEach(c => cell.classList.remove(c));
+  cell.classList.remove('has-content');
+  cell.classList.remove('multi-item');
+  if (items.length === 0) return;
+  cell.classList.add('has-content');
+  if (items.length > 1) cell.classList.add('multi-item');
+  // Inherit each item's type — cell glow comes from the FIRST item's type
+  items.forEach(it => {
+    const tc = Array.from(it.classList).find(c => c.startsWith('type-'));
+    if (tc) cell.classList.add(tc);
+  });
 }
 
 window.restoreOriginal = function() {
