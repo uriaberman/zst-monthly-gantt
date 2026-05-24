@@ -1605,6 +1605,84 @@ details.collapsible > .pair {
   color: var(--ink);
 }
 
+/* PREVIEW TOGGLE — fixed floating button (Editor only) for switching to client-view preview */
+.preview-toggle {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  transition: all 0.2s ease;
+}
+.preview-toggle:hover {
+  background: var(--paper-2);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(103,232,249,0.18);
+}
+.preview-toggle.is-preview-mode {
+  background: var(--accent-cyan);
+  color: var(--bg);
+  border-color: var(--accent-cyan);
+}
+.preview-toggle.is-preview-mode:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+.preview-toggle-icon { flex-shrink: 0; }
+.preview-banner {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  background: rgba(103,232,249,0.15);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+}
+.preview-banner[hidden] { display: none; }
+/* Uria themed variants */
+body.theme-uria .preview-toggle {
+  background: #160730;
+  border-color: rgba(255,107,53,0.40);
+  color: #FAFAFA;
+}
+body.theme-uria .preview-toggle:hover {
+  border-color: #FF6B35;
+  color: #FF6B35;
+  box-shadow: 0 8px 24px rgba(255,107,53,0.22);
+}
+body.theme-uria .preview-toggle.is-preview-mode {
+  background: #FF6B35;
+  color: #0A0418;
+  border-color: #FF6B35;
+}
+body.theme-uria .preview-banner {
+  background: rgba(255,107,53,0.15);
+  border-color: #FF6B35;
+  color: #FF8A65;
+}
+
 /* DRAFT BAR — appears when there are unpublished local changes */
 .draft-bar {
   display: flex;
@@ -2172,6 +2250,20 @@ body.theme-uria .footer-link:hover {
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
 </div>
 
+
+<!-- Floating preview-mode toggle — only on Editor URL. Lets Uria see exactly what the client sees. -->
+<button class="preview-toggle" id="previewToggle" onclick="togglePreviewMode()" title="עבור בין מצב עריכה למצב צפייה (כמו שהלקוח רואה)">
+  <svg class="preview-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+  <span class="preview-toggle-label">צפה כלקוח</span>
+</button>
+<div class="preview-banner" id="previewBanner" hidden>
+  <span>👁 אתה רואה את הגאנט כפי שהלקוח רואה אותו</span>
+</div>
+
+
 <div class="modal-bg" id="modal">
   <div class="modal" id="modal-inner"></div>
 </div>
@@ -2730,6 +2822,27 @@ window.restoreOriginal = function() {
     try { localStorage.removeItem(lsKey(item.num, 'date_override')); } catch (e) {}
   });
   location.reload();
+};
+
+/* ---------- Preview toggle (Editor only) — see exactly what the client sees ----------
+   Toggling adds/removes body.view-mode. All existing CSS rules for body.view-mode
+   already hide the edit chrome (status dropdowns become static, share button hides,
+   draft bar hides, etc.). The modal also reads isViewMode() each time it opens so
+   the next click on a cell will render in the preview state. */
+window.togglePreviewMode = function() {
+  const body = document.body;
+  const banner = document.getElementById('previewBanner');
+  const btn = document.getElementById('previewToggle');
+  if (!btn) return;
+  const label = btn.querySelector('.preview-toggle-label');
+  const goingToView = !body.classList.contains('view-mode');
+  body.classList.toggle('view-mode', goingToView);
+  if (banner) banner.hidden = !goingToView;
+  if (label) label.textContent = goingToView ? '✏ חזרה לעריכה' : 'צפה כלקוח';
+  btn.classList.toggle('is-preview-mode', goingToView);
+  // Close any open modal — it will re-render properly next time it opens
+  const modal = document.getElementById('modal');
+  if (modal && modal.classList.contains('open')) closeModal();
 };
 
 /* ---------- Month picker (dropdown) + dynamic period label ---------- */
