@@ -3306,6 +3306,16 @@ window.shareView = function(btn) {
     const base = window.location.href.replace(/[/]?(view[/]?)?(\?.*)?(#.*)?$/, '/');
     url = base + 'view/';
   }
+  // Pick the per-month Viewer URL based on currently selected month in dropdown.
+  // E.g., if user is viewing June → URL becomes "/view/2026-06/" with OG title "גאנט חודש 6/26".
+  // The dropdown values are "YYYY-MM" so this maps directly to the folder structure built in main().
+  const monthSelect = document.querySelector('.month-select');
+  if (monthSelect && monthSelect.value) {
+    const monthKey = monthSelect.value;  // "2026-06"
+    // url already ends with /view/ ; append the month folder
+    if (!url.endsWith('/')) url += '/';
+    url += monthKey + '/';
+  }
   const sep = url.includes('?') ? '&' : '?';
   url = `${url}${sep}v=${Date.now()}`;
   navigator.clipboard.writeText(url).then(() => {

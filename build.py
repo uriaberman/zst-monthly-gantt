@@ -202,17 +202,21 @@ def render_legend() -> str:
     '''
 
 
-def render_tabs(months: list) -> str:
+def render_tabs(months: list, default_key: str = None) -> str:
     """Render month picker as a left-side dropdown (kept name for compatibility).
-    Default = first month (chronological). Arrow indicates dropdown.
+    default_key: "YYYY-MM" to preselect a specific month. Falls back to first month.
     """
     if not months:
         return ''
+    if not default_key:
+        y0, m0 = months[0]
+        default_key = f'{y0}-{m0:02d}'
     opts = []
-    for i, (y, m) in enumerate(months):
+    for (y, m) in months:
+        key = f'{y}-{m:02d}'
         title = f'{HEB_GREG_MONTHS[m]} {y}'
-        selected = ' selected' if i == 0 else ''
-        opts.append(f'<option value="{y}-{m:02d}"{selected}>{title}</option>')
+        selected = ' selected' if key == default_key else ''
+        opts.append(f'<option value="{key}"{selected}>{title}</option>')
     return (
         '<div class="month-picker">'
         '<span class="month-picker-label">חודש</span>'
@@ -2736,6 +2740,16 @@ window.shareView = function(btn) {
     const base = window.location.href.replace(/[/]?(view[/]?)?(\\?.*)?(#.*)?$/, '/');
     url = base + 'view/';
   }
+  // Pick the per-month Viewer URL based on currently selected month in dropdown.
+  // E.g., if user is viewing June → URL becomes "/view/2026-06/" with OG title "גאנט חודש 6/26".
+  // The dropdown values are "YYYY-MM" so this maps directly to the folder structure built in main().
+  const monthSelect = document.querySelector('.month-select');
+  if (monthSelect && monthSelect.value) {
+    const monthKey = monthSelect.value;  // "2026-06"
+    // url already ends with /view/ ; append the month folder
+    if (!url.endsWith('/')) url += '/';
+    url += monthKey + '/';
+  }
   const sep = url.includes('?') ? '&' : '?';
   url = `${url}${sep}v=${Date.now()}`;
   navigator.clipboard.writeText(url).then(() => {
@@ -3751,11 +3765,16 @@ updateDraftBar();
 
 
 def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
-                view: bool = False, viewer_url: str = '', last_updated: str = '') -> str:
+                view: bool = False, viewer_url: str = '', last_updated: str = '',
+                og_month=None, default_month_key: str = None) -> str:
     """Render a single HTML file.
 
     view=False → Editor: full edit UI, draft bar, share/PDF/restore buttons
     view=True  → Viewer: read-only, no edit chrome at all (file is frozen, client-safe)
+    og_month: (year, month) tuple to use for the WhatsApp/OG preview title.
+              When None: uses the first month of the data.
+              When provided: this is a per-month Viewer URL like /view/2026-06/.
+    default_month_key: "YYYY-MM" preselected in the dropdown. Falls back to first month.
     """
     items = data['items']
     items_by_date = {}
@@ -3788,13 +3807,26 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
         month_html = render_status_opts_for_items(month_html, items)
         months_html_parts.append(month_html)
 
-    tabs_html = render_tabs(months)
+    # Resolve default_month_key + og_month: when not supplied, both fall to first month
+    if default_month_key:
+        try:
+            _y, _m = default_month_key.split('-')
+            default_y, default_m = int(_y), int(_m)
+        except Exception:
+            default_y, default_m = months[0]
+            default_month_key = f'{default_y}-{default_m:02d}'
+    else:
+        default_y, default_m = months[0]
+        default_month_key = f'{default_y}-{default_m:02d}'
+    if not og_month:
+        og_month = (default_y, default_m)
+    og_y, og_m = og_month
+
+    tabs_html = render_tabs(months, default_key=default_month_key)
     legend_html = render_legend()
     items_json = render_modal_data(items)
 
-    # PERIOD LABEL — ALWAYS shows ONE month at a time (the currently-viewed one).
-    # We pre-compute a meta map { "YYYY-MM": {greg, heb} } and let JS update the label
-    # whenever the month dropdown changes. Default = first chronological month.
+    # PERIOD LABEL — shows ONE month at a time (the currently-selected one).
     from israeli_holidays import hebrew_month_for_gregorian, hebrew_year_for_gregorian
     months_meta = {}
     for (y, m) in months:
@@ -3804,14 +3836,15 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
             'heb':  f'{hebrew_month_for_gregorian(y, m)} {hebrew_year_for_gregorian(y, m)}',
         }
     months_meta_json = json.dumps(months_meta, ensure_ascii=False)
-    # Initial label = first month
-    y0, m0 = months[0]
-    init_greg = f'{HEB_GREG_MONTHS[m0]} {y0}'
-    init_heb = f'{hebrew_month_for_gregorian(y0, m0)} {hebrew_year_for_gregorian(y0, m0)}'
-    # WhatsApp/social-link preview title: "<client> | גאנט חודש M/YY" (canonical format per Uria)
-    preview_label = f'גאנט חודש {m0}/{str(y0)[-2:]}'
+    # Initial label = default month
+    init_greg = f'{HEB_GREG_MONTHS[default_m]} {default_y}'
+    init_heb = f'{hebrew_month_for_gregorian(default_y, default_m)} {hebrew_year_for_gregorian(default_y, default_m)}'
+    # WhatsApp/social-link preview title — uses og_month (per-month viewers each get their own)
+    preview_label = f'גאנט חודש {og_m}/{str(og_y)[-2:]}'
     page_title = f'{client} | {preview_label}'
-    og_description = f'גאנט תוכן חודשי {init_heb} · {init_greg}'
+    og_greg = f'{HEB_GREG_MONTHS[og_m]} {og_y}'
+    og_heb = f'{hebrew_month_for_gregorian(og_y, og_m)} {hebrew_year_for_gregorian(og_y, og_m)}'
+    og_description = f'גאנט תוכן חודשי {og_heb} · {og_greg}'
     canonical_period_html = (
         f'<span class="period-greg" id="periodGreg">{init_greg}</span>'
         f'<span class="period-dot">·</span>'
@@ -4087,17 +4120,49 @@ def main():
     copied_main = _sync_media(pilot_dir, out_dir)
     copied_view = _sync_media(pilot_dir, out_viewer.parent)
 
-    # Build Editor (full edit UI)
+    # Compute months list for per-month viewers (same logic as render_html)
+    item_dates_sorted = sorted([d for d in (it.get('date_iso') for it in data['items']) if d])
+    if item_dates_sorted:
+        y_a, m_a = int(item_dates_sorted[0][:4]), int(item_dates_sorted[0][5:7])
+        y_b, m_b = int(item_dates_sorted[-1][:4]), int(item_dates_sorted[-1][5:7])
+        months_list = []
+        cy, cm = y_a, m_a
+        while (cy, cm) <= (y_b, m_b):
+            months_list.append((cy, cm))
+            cm += 1
+            if cm > 12:
+                cm = 1; cy += 1
+    else:
+        months_list = []
+
+    # Build Editor (full edit UI). Editor's share button reads dropdown value → builds per-month URL.
     editor_html = render_html(data, logo_b64, mode=args.mode, view=False,
                               viewer_url=viewer_url, last_updated=last_updated)
     out_editor.write_text(editor_html, encoding='utf-8')
     print(f'WROTE EDITOR  {out_editor} ({len(editor_html):,} chars)')
 
-    # Build Viewer (read-only, frozen at this moment)
+    # Build main Viewer (default = first month for OG tags)
     viewer_html = render_html(data, logo_b64, mode=args.mode, view=True,
                               viewer_url=viewer_url, last_updated=last_updated)
     out_viewer.write_text(viewer_html, encoding='utf-8')
     print(f'WROTE VIEWER  {out_viewer} ({len(viewer_html):,} chars)')
+
+    # Build per-month Viewers — each one has its own OG title ("גאנט חודש M/YY").
+    # Share button on Editor picks the right URL based on which month is selected in the dropdown.
+    per_month_count = 0
+    for (y, m) in months_list:
+        month_key = f'{y}-{m:02d}'
+        per_month_dir = out_viewer.parent / month_key
+        per_month_dir.mkdir(parents=True, exist_ok=True)
+        # Media must also be present in per-month dir so <img src="media/..."> works
+        _sync_media(pilot_dir, per_month_dir)
+        per_month_url = f'{viewer_url}{month_key}/'
+        per_month_html = render_html(data, logo_b64, mode=args.mode, view=True,
+                                     viewer_url=per_month_url, last_updated=last_updated,
+                                     og_month=(y, m), default_month_key=month_key)
+        (per_month_dir / 'index.html').write_text(per_month_html, encoding='utf-8')
+        per_month_count += 1
+    print(f'WROTE {per_month_count} per-month viewers (each with its own WhatsApp/OG title)')
 
     print(f'  Mode: {args.mode}')
     print(f'  Slug: {slug}')
