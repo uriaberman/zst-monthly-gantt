@@ -1174,13 +1174,72 @@ body.theme-uria .media-zone-spec { color: #FF6B35; }
 @media (max-width: 480px) {
   .media-grid { grid-template-columns: repeat(2, 1fr); }
 }
-/* Each card = slot + actions bar BELOW */
+/* Each card = slot + slide-copy + actions bar BELOW */
 .media-card {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
 }
+/* SLIDE COPY — the text that should appear ON each visual.
+   For posts: usually 3 lines (ראשית / משנית / בקטן).
+   For carousel slides: usually 1 line ("כי אומרים על התורה...").
+   This is DISTINCT from the caption (קופי נלווה) which lives in its own textarea. */
+.slide-copy {
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: right;
+}
+.slide-copy-title {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  margin-bottom: 4px;
+}
+.slide-copy-label {
+  font-family: var(--font-en);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.slide-copy-primary {
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.slide-copy-secondary {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+.slide-copy-small {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-mute);
+}
+.slide-copy-line {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+body.theme-uria .slide-copy-title { color: #FF6B35; }
+body.theme-uria .slide-copy { background: rgba(255,255,255,0.03); }
 .media-slot {
   position: relative;
   border: 2px dashed var(--border);
@@ -1837,25 +1896,9 @@ body.theme-uria .footer-link:hover {
     </div><div class="cell saturday" data-iso="2026-05-23">
       <div class="cell-head"><div class="cell-num">23</div><div class="cell-heb">ז׳</div></div>
       <div class="cell-body"></div>
-    </div></div><div class="week"><div class="cell has-content type-carousel type-carousel" data-iso="2026-05-24">
+    </div></div><div class="week"><div class="cell" data-iso="2026-05-24">
       <div class="cell-head"><div class="cell-num">24</div><div class="cell-heb">ח׳</div></div>
-      <div class="cell-body">
-        <div class="cell-item type-carousel" data-num="2" data-iso="2026-05-24" draggable="true">
-          <div class="cell-type-row">
-            <span class="cell-type-chip">קרוסלה</span>
-            
-          </div>
-          <div class="cell-title">למה אוכלים חלב? - 6 הסברים</div>
-          <div class="cell-footer">
-            <div class="cell-status-pill" data-num="2">
-              <span class="cell-status-dot"></span>
-              <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
-              </select>
-            </div>
-            <button class="cell-open" data-num="2">צפייה ←</button>
-          </div>
-        </div></div>
+      <div class="cell-body"></div>
     </div><div class="cell has-content type-post type-post" data-iso="2026-05-25">
       <div class="cell-head"><div class="cell-num">25</div><div class="cell-heb">ט׳</div></div>
       <div class="cell-body">
@@ -1875,42 +1918,26 @@ body.theme-uria .footer-link:hover {
             <button class="cell-open" data-num="1">צפייה ←</button>
           </div>
         </div></div>
-    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-05-26">
+    </div><div class="cell" data-iso="2026-05-26">
       <div class="cell-head"><div class="cell-num">26</div><div class="cell-heb">י׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-05-27">
+      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
       <div class="cell-body">
-        <div class="cell-item type-carousel" data-num="6" data-iso="2026-05-26" draggable="true">
+        <div class="cell-item type-carousel" data-num="2" data-iso="2026-05-27" draggable="true">
           <div class="cell-type-row">
             <span class="cell-type-chip">קרוסלה</span>
             
           </div>
-          <div class="cell-title">חג בלבן - למה אנחנו אוהבים את שבועות</div>
+          <div class="cell-title">למה אוכלים חלב? - 6 הסברים</div>
           <div class="cell-footer">
-            <div class="cell-status-pill" data-num="6">
+            <div class="cell-status-pill" data-num="2">
               <span class="cell-status-dot"></span>
-              <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+              <select class="cell-status" data-num="2" aria-label="סטטוס" onclick="event.stopPropagation()">
                 <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
               </select>
             </div>
-            <button class="cell-open" data-num="6">צפייה ←</button>
-          </div>
-        </div></div>
-    </div><div class="cell has-content type-post type-post" data-iso="2026-05-27">
-      <div class="cell-head"><div class="cell-num">27</div><div class="cell-heb">י״א</div></div>
-      <div class="cell-body">
-        <div class="cell-item type-post" data-num="5" data-iso="2026-05-27" draggable="true">
-          <div class="cell-type-row">
-            <span class="cell-type-chip">פוסט</span>
-            
-          </div>
-          <div class="cell-title">טקס הביכורים הקיבוצי</div>
-          <div class="cell-footer">
-            <div class="cell-status-pill" data-num="5">
-              <span class="cell-status-dot"></span>
-              <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
-              </select>
-            </div>
-            <button class="cell-open" data-num="5">צפייה ←</button>
+            <button class="cell-open" data-num="2">צפייה ←</button>
           </div>
         </div></div>
     </div><div class="cell" data-iso="2026-05-28">
@@ -1922,9 +1949,25 @@ body.theme-uria .footer-link:hover {
     </div><div class="cell saturday" data-iso="2026-05-30">
       <div class="cell-head"><div class="cell-num">30</div><div class="cell-heb">י״ד</div></div>
       <div class="cell-body"></div>
-    </div></div><div class="week"><div class="cell" data-iso="2026-05-31">
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-05-31">
       <div class="cell-head"><div class="cell-num">31</div><div class="cell-heb">ט״ו</div></div>
-      <div class="cell-body"></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="3" data-iso="2026-05-31" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">מזל תאומים - שניים שמתחברים לאחד</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="3">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="3">צפייה ←</button>
+          </div>
+        </div></div>
     </div><div class="cell outside" data-iso="2026-06-01">
       <div class="cell-head"><div class="cell-num">1</div><div class="cell-heb">ט״ז</div></div>
       <div class="cell-body"></div>
@@ -1957,66 +2000,10 @@ body.theme-uria .footer-link:hover {
     </div><div class="cell" data-iso="2026-06-02">
       <div class="cell-head"><div class="cell-num">2</div><div class="cell-heb">י״ז</div></div>
       <div class="cell-body"></div>
-    </div><div class="cell" data-iso="2026-06-03">
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-06-03">
       <div class="cell-head"><div class="cell-num">3</div><div class="cell-heb">י״ח</div></div>
-      <div class="cell-body"></div>
-    </div><div class="cell has-content type-post type-post" data-iso="2026-06-04">
-      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
       <div class="cell-body">
-        <div class="cell-item type-post" data-num="3" data-iso="2026-06-04" draggable="true">
-          <div class="cell-type-row">
-            <span class="cell-type-chip">פוסט</span>
-            
-          </div>
-          <div class="cell-title">מזל תאומים - שניים שמתחברים לאחד</div>
-          <div class="cell-footer">
-            <div class="cell-status-pill" data-num="3">
-              <span class="cell-status-dot"></span>
-              <select class="cell-status" data-num="3" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
-              </select>
-            </div>
-            <button class="cell-open" data-num="3">צפייה ←</button>
-          </div>
-        </div></div>
-    </div><div class="cell friday" data-iso="2026-06-05">
-      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
-      <div class="cell-body"></div>
-    </div><div class="cell saturday" data-iso="2026-06-06">
-      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
-      <div class="cell-body"></div>
-    </div></div><div class="week"><div class="cell" data-iso="2026-06-07">
-      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
-      <div class="cell-body"></div>
-    </div><div class="cell has-content type-post type-post" data-iso="2026-06-08">
-      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
-      <div class="cell-body">
-        <div class="cell-item type-post" data-num="7" data-iso="2026-06-08" draggable="true">
-          <div class="cell-type-row">
-            <span class="cell-type-chip">פוסט</span>
-            
-          </div>
-          <div class="cell-title">מה הביכורים שלך?</div>
-          <div class="cell-footer">
-            <div class="cell-status-pill" data-num="7">
-              <span class="cell-status-dot"></span>
-              <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
-                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
-              </select>
-            </div>
-            <button class="cell-open" data-num="7">צפייה ←</button>
-          </div>
-        </div></div>
-    </div><div class="cell" data-iso="2026-06-09">
-      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
-      <div class="cell-body"></div>
-    </div><div class="cell" data-iso="2026-06-10">
-      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
-      <div class="cell-body"></div>
-    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-06-11">
-      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
-      <div class="cell-body">
-        <div class="cell-item type-carousel" data-num="4" data-iso="2026-06-11" draggable="true">
+        <div class="cell-item type-carousel" data-num="4" data-iso="2026-06-03" draggable="true">
           <div class="cell-type-row">
             <span class="cell-type-chip">קרוסלה</span>
             
@@ -2032,15 +2019,87 @@ body.theme-uria .footer-link:hover {
             <button class="cell-open" data-num="4">צפייה ←</button>
           </div>
         </div></div>
+    </div><div class="cell" data-iso="2026-06-04">
+      <div class="cell-head"><div class="cell-num">4</div><div class="cell-heb">י״ט</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell friday" data-iso="2026-06-05">
+      <div class="cell-head"><div class="cell-num">5</div><div class="cell-heb">כ׳</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell saturday" data-iso="2026-06-06">
+      <div class="cell-head"><div class="cell-num">6</div><div class="cell-heb">כ״א</div></div>
+      <div class="cell-body"></div>
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-06-07">
+      <div class="cell-head"><div class="cell-num">7</div><div class="cell-heb">כ״ב</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="5" data-iso="2026-06-07" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">טקס הביכורים הקיבוצי</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="5">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="5" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="5">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-08">
+      <div class="cell-head"><div class="cell-num">8</div><div class="cell-heb">כ״ג</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell" data-iso="2026-06-09">
+      <div class="cell-head"><div class="cell-num">9</div><div class="cell-heb">כ״ד</div></div>
+      <div class="cell-body"></div>
+    </div><div class="cell has-content type-carousel type-carousel" data-iso="2026-06-10">
+      <div class="cell-head"><div class="cell-num">10</div><div class="cell-heb">כ״ה</div></div>
+      <div class="cell-body">
+        <div class="cell-item type-carousel" data-num="6" data-iso="2026-06-10" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">קרוסלה</span>
+            
+          </div>
+          <div class="cell-title">חג בלבן - למה אנחנו אוהבים את שבועות</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="6">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="6" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="6">צפייה ←</button>
+          </div>
+        </div></div>
+    </div><div class="cell" data-iso="2026-06-11">
+      <div class="cell-head"><div class="cell-num">11</div><div class="cell-heb">כ״ו</div></div>
+      <div class="cell-body"></div>
     </div><div class="cell friday" data-iso="2026-06-12">
       <div class="cell-head"><div class="cell-num">12</div><div class="cell-heb">כ״ז</div></div>
       <div class="cell-body"></div>
     </div><div class="cell saturday" data-iso="2026-06-13">
       <div class="cell-head"><div class="cell-num">13</div><div class="cell-heb">כ״ח</div></div>
       <div class="cell-body"></div>
-    </div></div><div class="week"><div class="cell" data-iso="2026-06-14">
+    </div></div><div class="week"><div class="cell has-content type-post type-post" data-iso="2026-06-14">
       <div class="cell-head"><div class="cell-num">14</div><div class="cell-heb">כ״ט</div></div>
-      <div class="cell-body"></div>
+      <div class="cell-body">
+        <div class="cell-item type-post" data-num="7" data-iso="2026-06-14" draggable="true">
+          <div class="cell-type-row">
+            <span class="cell-type-chip">פוסט</span>
+            
+          </div>
+          <div class="cell-title">מה הביכורים שלך?</div>
+          <div class="cell-footer">
+            <div class="cell-status-pill" data-num="7">
+              <span class="cell-status-dot"></span>
+              <select class="cell-status" data-num="7" aria-label="סטטוס" onclick="event.stopPropagation()">
+                <option value="בעבודה" selected>בעבודה</option><option value="בעיצוב">בעיצוב</option><option value="ממתין לאישור">ממתין לאישור</option><option value="אושר">אושר</option><option value="נגנז">נגנז</option>
+              </select>
+            </div>
+            <button class="cell-open" data-num="7">צפייה ←</button>
+          </div>
+        </div></div>
     </div><div class="cell" data-iso="2026-06-15">
       <div class="cell-head"><div class="cell-num">15</div><div class="cell-heb">ל׳</div></div>
       <div class="cell-body"></div>
@@ -2118,7 +2177,7 @@ body.theme-uria .footer-link:hover {
 </div>
 
 <script>
-const ITEMS_DATA = [{"num": 1, "date": "2026-05-25", "day": "ב", "heb_date": "ט׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "עמך עמי - רות הגיורת", "short_explanation": "המואבייה שהחליטה להיות ישראלית והפכה לסבתא הגדולה של דוד המלך. השתייכות ליהדות היא לפעמים בחירה, לא רק תעודת לידה.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 1", "status": "בעבודה", "media_files": ["media/1-0.jpg"]}, {"num": 2, "date": "2026-05-24", "day": "ד", "heb_date": "ח׳ סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "למה אוכלים חלב? - 6 הסברים", "short_explanation": "אחרי 3,000 שנה יש תשובה למי ששואל למה כולנו פתאום אוכלים גבינה צהובה. קרוסלה של 7 שקפים שמסבירה את כל הגרסאות בהומור קליל.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 3", "status": "בעבודה", "media_files": ["media/2-0.jpg", "media/2-1.jpg", "media/2-2.jpg", "media/2-3.jpg", "media/2-4.jpg", "media/2-5.jpg", "media/2-6.jpg"]}, {"num": 3, "date": "2026-06-04", "day": "א", "heb_date": "י״ט סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מזל תאומים - שניים שמתחברים לאחד", "short_explanation": "החודש שבו ניגודים לא מתחרים - הם מתחתנים. סיוון מציג שני שונים שחולקים אותו מקור: לוחות הברית כפולים, רחל ולאה, יעקב ועשו, רות ונעמי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 4", "status": "בעבודה", "media_files": ["media/3-0.jpg"]}, {"num": 4, "date": "2026-06-11", "day": "ד", "heb_date": "כ״ו סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "הישראליות שב-7 המינים", "short_explanation": "שבעת המינים הם תעודת זהות חקלאית ואישיותית של עם ישראל. קרוסלה של 9 שקפים: חיטה, שעורה, גפן, תאנה, רימון, זית, תמר - וחיבור לאופי הישראלי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 5", "status": "בעבודה", "media_files": ["media/4-0.jpg", "media/4-1.jpg", "media/4-2.jpg", "media/4-3.jpg", "media/4-4.jpg", "media/4-5.jpg", "media/4-6.jpg", "media/4-7.jpg", "media/4-8.jpg"]}, {"num": 5, "date": "2026-05-27", "day": "א", "heb_date": "י״א סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "טקס הביכורים הקיבוצי", "short_explanation": "מ-1920 ועד היום, קיבוצי ישראל מקיימים בשבועות את טקס הביכורים: ילדים עם סלי פירות, שירי שדה, שמלות לבנות. נשחזר ונספר על המנהג.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 8", "status": "בעבודה", "media_files": ["media/5-0.jpg"]}, {"num": 6, "date": "2026-05-26", "day": "ד", "heb_date": "י׳ סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "חג בלבן - למה אנחנו אוהבים את שבועות", "short_explanation": "מוטיב החולצה הלבנה והחגיגית מחובר למוטיבים של חג השבועות. קרוסלה: גבינה, מפה, שמלות ביכורים, נרות, חולצה לבנה - והקשר שלהם לחג.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 9", "status": "בעבודה", "media_files": ["media/6-0.jpg", "media/6-1.jpg", "media/6-2.jpg", "media/6-3.jpg", "media/6-4.jpg", "media/6-5.jpg"]}, {"num": 7, "date": "2026-06-08", "day": "א", "heb_date": "כ״ג סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך?", "short_explanation": "בעבר ביכורים היו פירות ראשונים שמביאים בשבועות. היום? ילד ראשון, דירה ראשונה, ספר ראשון, חברה ראשונה. שאלה פתוחה לעוקבים: 'מה הביכורים שלך השנה?'", "source": "אחד בחודש - סיוון פ\"ו - רעיון 10", "status": "בעבודה", "media_files": ["media/7-0.jpg"]}];
+const ITEMS_DATA = [{"num": 1, "date": "2026-05-25", "day": "ב", "heb_date": "ט׳ סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "עמך עמי - רות הגיורת", "short_explanation": "המואבייה שהחליטה להיות ישראלית והפכה לסבתא הגדולה של דוד המלך. השתייכות ליהדות היא לפעמים בחירה, לא רק תעודת לידה.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 1", "status": "בעבודה", "media_files": ["media/1-0.jpg"], "slides": [{"label": "ויזואל הפוסט", "primary": "סבתא של דוד המלך", "secondary": "בכלל לא הייתה יהודיה", "small": "תכירו את רות"}]}, {"num": 2, "date": "2026-05-27", "day": "ד", "heb_date": "י״א סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "למה אוכלים חלב? - 6 הסברים", "short_explanation": "אחרי 3,000 שנה יש תשובה למי ששואל למה כולנו פתאום אוכלים גבינה צהובה. קרוסלה של 7 שקפים בהומור קליל.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 3", "status": "בעבודה", "media_files": ["media/2-0.jpg", "media/2-1.jpg", "media/2-2.jpg", "media/2-3.jpg", "media/2-4.jpg", "media/2-5.jpg", "media/2-6.jpg"], "slides": [{"label": "שקף 1 - קאבר", "primary": "שבועות שאנחנו מחפשים את התשובה", "secondary": "למה הקשר בין החג לחלב?"}, {"label": "שקף 2", "copy": "כי אומרים על התורה שהיא מתוקה כדבש וחלב"}, {"label": "שקף 3", "copy": "כי הר סיני בו התקבלה התורה נקרא גם \"גבנונים\""}, {"label": "שקף 4", "copy": "כי כשקיבלו את התורה, לא היה זמן לשחוט בשר"}, {"label": "שקף 5", "copy": "כי אומרים שארץ זבת חלב ודבש היא תזכורת לארץ ישראל"}, {"label": "שקף 6", "copy": "כי סבתא תמיד הכינה מוקרמים ולנו זה מספיק 🤍"}, {"label": "שקף 7 - סיום", "copy": "התשובה האמיתית? אולי קצת מכל אחת.\nחג שבועות שמח!"}]}, {"num": 3, "date": "2026-05-31", "day": "א", "heb_date": "ט״ו סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מזל תאומים - שניים שמתחברים לאחד", "short_explanation": "החודש שבו ניגודים לא מתחרים - הם מתחתנים. סיוון מציג שני שונים שחולקים אותו מקור: לוחות הברית כפולים, רחל ולאה, יעקב ועשו, רות ונעמי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 4", "status": "בעבודה", "media_files": ["media/3-0.jpg"], "slides": [{"label": "ויזואל הפוסט", "primary": "גם תאומים לא זהים, מתאחדים", "secondary": "ככה זה כשמתחברים."}]}, {"num": 4, "date": "2026-06-03", "day": "ד", "heb_date": "י״ח סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "הישראליות שב-7 המינים", "short_explanation": "שבעת המינים הם תעודת זהות חקלאית ואישיותית של עם ישראל. קרוסלה של 9 שקפים שמחברת בין הפירות לאופי הישראלי.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 5", "status": "בעבודה", "media_files": ["media/4-0.jpg", "media/4-1.jpg", "media/4-2.jpg", "media/4-3.jpg", "media/4-4.jpg", "media/4-5.jpg", "media/4-6.jpg", "media/4-7.jpg", "media/4-8.jpg"], "slides": [{"label": "שקף 1 - קאבר", "primary": "ידעתם ש-7 המינים\nהם חלק בלתי נפרד מהאופי הישראלי?"}, {"label": "שקף 2 - חיטה", "copy": "מספרת על החוזק היומיומי הבסיסי"}, {"label": "שקף 3 - שעורה", "copy": "מספרת על הפשטות המקומית"}, {"label": "שקף 4 - גפן", "copy": "מספרת על שמחה אמיתית גם תחת לחץ ואתגרים"}, {"label": "שקף 5 - תאנה", "copy": "מספרת על מתיקות חבויה"}, {"label": "שקף 6 - רימון", "copy": "מספר על שפע, פוריות וגיוון"}, {"label": "שקף 7 - זית", "copy": "מספר על חוסן ואיתנות, שככל שלוחצים עלינו יוצא יותר טוב מאיתנו"}, {"label": "שקף 8 - תמר", "copy": "מספר על היכולת לעלות גבוה מעל כולם"}, {"label": "שקף 9 - סיום", "copy": "7 מינים\nועם אחד עם האופי הכי מיוחד בעולם"}]}, {"num": 5, "date": "2026-06-07", "day": "א", "heb_date": "כ״ב סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "טקס הביכורים הקיבוצי", "short_explanation": "מ-1920 ועד היום, קיבוצי ישראל מקיימים בשבועות את טקס הביכורים: ילדים עם סלי פירות, שירי שדה, שמלות לבנות.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 8", "status": "בעבודה", "media_files": ["media/5-0.jpg"], "slides": [{"label": "ויזואל הפוסט (תמונת ארכיון שחור-לבן)", "primary": "זהותנו על כתפינו, ראשנו עטורים", "secondary": "מקצות הארץ באנו הבאנו ביכורים"}]}, {"num": 6, "date": "2026-06-10", "day": "ד", "heb_date": "כ״ה סיון תשפ״ו", "type_key": "carousel", "type_label": "קרוסלה", "type_accent": "#5EEAD4", "type_soft": "rgba(94,234,212,0.14)", "title": "חג בלבן - למה אנחנו אוהבים את שבועות", "short_explanation": "מוטיב החולצה הלבנה והחגיגית מחובר למוטיבים של חג השבועות. קרוסלה: גבינה, מפה, שמלות ביכורים, נרות, חולצה לבנה.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 9", "status": "בעבודה", "media_files": ["media/6-0.jpg", "media/6-1.jpg", "media/6-2.jpg", "media/6-3.jpg", "media/6-4.jpg", "media/6-5.jpg"], "slides": [{"label": "שקף 1 - קאבר", "primary": "למה אנחנו כל כך אוהבים את שבועות?"}, {"label": "שקף 2", "copy": "אימג' של גבינה לבנה"}, {"label": "שקף 3", "copy": "אימג' של שולחן עם מפה לבנה"}, {"label": "שקף 4", "copy": "אימג' שמלות ביכורים לבנות"}, {"label": "שקף 5", "copy": "אימג' של נרות שולחן לבנים"}, {"label": "שקף 6 - סיום", "copy": "אימג' חולצה לבנה ולידה הכיתוב 'חג שבועות שמח' 🤍"}]}, {"num": 7, "date": "2026-06-14", "day": "א", "heb_date": "כ״ט סיון תשפ״ו", "type_key": "post", "type_label": "פוסט", "type_accent": "#67E8F9", "type_soft": "rgba(103,232,249,0.14)", "title": "מה הביכורים שלך?", "short_explanation": "בעבר ביכורים היו פירות ראשונים שמביאים בשבועות. היום? ילד ראשון, דירה ראשונה, ספר ראשון, חברה ראשונה. שאלה פתוחה לעוקבים.", "source": "אחד בחודש - סיוון פ\"ו - רעיון 10", "status": "בעבודה", "media_files": ["media/7-0.jpg"], "slides": [{"label": "ויזואל הפוסט (סלסלת קש ריקה)", "primary": "מה הביכורים שלך השנה?"}]}];
 const itemsByNum = Object.fromEntries(ITEMS_DATA.map(i => [i.num, i]));
 const CLIENT_KEY = 'אחד_בחודש';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
@@ -2790,7 +2849,7 @@ function openModal(num) {
             <span class="media-zone-spec">${aspectLabel}</span>
           </div>
           <div class="media-grid" id="mediaGrid">
-            ${renderMediaSlots(num, savedImages, ratioCls, isView)}
+            ${renderMediaSlots(num, savedImages, ratioCls, isView, it.slides)}
           </div>
         </div>
       </div>
@@ -2909,10 +2968,12 @@ function saveImages(num, arr) {
 
 const MAX_MEDIA_SLOTS = 10;
 
-function renderMediaSlots(num, images, ratioCls, isView) {
+function renderMediaSlots(num, images, ratioCls, isView, slides) {
   const parts = [];
-  // Existing image slots — each with its own card: image + actions (replace / trash)
+  // Existing image slots — each with its own card: image + actions (replace / trash) + visual copy
   images.forEach((src, idx) => {
+    const slide = (slides && slides[idx]) || {};
+    const slideCopyHtml = renderSlideCopy(slide);
     parts.push(`
       <div class="media-card" data-idx="${idx}" data-num="${num}">
         <div class="media-slot ${ratioCls} has-image">
@@ -2920,6 +2981,7 @@ function renderMediaSlots(num, images, ratioCls, isView) {
                onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
         </div>
+        ${slideCopyHtml}
         ${!isView ? `
           <div class="media-actions">
             <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
@@ -2955,6 +3017,22 @@ function renderMediaSlots(num, images, ratioCls, isView) {
     parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
   }
   return parts.join('');
+}
+
+/* Render the slide's VISUAL COPY block — the text that appears ON the visual.
+   This is DIFFERENT from copy_final (the caption / קופי נלווה) — that one stays in its
+   own textarea. Here we show what's written INSIDE the image: ראשית/משנית/בקטן (posts)
+   or the single line of text per carousel slide. */
+function renderSlideCopy(slide) {
+  if (!slide) return '';
+  const lines = [];
+  if (slide.label)     lines.push(`<div class="slide-copy-label">${escapeHtml(slide.label)}</div>`);
+  if (slide.primary)   lines.push(`<div class="slide-copy-primary">${escapeHtml(slide.primary).replace(/\n/g, '<br>')}</div>`);
+  if (slide.secondary) lines.push(`<div class="slide-copy-secondary">${escapeHtml(slide.secondary).replace(/\n/g, '<br>')}</div>`);
+  if (slide.small)     lines.push(`<div class="slide-copy-small">${escapeHtml(slide.small).replace(/\n/g, '<br>')}</div>`);
+  if (slide.copy)      lines.push(`<div class="slide-copy-line">${escapeHtml(slide.copy).replace(/\n/g, '<br>')}</div>`);
+  if (lines.length === 0) return '';
+  return `<div class="slide-copy" dir="rtl"><div class="slide-copy-title">📝 טקסט על הוויזואל</div>${lines.join('')}</div>`;
 }
 
 function triggerImageReplace(num, idx) {
@@ -3012,7 +3090,8 @@ function refreshMediaGrid(num) {
   const grid = zone.querySelector('.media-grid');
   const ratioCls = zone.classList.contains('ratio-9-16') ? 'ratio-9-16' : 'ratio-1-1';
   const isView = isViewMode();
-  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView);
+  const it = itemsByNum[num];
+  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView, it ? it.slides : []);
   // Re-wire drag/drop on the new add-slot
   setupMediaDrop(num);
 }

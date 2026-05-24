@@ -251,6 +251,10 @@ def render_modal_data(items: list) -> str:
             'source': it.get('source', ''),
             'status': it['status'],
             'media_files': it.get('media_files', []),
+            # Visual copy per slide — the TEXT that appears ON each visual.
+            # For posts: usually 1 slide entry with {primary, secondary, small}.
+            # For carousels: N entries, first usually has {primary, secondary} (cover), rest have {copy}.
+            'slides': it.get('slides', []),
         })
     return json.dumps(slim, ensure_ascii=False)
 
@@ -2023,13 +2027,72 @@ body.theme-uria .media-zone-spec { color: #FF6B35; }
 @media (max-width: 480px) {
   .media-grid { grid-template-columns: repeat(2, 1fr); }
 }
-/* Each card = slot + actions bar BELOW */
+/* Each card = slot + slide-copy + actions bar BELOW */
 .media-card {
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
 }
+/* SLIDE COPY — the text that should appear ON each visual.
+   For posts: usually 3 lines (ראשית / משנית / בקטן).
+   For carousel slides: usually 1 line ("כי אומרים על התורה...").
+   This is DISTINCT from the caption (קופי נלווה) which lives in its own textarea. */
+.slide-copy {
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-he);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: right;
+}
+.slide-copy-title {
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--accent-cyan);
+  margin-bottom: 4px;
+}
+.slide-copy-label {
+  font-family: var(--font-en);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+.slide-copy-primary {
+  font-family: var(--font-he);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.slide-copy-secondary {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+}
+.slide-copy-small {
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-mute);
+}
+.slide-copy-line {
+  font-family: var(--font-he);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+body.theme-uria .slide-copy-title { color: #FF6B35; }
+body.theme-uria .slide-copy { background: rgba(255,255,255,0.03); }
 .media-slot {
   position: relative;
   border: 2px dashed var(--border);
@@ -3217,7 +3280,7 @@ function openModal(num) {
             <span class="media-zone-spec">${aspectLabel}</span>
           </div>
           <div class="media-grid" id="mediaGrid">
-            ${renderMediaSlots(num, savedImages, ratioCls, isView)}
+            ${renderMediaSlots(num, savedImages, ratioCls, isView, it.slides)}
           </div>
         </div>
       </div>
@@ -3336,10 +3399,12 @@ function saveImages(num, arr) {
 
 const MAX_MEDIA_SLOTS = 10;
 
-function renderMediaSlots(num, images, ratioCls, isView) {
+function renderMediaSlots(num, images, ratioCls, isView, slides) {
   const parts = [];
-  // Existing image slots — each with its own card: image + actions (replace / trash)
+  // Existing image slots — each with its own card: image + actions (replace / trash) + visual copy
   images.forEach((src, idx) => {
+    const slide = (slides && slides[idx]) || {};
+    const slideCopyHtml = renderSlideCopy(slide);
     parts.push(`
       <div class="media-card" data-idx="${idx}" data-num="${num}">
         <div class="media-slot ${ratioCls} has-image">
@@ -3347,6 +3412,7 @@ function renderMediaSlots(num, images, ratioCls, isView) {
                onclick="openLightbox(${num}, ${idx})" />
           <div class="media-slot-num">${idx + 1}</div>
         </div>
+        ${slideCopyHtml}
         ${!isView ? `
           <div class="media-actions">
             <button class="media-act media-act-replace" title="החלף תמונה זו" onclick="event.stopPropagation(); triggerImageReplace(${num}, ${idx})">
@@ -3382,6 +3448,22 @@ function renderMediaSlots(num, images, ratioCls, isView) {
     parts.push(`<div class="media-card"><div class="media-slot ${ratioCls} media-slot-empty"><div class="media-empty-text">— אין עדיין תמונה —</div></div></div>`);
   }
   return parts.join('');
+}
+
+/* Render the slide's VISUAL COPY block — the text that appears ON the visual.
+   This is DIFFERENT from copy_final (the caption / קופי נלווה) — that one stays in its
+   own textarea. Here we show what's written INSIDE the image: ראשית/משנית/בקטן (posts)
+   or the single line of text per carousel slide. */
+function renderSlideCopy(slide) {
+  if (!slide) return '';
+  const lines = [];
+  if (slide.label)     lines.push(`<div class="slide-copy-label">${escapeHtml(slide.label)}</div>`);
+  if (slide.primary)   lines.push(`<div class="slide-copy-primary">${escapeHtml(slide.primary).replace(/\\n/g, '<br>')}</div>`);
+  if (slide.secondary) lines.push(`<div class="slide-copy-secondary">${escapeHtml(slide.secondary).replace(/\\n/g, '<br>')}</div>`);
+  if (slide.small)     lines.push(`<div class="slide-copy-small">${escapeHtml(slide.small).replace(/\\n/g, '<br>')}</div>`);
+  if (slide.copy)      lines.push(`<div class="slide-copy-line">${escapeHtml(slide.copy).replace(/\\n/g, '<br>')}</div>`);
+  if (lines.length === 0) return '';
+  return `<div class="slide-copy" dir="rtl"><div class="slide-copy-title">📝 טקסט על הוויזואל</div>${lines.join('')}</div>`;
 }
 
 function triggerImageReplace(num, idx) {
@@ -3439,7 +3521,8 @@ function refreshMediaGrid(num) {
   const grid = zone.querySelector('.media-grid');
   const ratioCls = zone.classList.contains('ratio-9-16') ? 'ratio-9-16' : 'ratio-1-1';
   const isView = isViewMode();
-  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView);
+  const it = itemsByNum[num];
+  grid.innerHTML = renderMediaSlots(num, getImages(num), ratioCls, isView, it ? it.slides : []);
   // Re-wire drag/drop on the new add-slot
   setupMediaDrop(num);
 }
@@ -3922,6 +4005,36 @@ def main():
                 if not full_view.exists():
                     raise SystemExit(f'  VERIFY FAILED: {full_view} not on disk after build (viewer)')
         print(f'  ✅ Media verification PASS — {len(items_with_media)} items, {sum(len(it["media_files"]) for it in items_with_media)} total slides')
+
+    # ============================================================
+    # COPY COMPLETENESS WARNING (iron rule 16)
+    # ============================================================
+    # A gantt has THREE kinds of text — all three must be captured from the source:
+    #   1. copy_final  — the caption/social-post text (קופי נלווה)
+    #   2. slides[].primary/secondary/small/copy — visual text on each slide (טקסט על הוויזואל)
+    #   3. short_explanation — the rationale shown in the modal
+    # If an item has media but no slides[] copy, the modal would show only the image and no text
+    # — which is the 24.5.26 regression. Warn loudly (not block — copy can be a TBD).
+    missing_visual_copy = []
+    missing_caption = []
+    for it in data['items']:
+        files = it.get('media_files', []) or []
+        slides = it.get('slides', []) or []
+        if files and not slides:
+            missing_visual_copy.append(it['num'])
+        elif files and slides:
+            # Check each slide has at least one of: primary, secondary, small, copy
+            for idx, slide in enumerate(slides):
+                has_text = any(slide.get(k) for k in ('primary', 'secondary', 'small', 'copy'))
+                if not has_text and idx < len(files):
+                    missing_visual_copy.append(f"{it['num']}-{idx}")
+                    break
+        if not it.get('copy_final'):
+            missing_caption.append(it['num'])
+    if missing_visual_copy:
+        print(f'  ⚠ WARN: items missing טקסט-על-הוויזואל (slides[]): {missing_visual_copy}')
+    if missing_caption:
+        print(f'  ⚠ WARN: items missing קופי נלווה (copy_final): {missing_caption}')
 
 
 if __name__ == '__main__':
