@@ -1570,23 +1570,27 @@ body.view-mode .cell-item.dragging { opacity: 1; transform: none; }
   filter: grayscale(0.55);
   cursor: not-allowed !important;
   position: relative;
+  padding-top: 18px;     /* Leave room for the badge above the type-chip */
 }
 .cell-item.is-archived:hover { opacity: 0.65; }
-.cell-item.is-archived::after {
+.cell-item.is-archived::before {
   content: 'נגנז';
   position: absolute;
-  top: -4px; right: -4px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background: #6B7280;
   color: #FFFFFF;
   font-family: var(--font-he);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 1px 6px;
+  padding: 2px 12px;
   border-radius: 999px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   pointer-events: none;
   box-shadow: 0 1px 3px rgba(0,0,0,0.35);
   z-index: 3;
+  white-space: nowrap;
 }
 /* In view mode the card itself stays clickable for the modal but doesn't pretend to be interactive */
 body.view-mode .cell-item.is-archived { cursor: default !important; }
