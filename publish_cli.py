@@ -10,14 +10,16 @@ The browser's "פרסם שינויים" button downloads a JSON like:
       "items": {
         "5":  {"date": "2026-06-15", "status": "אושר"},
         "12": {"copy": "טקסט חדש"}
-      }
+      },
+      "deletions": ["7", "10"]   <-- Iron Rule #20: permanent removal from data.json
     }
   }
 
 This script:
   1. Snapshots current data.json to pilots/{slug}/snapshots/{timestamp}.json
-  2. Applies the changes to data.json
-  3. (caller is expected to run build.py afterward)
+  2. Applies edits to data.json
+  3. Removes items listed in `deletions` (NOT recoverable except via --rollback)
+  4. (caller is expected to run build.py afterward)
 
 Usage:
   python publish_cli.py --slug shlichut-horaa --payload path/to/publish-blob.json
@@ -74,7 +76,8 @@ def apply_changes(slug: str, payload_path: Path) -> dict:
     items_by_num = {str(it['num']): it for it in data['items']}
 
     changes = payload.get('changes', {}).get('items', {})
-    summary = {'date_changes': 0, 'status_changes': 0, 'copy_changes': 0, 'missing': []}
+    deletions = payload.get('changes', {}).get('deletions', []) or []
+    summary = {'date_changes': 0, 'status_changes': 0, 'copy_changes': 0, 'deletions': 0, 'missing': []}
 
     for num_str, draft in changes.items():
         it = items_by_num.get(num_str)
@@ -94,9 +97,25 @@ def apply_changes(slug: str, payload_path: Path) -> dict:
             summary['copy_changes'] += 1
             print(f'  item #{num_str}: copy updated ({len(draft["copy"])} chars)')
 
+    # Iron Rule #20: permanent deletions. Filter the items list and update count.
+    # The pre-modification snapshot above is the only recovery path (--rollback).
+    if deletions:
+        del_set = {str(d) for d in deletions}
+        before = len(data['items'])
+        deleted_titles = [str(it.get('title', f'#{it.get("num")}'))
+                          for it in data['items'] if str(it.get('num')) in del_set]
+        data['items'] = [it for it in data['items'] if str(it.get('num')) not in del_set]
+        data['count'] = len(data['items'])
+        summary['deletions'] = before - len(data['items'])
+        print(f'  DELETED {summary["deletions"]} items (nums: {", ".join(sorted(del_set, key=int))})')
+        for t in deleted_titles[:5]:
+            print(f'    - {t}')
+        if len(deleted_titles) > 5:
+            print(f'    ... and {len(deleted_titles) - 5} more')
+
     data_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'\nWROTE  {data_path.relative_to(ROOT)}')
-    print(f'\nSummary: {summary["date_changes"]} dates · {summary["status_changes"]} statuses · {summary["copy_changes"]} copies')
+    print(f'\nSummary: {summary["date_changes"]} dates · {summary["status_changes"]} statuses · {summary["copy_changes"]} copies · {summary["deletions"]} deletions')
     if summary['missing']:
         print(f'WARN:  skipped items not found in data.json: {", ".join(summary["missing"])}')
     print('\nNext step: rebuild the gantt:')
