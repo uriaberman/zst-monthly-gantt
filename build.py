@@ -2921,21 +2921,33 @@ function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */)
 
 /* Apply browser draft to the data.json structure that GitHub stores.
    `changes` shape: { items: {numStr: {date?, status?, copy?}}, deletions: [numStr,...] }
-   Deletions filter the items array (Iron Rule #20). */
+
+   Iron Rule #20 (25.5.26): SOFT-delete only. Items in `deletions` get `is_deleted: true`
+   stamped on them — they STAY in data.json (history, recoverability) but the build filters
+   them out at render time. Source documents that fed the skill are entirely separate from
+   data.json and are NEVER written by this code. data.json is an internal state file. */
 function mergeChangesIntoData(serverData, changes) {
   const out = JSON.parse(JSON.stringify(serverData));
   const drafts = (changes && changes.items) ? changes.items : {};
   const dels = new Set(((changes && changes.deletions) || []).map(String));
 
-  if (dels.size > 0) {
-    const before = out.items.length;
-    out.items = out.items.filter(it => !dels.has(String(it.num)));
-    out.count = out.items.length;
-    console.log(`mergeChangesIntoData: removed ${before - out.items.length} items via deletions`);
-  }
-
   const byNum = {};
   out.items.forEach(it => { byNum[String(it.num)] = it; });
+
+  if (dels.size > 0) {
+    const nowIso = new Date().toISOString().replace(/\\.\\d+Z$/, '');
+    let marked = 0;
+    dels.forEach(numStr => {
+      const it = byNum[numStr];
+      if (it && !it.is_deleted) {
+        it.is_deleted = true;
+        it.deleted_at = nowIso;
+        marked++;
+      }
+    });
+    console.log(`mergeChangesIntoData: soft-deleted ${marked} items (is_deleted=true)`);
+  }
+
   for (const [numStr, draft] of Object.entries(drafts)) {
     const it = byNum[numStr];
     if (!it) continue;
@@ -3975,14 +3987,18 @@ def render_html(data: dict, logo_b64: str, mode: str = 'zeliger',
               When provided: this is a per-month Viewer URL like /view/2026-06/.
     default_month_key: "YYYY-MM" preselected in the dropdown. Falls back to first month.
     """
-    items = data['items']
+    # Iron Rule #20 (25.5.26): items with `is_deleted: true` are SOFT-DELETED.
+    # The data persists in data.json (history + recovery) but never rendered to HTML.
+    # The source documents that originally fed the skill are NEVER touched by this skill —
+    # data.json is an internal state file, decoupled from the input briefs.
+    items = [it for it in data['items'] if not it.get('is_deleted')]
     items_by_date = {}
     for it in items:
         items_by_date.setdefault(it['date_iso'], []).append(it)
 
     client = data['client']
     period = data['period']
-    count = data['count']
+    count = len(items)  # respects soft-deletes
 
     dates = sorted(it['date_iso'] for it in items)
     first = dates[0]

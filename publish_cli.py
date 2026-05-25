@@ -97,17 +97,23 @@ def apply_changes(slug: str, payload_path: Path) -> dict:
             summary['copy_changes'] += 1
             print(f'  item #{num_str}: copy updated ({len(draft["copy"])} chars)')
 
-    # Iron Rule #20: permanent deletions. Filter the items list and update count.
-    # The pre-modification snapshot above is the only recovery path (--rollback).
+    # Iron Rule #20: SOFT-delete. We do NOT remove items from data.json — we mark them
+    # `is_deleted: true`. This keeps the data file complete (history, recoverability) while
+    # the build skips deleted items at render time. Source documents that fed the skill
+    # are completely separate and never touched by this script.
+    # Recovery: edit data.json and flip `is_deleted` back to false, or use --rollback.
     if deletions:
         del_set = {str(d) for d in deletions}
-        before = len(data['items'])
-        deleted_titles = [str(it.get('title', f'#{it.get("num")}'))
-                          for it in data['items'] if str(it.get('num')) in del_set]
-        data['items'] = [it for it in data['items'] if str(it.get('num')) not in del_set]
-        data['count'] = len(data['items'])
-        summary['deletions'] = before - len(data['items'])
-        print(f'  DELETED {summary["deletions"]} items (nums: {", ".join(sorted(del_set, key=int))})')
+        from datetime import datetime as _dt
+        now_iso = _dt.now().isoformat(timespec='seconds')
+        deleted_titles = []
+        for it in data['items']:
+            if str(it.get('num')) in del_set and not it.get('is_deleted'):
+                it['is_deleted'] = True
+                it['deleted_at'] = now_iso
+                deleted_titles.append(str(it.get('title', f'#{it.get("num")}')))
+        summary['deletions'] = len(deleted_titles)
+        print(f'  SOFT-DELETED {summary["deletions"]} items (marked is_deleted=true, kept in data.json):')
         for t in deleted_titles[:5]:
             print(f'    - {t}')
         if len(deleted_titles) > 5:

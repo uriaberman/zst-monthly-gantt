@@ -2374,7 +2374,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:29</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:43</span></span>
     <span class="view-mode-badge">מצב עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2405,7 +2405,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
-const LAST_UPDATED = '25.05.26, 15:29';
+const LAST_UPDATED = '25.05.26, 15:43';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2556,21 +2556,33 @@ function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */)
 
 /* Apply browser draft to the data.json structure that GitHub stores.
    `changes` shape: { items: {numStr: {date?, status?, copy?}}, deletions: [numStr,...] }
-   Deletions filter the items array (Iron Rule #20). */
+
+   Iron Rule #20 (25.5.26): SOFT-delete only. Items in `deletions` get `is_deleted: true`
+   stamped on them — they STAY in data.json (history, recoverability) but the build filters
+   them out at render time. Source documents that fed the skill are entirely separate from
+   data.json and are NEVER written by this code. data.json is an internal state file. */
 function mergeChangesIntoData(serverData, changes) {
   const out = JSON.parse(JSON.stringify(serverData));
   const drafts = (changes && changes.items) ? changes.items : {};
   const dels = new Set(((changes && changes.deletions) || []).map(String));
 
-  if (dels.size > 0) {
-    const before = out.items.length;
-    out.items = out.items.filter(it => !dels.has(String(it.num)));
-    out.count = out.items.length;
-    console.log(`mergeChangesIntoData: removed ${before - out.items.length} items via deletions`);
-  }
-
   const byNum = {};
   out.items.forEach(it => { byNum[String(it.num)] = it; });
+
+  if (dels.size > 0) {
+    const nowIso = new Date().toISOString().replace(/\.\d+Z$/, '');
+    let marked = 0;
+    dels.forEach(numStr => {
+      const it = byNum[numStr];
+      if (it && !it.is_deleted) {
+        it.is_deleted = true;
+        it.deleted_at = nowIso;
+        marked++;
+      }
+    });
+    console.log(`mergeChangesIntoData: soft-deleted ${marked} items (is_deleted=true)`);
+  }
+
   for (const [numStr, draft] of Object.entries(drafts)) {
     const it = byNum[numStr];
     if (!it) continue;
