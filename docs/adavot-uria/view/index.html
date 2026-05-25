@@ -2901,7 +2901,7 @@ body.theme-uria .modal-section h3 {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:29</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:44</span></span>
     <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr"><span class="footer-built">Built by</span><span class="footer-x">×</span><a class="footer-brand footer-link-wa" href="https://wa.me/972548825232?text=%D7%94%D7%99%D7%99%20%D7%90%D7%95%D7%A8%D7%99%D7%94%2C%20%D7%A7%D7%95%D7%A8%D7%95%D7%AA%20%D7%94%D7%97%D7%99%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9A%20-%20%D7%95%D7%95%D7%90%D7%95%21%20%D7%91%D7%90%20%D7%9C%D7%99%20%D7%A9%D7%A0%D7%A2%D7%A9%D7%94%20%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%9E%D7%A2%D7%A0%D7%99%D7%99%D7%A0%D7%99%D7%9D%20%D7%99%D7%97%D7%93." target="_blank" rel="noopener" title="לדבר איתי בוואטסאפ">Uria Berman<span class="footer-period">.</span></a></div>
@@ -2920,7 +2920,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot-uria/view/';
-const LAST_UPDATED = '25.05.26, 15:29';
+const LAST_UPDATED = '25.05.26, 15:44';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -3071,21 +3071,33 @@ function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */)
 
 /* Apply browser draft to the data.json structure that GitHub stores.
    `changes` shape: { items: {numStr: {date?, status?, copy?}}, deletions: [numStr,...] }
-   Deletions filter the items array (Iron Rule #20). */
+
+   Iron Rule #20 (25.5.26): SOFT-delete only. Items in `deletions` get `is_deleted: true`
+   stamped on them — they STAY in data.json (history, recoverability) but the build filters
+   them out at render time. Source documents that fed the skill are entirely separate from
+   data.json and are NEVER written by this code. data.json is an internal state file. */
 function mergeChangesIntoData(serverData, changes) {
   const out = JSON.parse(JSON.stringify(serverData));
   const drafts = (changes && changes.items) ? changes.items : {};
   const dels = new Set(((changes && changes.deletions) || []).map(String));
 
-  if (dels.size > 0) {
-    const before = out.items.length;
-    out.items = out.items.filter(it => !dels.has(String(it.num)));
-    out.count = out.items.length;
-    console.log(`mergeChangesIntoData: removed ${before - out.items.length} items via deletions`);
-  }
-
   const byNum = {};
   out.items.forEach(it => { byNum[String(it.num)] = it; });
+
+  if (dels.size > 0) {
+    const nowIso = new Date().toISOString().replace(/\.\d+Z$/, '');
+    let marked = 0;
+    dels.forEach(numStr => {
+      const it = byNum[numStr];
+      if (it && !it.is_deleted) {
+        it.is_deleted = true;
+        it.deleted_at = nowIso;
+        marked++;
+      }
+    });
+    console.log(`mergeChangesIntoData: soft-deleted ${marked} items (is_deleted=true)`);
+  }
+
   for (const [numStr, draft] of Object.entries(drafts)) {
     const it = byNum[numStr];
     if (!it) continue;
