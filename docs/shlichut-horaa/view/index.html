@@ -1103,6 +1103,77 @@ body.theme-uria .modal-date-edit:hover {
   color: var(--ink);
 }
 
+/* DELETE BUTTON — destructive action, lives next to modal-close in Editor only.
+   Iron Rule #20 (25.5.26): Every item modal MUST expose a permanent-delete trash icon.
+   This is different from status "נגנז" (archive/mute) — delete REMOVES the item from data.json.
+   See memory: feedback_gantt_delete_button. */
+.modal-delete {
+  background: rgba(239,68,68,0.10);
+  border: 1px solid rgba(239,68,68,0.40);
+  color: #EF4444;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.modal-delete:hover {
+  background: rgba(239,68,68,0.22);
+  border-color: #EF4444;
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+.modal-delete svg { display: block; }
+.modal-head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+body.theme-uria .modal-delete {
+  background: rgba(239,68,68,0.14);
+  border-color: rgba(239,68,68,0.50);
+  color: #FCA5A5;
+}
+body.theme-uria .modal-delete:hover {
+  background: #EF4444;
+  color: #FAFAFA;
+}
+
+/* PENDING-DELETE state for cell-item (set by applyDeletionsToCells before publish).
+   Visually clearer than archived: line-through + heavier dim + red tint, signaling
+   that THIS WILL BE GONE after publish (vs. "נגנז" which says "still here, muted"). */
+.cell-item.is-pending-delete {
+  opacity: 0.30;
+  filter: grayscale(1);
+  text-decoration: line-through;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  position: relative;
+}
+.cell:has(.cell-item.is-pending-delete)::after {
+  content: 'למחיקה';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #EF4444;
+  color: #FFFFFF;
+  font-family: var(--font-he);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  z-index: 4;
+  white-space: nowrap;
+}
+
 .modal-body { padding: 22px 32px 32px; }
 
 /* ONE-LINE explanation + source row */
@@ -2152,7 +2223,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">24.05.26, 16:00</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:29</span></span>
     <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2171,7 +2242,7 @@ const CLIENT_KEY = 'שליחות_הוראה';
 const MONTHS_META = {"2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/shlichut-horaa/view/';
-const LAST_UPDATED = '24.05.26, 16:00';
+const LAST_UPDATED = '25.05.26, 15:29';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2320,9 +2391,21 @@ function setPublishStatus(stateText, kind /* 'idle'|'busy'|'success'|'error' */)
   bar.classList.toggle('publish-error',   kind === 'error');
 }
 
-/* Apply browser draft to the data.json structure that GitHub stores */
-function mergeChangesIntoData(serverData, drafts) {
+/* Apply browser draft to the data.json structure that GitHub stores.
+   `changes` shape: { items: {numStr: {date?, status?, copy?}}, deletions: [numStr,...] }
+   Deletions filter the items array (Iron Rule #20). */
+function mergeChangesIntoData(serverData, changes) {
   const out = JSON.parse(JSON.stringify(serverData));
+  const drafts = (changes && changes.items) ? changes.items : {};
+  const dels = new Set(((changes && changes.deletions) || []).map(String));
+
+  if (dels.size > 0) {
+    const before = out.items.length;
+    out.items = out.items.filter(it => !dels.has(String(it.num)));
+    out.count = out.items.length;
+    console.log(`mergeChangesIntoData: removed ${before - out.items.length} items via deletions`);
+  }
+
   const byNum = {};
   out.items.forEach(it => { byNum[String(it.num)] = it; });
   for (const [numStr, draft] of Object.entries(drafts)) {
@@ -2337,7 +2420,9 @@ function mergeChangesIntoData(serverData, drafts) {
 
 window.requestPublish = async function() {
   const draftChanges = collectDraftChanges();
-  if (Object.keys(draftChanges.items).length === 0) {
+  const hasItemEdits = Object.keys(draftChanges.items).length > 0;
+  const hasDeletions = (draftChanges.deletions || []).length > 0;
+  if (!hasItemEdits && !hasDeletions) {
     alert('אין שינויים בטיוטה לפרסום.');
     return;
   }
@@ -2369,16 +2454,20 @@ window.requestPublish = async function() {
     const currentText = decodeURIComponent(escape(currentBytes));
     const currentData = JSON.parse(currentText);
 
-    // 4. Apply local drafts
-    const newData = mergeChangesIntoData(currentData, draftChanges.items);
+    // 4. Apply local drafts (edits + deletions)
+    const newData = mergeChangesIntoData(currentData, draftChanges);
     const newText = JSON.stringify(newData, null, 2);
     // Base64-encode the UTF-8 text
     const newB64 = btoa(unescape(encodeURIComponent(newText)));
 
     // 5. Commit the new data.json
-    const summary = Object.entries(draftChanges.items)
+    const editsSummary = Object.entries(draftChanges.items)
       .map(([num, d]) => `#${num}: ${Object.keys(d).join('+')}`)
       .join(', ');
+    const delsSummary = (draftChanges.deletions || []).length > 0
+      ? `delete #${(draftChanges.deletions || []).join(', #')}`
+      : '';
+    const summary = [editsSummary, delsSummary].filter(Boolean).join(' | ');
     await ghApiRequest(`/repos/${GITHUB_REPO}/contents/${encodeURIComponent(dataPath)}`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -2465,13 +2554,15 @@ async function pollDeploy(viewerUrl, expectedAfter) {
   setTimeout(tick, 12000);  // First check after 12s (Action checkout + setup takes that long)
 }
 
-/* Clear local drafts without confirmation (called after successful publish) */
+/* Clear local drafts without confirmation (called after successful publish).
+   Also clears pending deletions (Iron Rule #20) since they're now applied server-side. */
 function discardLocalDraftsSilent() {
   ITEMS_DATA.forEach(it => {
     try { localStorage.removeItem(lsKey(it.num, 'date_override')); } catch(e){}
     try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
     try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
   });
+  clearDeletions();
 }
 
 window.discardDraft = function() {
@@ -2481,14 +2572,21 @@ window.discardDraft = function() {
     try { localStorage.removeItem(lsKey(it.num, 'status')); } catch(e){}
     try { localStorage.removeItem(lsKey(it.num, 'copy')); } catch(e){}
   });
+  clearDeletions();
   location.reload();
 };
 
-/* Collect all unpublished changes from localStorage into a structured payload */
+/* Collect all unpublished changes from localStorage into a structured payload.
+   Includes pending deletions (Iron Rule #20): items the user clicked the trash icon on.
+   Deletions are filtered server-side in publish_cli.py — until then they're reversible. */
 function collectDraftChanges() {
   const items = {};
+  const dels = new Set(getDeletions());
   ITEMS_DATA.forEach(it => {
     const num = it.num;
+    // Don't collect field-level edits for items already marked for deletion -
+    // they'd be lost in the merge anyway (cleaner payload, easier server-side reasoning).
+    if (dels.has(String(num))) return;
     const draft = {};
     const d = getLocal(num, 'date_override', null);
     if (d && d !== it.date) draft.date = d;
@@ -2498,20 +2596,26 @@ function collectDraftChanges() {
     if (c) draft.copy = c;
     if (Object.keys(draft).length > 0) items[num] = draft;
   });
-  return { items: items };
+  return { items: items, deletions: Array.from(dels) };
 }
 
-/* Show the draft bar whenever there are local changes (Editor only) */
+/* Show the draft bar whenever there are local changes (Editor only).
+   Counts edits AND pending deletions (Iron Rule #20). */
 function updateDraftBar() {
   if (VIEW_MODE_BAKED) return;  // viewer never shows the bar
   const bar = document.getElementById('draftBar');
   if (!bar) return;
   const ch = collectDraftChanges();
-  const count = Object.keys(ch.items).length;
-  bar.hidden = count === 0;
+  const editCount = Object.keys(ch.items).length;
+  const delCount = (ch.deletions || []).length;
+  const total = editCount + delCount;
+  bar.hidden = total === 0;
   const text = bar.querySelector('.draft-bar-text');
-  if (text && count > 0) {
-    text.textContent = `⚠ יש לך ${count} שינוי${count > 1 ? 'ים' : ''} בטיוטה — הלקוח עדיין לא רואה אותם`;
+  if (text && total > 0) {
+    const parts = [];
+    if (editCount > 0) parts.push(`${editCount} שינוי${editCount > 1 ? 'ים' : ''}`);
+    if (delCount > 0)  parts.push(`${delCount} פריט${delCount > 1 ? 'ים' : ''} למחיקה`);
+    text.textContent = `⚠ יש לך בטיוטה: ${parts.join(' + ')} — הלקוח עדיין לא רואה אותם`;
   }
 }
 
@@ -2848,7 +2952,21 @@ function openModal(num) {
           </span>
         </div>
       </div>
-      <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
+      <div class="modal-head-right">
+        ${isView ? '' : `
+          <button class="modal-delete" id="modalDelete" data-num="${num}" type="button"
+                  title="מחק לצמיתות (נדרש פרסום לסיום)" aria-label="מחק פריט זה לצמיתות">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              <line x1="10" y1="11" x2="10" y2="17"/>
+              <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+          </button>
+        `}
+        <button class="modal-close" aria-label="סגור" onclick="closeModal()">×</button>
+      </div>
     </div>
     <div class="modal-body">
       ${it.short_explanation ? `<div class="modal-explainline">${escapeHtml(it.short_explanation)}</div>` : ''}
@@ -2965,7 +3083,97 @@ function openModal(num) {
 
   // Wire up media drag/drop on the add-slot
   setupMediaDrop(num);
+
+  // Wire up the permanent-delete trash button (Iron Rule #20 — see SKILL.md).
+  // Soft-delete pattern: marks the item in localStorage as pending-delete, shows it
+  // dimmed+strikethrough on the grid, and waits for "publish" to actually remove from data.json.
+  const delBtn = document.getElementById('modalDelete');
+  if (delBtn) {
+    delBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      requestDelete(num);
+    });
+  }
 }
+
+/* ---------- Permanent delete flow (Iron Rule #20, 25.5.26) ----------
+   STATE: list of item nums stored in localStorage['gantt:deletions:'+CLIENT_KEY] (JSON array).
+   UI:    cell-items in the list get .is-pending-delete (CSS strikethrough + red badge).
+   PUBLISH: collectDraftChanges() includes deletions array; publish_cli.py filters them out
+           of data.json server-side. Until publish, the deletion is reversible via "בטל טיוטה".
+*/
+const DELETIONS_LS_KEY = 'gantt:deletions:' + CLIENT_KEY;
+
+function getDeletions() {
+  try {
+    const raw = localStorage.getItem(DELETIONS_LS_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.map(String) : [];
+  } catch (e) { return []; }
+}
+
+function saveDeletions(arr) {
+  try { localStorage.setItem(DELETIONS_LS_KEY, JSON.stringify(arr.map(String))); } catch(e) {}
+}
+
+function clearDeletions() {
+  try { localStorage.removeItem(DELETIONS_LS_KEY); } catch(e) {}
+}
+
+function applyDeletionsToCells() {
+  const dels = new Set(getDeletions());
+  document.querySelectorAll('.cell-item').forEach(el => {
+    const n = el.dataset.num;
+    if (n && dels.has(String(n))) {
+      el.classList.add('is-pending-delete');
+      el.setAttribute('draggable', 'false');
+    } else {
+      el.classList.remove('is-pending-delete');
+    }
+  });
+}
+
+window.requestDelete = function(num) {
+  const it = itemsByNum[num];
+  if (!it) return;
+  const dels = getDeletions();
+  if (dels.includes(String(num))) {
+    // Already marked - offer to undo
+    if (confirm(`'${it.title}' כבר מסומן למחיקה.
+
+לבטל את הסימון?`)) {
+      saveDeletions(dels.filter(d => String(d) !== String(num)));
+      applyDeletionsToCells();
+      updateDraftBar();
+      closeModal();
+    }
+    return;
+  }
+  const msg =
+    `למחוק לצמיתות את:
+
+"${it.title}"
+
+` +
+    `הפריט יסומן למחיקה ויוסר מ-data.json בפרסום הבא.
+` +
+    `עד הפרסום אפשר לבטל דרך 'בטל טיוטה' או דרך אותו כפתור סל בפריט.
+
+` +
+    `להמשיך?`;
+  if (!confirm(msg)) return;
+  dels.push(String(num));
+  saveDeletions(dels);
+  applyDeletionsToCells();
+  updateDraftBar();
+  closeModal();
+};
+
+/* Apply deletions on initial load (so reload preserves the visual state) */
+document.addEventListener('DOMContentLoaded', () => {
+  try { applyDeletionsToCells(); } catch (e) {}
+});
 
 /* ---------- Media slots (multi-image gallery, per-type aspect ratio) ----------
    PRIORITY: file-based media (committed in repo, visible to client) over localStorage (preview only).
