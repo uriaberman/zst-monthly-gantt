@@ -3407,19 +3407,22 @@ function applyDateOverrides() {
   applyStatusToCells();  // Reapply status painting after DOM shuffle
 }
 
-/* Recompute .has-content, .multi-item, and .type-X classes on a cell based on its current children */
+/* Recompute .has-content, .multi-item, and .type-X classes on a cell based on its current children.
+   Iron Rule #20 (סבב ג): pending-delete items are treated as NOT-EXISTING for chrome purposes —
+   if all items in a cell are pending-delete, the cell strips its glow and reverts to empty day. */
 function refreshCellChrome(cell) {
   if (!cell) return;
-  const items = cell.querySelectorAll('.cell-item');
+  const allItems = cell.querySelectorAll('.cell-item');
+  const liveItems = Array.from(allItems).filter(el => !el.classList.contains('is-pending-delete'));
   // Strip all type-X classes
   ['type-post', 'type-carousel', 'type-story', 'type-reel'].forEach(c => cell.classList.remove(c));
   cell.classList.remove('has-content');
   cell.classList.remove('multi-item');
-  if (items.length === 0) return;
+  if (liveItems.length === 0) return;
   cell.classList.add('has-content');
-  if (items.length > 1) cell.classList.add('multi-item');
-  // Inherit each item's type — cell glow comes from the FIRST item's type
-  items.forEach(it => {
+  if (liveItems.length > 1) cell.classList.add('multi-item');
+  // Inherit each LIVE item's type — cell glow comes from the FIRST item's type
+  liveItems.forEach(it => {
     const tc = Array.from(it.classList).find(c => c.startsWith('type-'));
     if (tc) cell.classList.add(tc);
   });
@@ -3722,14 +3725,28 @@ function clearDeletions() {
 
 function applyDeletionsToCells() {
   const dels = new Set(getDeletions());
+  const affectedCells = new Set();
   document.querySelectorAll('.cell-item').forEach(el => {
     const n = el.dataset.num;
-    if (n && dels.has(String(n))) {
+    const wasPending = el.classList.contains('is-pending-delete');
+    const nowPending = !!(n && dels.has(String(n)));
+    if (nowPending !== wasPending) {
+      // Membership changed — remember the parent cell so we can re-chrome it below
+      const parentCell = el.closest('.cell');
+      if (parentCell) affectedCells.add(parentCell);
+    }
+    if (nowPending) {
       el.classList.add('is-pending-delete');
       el.setAttribute('draggable', 'false');
     } else {
       el.classList.remove('is-pending-delete');
+      if (el.dataset.origDraggable !== 'false') el.setAttribute('draggable', 'true');
     }
+  });
+  // Iron Rule #20 (סבב ג): cells whose only items are pending-delete must revert
+  // to the empty-day appearance (no glow, no type tint, no has-content class).
+  affectedCells.forEach(cell => {
+    try { refreshCellChrome(cell); } catch (e) {}
   });
 }
 
@@ -3743,12 +3760,13 @@ window.requestDelete = function(num) {
     return;
   }
   const msg =
-    `למחוק את:\n\n"${it.title}"\n\n` +
-    `הפריט ייעלם מיידית מהגריד באדיטור.\n` +
-    `אפשר לשחזר אותו דרך פאנל "פריטים שסומנו למחיקה" שיופיע מתחת ל-Draft Bar.\n` +
-    `אחרי פרסום: יסומן is_deleted=true ב-data.json ויעלם גם מהלינק לצפייה.\n` +
-    `המסמך המקורי שלך לא ייפגע.\n\n` +
-    `להמשיך?`;
+    `🗑 בטוח שרוצה למחוק את הפריט?\n\n` +
+    `"${it.title}"\n\n` +
+    `→ הפריט ייעלם מיידית מהגריד באדיטור והקוביה תחזור להיות יום ריק\n` +
+    `→ ניתן לשחזר ע"י כפתור "↩ שחזר" שיופיע בפאנל הביטולים\n` +
+    `→ אחרי "פרסם שינויים" — יעלם גם מהלינק לצפייה לתמיד\n` +
+    `→ המסמך המקורי שלך (Google Doc/Word) לא ייפגע בשום שלב\n\n` +
+    `אישור = מחיקה · ביטול = ביטול הפעולה`;
   if (!confirm(msg)) return;
   dels.push(String(num));
   saveDeletions(dels);
