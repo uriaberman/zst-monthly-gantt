@@ -26,7 +26,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-05-04",
+      "date_iso": "2026-06-04",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "מאחורי המספרים יש אדוות",
@@ -63,7 +63,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-05-11",
+      "date_iso": "2026-06-01",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "תכירו את המתנדב/ת",
@@ -100,7 +100,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-05-14",
+      "date_iso": "2026-06-11",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "דיווח שבועי - פורום אחים",
@@ -137,7 +137,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-05-21",
+      "date_iso": "2026-06-14",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "מאחורי המספרים יש אדוות",
@@ -174,7 +174,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-05-27",
+      "date_iso": "2026-05-28",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "דיווח שבועי - פורום אבות",
@@ -210,8 +210,8 @@
         "a": "",
         "b": ""
       },
-      "status": "בעבודה",
-      "date_iso": "2026-06-03",
+      "status": "אושר",
+      "date_iso": "2026-05-25",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "מאחורי המספרים יש אדוות",
@@ -322,7 +322,7 @@
         "b": ""
       },
       "status": "בעבודה",
-      "date_iso": "2026-06-22",
+      "date_iso": "2026-06-18",
       "type_key": "post",
       "type_label": "פוסט",
       "pillar_label": "חמישי משפחתי",
@@ -358,7 +358,7 @@
         "a": "",
         "b": ""
       },
-      "status": "ממתין לאישור",
+      "status": "נגנז",
       "date_iso": "2026-06-25",
       "type_key": "post",
       "type_label": "פוסט",
