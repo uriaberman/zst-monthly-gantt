@@ -26,16 +26,22 @@ TYPE_COLORS = {
     'reel':     {'accent': '#FDA4AF', 'soft': 'rgba(253,164,175,0.14)', 'label': 'רילס'},
 }
 
-# Statuses - distinct hues that stay visible on light tray
+# Statuses - distinct hues that stay visible on light tray.
+# v9.9 (25.5.26): added 2 statuses per Uria's request — 'ממתין ללקוח' (purple, waiting on
+# external client input) and 'עלה' (teal, content is live in the wild). Total: 7 statuses.
+# CRITICAL: Sync any change here with STATUS_COLORS / STATUS_ORDER in the JS section,
+# and with the lists in SKILL.md (Iron Rule #15) and memory feedback_gantt_archived_status.
 STATUS_COLORS = {
-    'בעבודה':       '#3B82F6',  # blue (active / in-progress)
-    'בעיצוב':       '#F97316',  # orange (in design)
-    'ממתין לאישור': '#EAB308',  # yellow (waiting)
-    'אושר':          '#22C55E',  # green (approved)
-    'נגנז':          '#6B7280',  # slate (archived — visible but disabled)
+    'בעבודה':         '#3B82F6',  # blue (active / in-progress)
+    'בעיצוב':         '#F97316',  # orange (in design)
+    'ממתין לאישור':   '#EAB308',  # yellow (waiting for internal approval / our team)
+    'ממתין ללקוח':    '#A855F7',  # purple (waiting for external client input/approval)
+    'אושר':           '#22C55E',  # green (final approval, ready for publication)
+    'עלה':            '#14B8A6',  # teal (already published / live)
+    'נגנז':           '#6B7280',  # slate (archived — visible but disabled, kept in data.json)
 }
 
-STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר', 'נגנז']
+STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'ממתין ללקוח', 'אושר', 'עלה', 'נגנז']
 
 HEB_WEEKDAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
 
@@ -2955,14 +2961,17 @@ const VIEW_MODE_BAKED = __VIEW_MODE_BAKED__;   // true = this HTML is the frozen
 const VIEWER_URL = '__VIEWER_URL__';
 const LAST_UPDATED = '__LAST_UPDATED__';
 
+// 7 statuses (v9.9, 25.5.26). MUST stay in sync with Python STATUS_COLORS above.
 const STATUS_COLORS = {
-  'בעבודה': '#3B82F6',
-  'בעיצוב': '#F97316',
+  'בעבודה':       '#3B82F6',
+  'בעיצוב':       '#F97316',
   'ממתין לאישור': '#EAB308',
-  'אושר': '#22C55E',
-  'נגנז': '#6B7280',   // archived — same value as Python, see STATUS_COLORS in build.py
+  'ממתין ללקוח':  '#A855F7',   // purple (external waiting)
+  'אושר':         '#22C55E',
+  'עלה':          '#14B8A6',   // teal (live / published)
+  'נגנז':         '#6B7280',   // slate (archived — kept in data.json, dimmed in UI)
 };
-const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'אושר', 'נגנז'];
+const STATUS_ORDER = ['בעבודה', 'בעיצוב', 'ממתין לאישור', 'ממתין ללקוח', 'אושר', 'עלה', 'נגנז'];
 
 /* ---------- localStorage helpers (per-client, per-item) ---------- */
 function lsKey(num, field) { return `gantt:${CLIENT_KEY}:${num}:${field}`; }
