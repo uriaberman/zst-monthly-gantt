@@ -2972,9 +2972,14 @@ body.theme-uria .footer-link:hover {
   .modal { max-width: 96vw; }
 }
 
-/* MOBILE (≤ 640px) — calendar becomes a vertical list of content-cells.
-   Empty days are hidden. Weekday header hidden (each cell shows its own day name). */
-@media (max-width: 640px) {
+/* MOBILE — applied to BOTH portrait phones (≤ 640px) AND landscape phones
+   (orientation: landscape + max-height: 500px + max-width: 1024px).
+   Without the landscape clause, rotated phones fall under "tablet" 7-col grid (640-1024px)
+   which makes each cell only ~110px wide ← thin and visually broken (Uria, 25.5.26).
+   Calendar becomes a list of content cells, empty days hidden, modal full-screen.
+   Below this block, a portrait-only and landscape-only override blocks fine-tune. */
+@media (max-width: 640px),
+       (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
   body { font-size: 14px; }
   .container { padding: 12px 10px; }
 
@@ -3121,6 +3126,45 @@ body.theme-uria .footer-link:hover {
   .cell-title { font-size: 13.5px; }
   .modal-head-left h2 { font-size: 17px; }
   .media-grid { grid-template-columns: 1fr; }
+}
+
+/* LANDSCAPE PHONE OVERRIDES — phones rotated sideways have wider screen but shorter height.
+   Two adjustments vs. portrait mobile:
+   1) Use a 2-column grid for content cells (instead of 1-col list) — better use of horizontal space
+   2) Keep the header inline (don't stack vertically) — saves precious vertical real estate
+   Fired by Uria's report (25.5.26): "cell of 28th was thin and disrupted" in landscape. */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
+  /* Header inline — landscape has horizontal room, no need to stack */
+  .header {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+  }
+  .header-left, .header-right { width: auto; }
+  .header-titles h1 { font-size: 17px; }
+  .header-titles .period { font-size: 11.5px; }
+
+  /* Two-column grid for content cells — better than thin 1-of-7 cells or wasteful 1-col list */
+  .week {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .cell {
+    min-height: auto;
+    padding: 10px 12px;
+  }
+  .cell-title { font-size: 13px; }
+  .cell-num { font-size: 16px; }
+
+  /* Modal — keep full-screen but shorter padding to leave room for content */
+  .modal-head { padding: 10px 14px 8px; }
+  .modal-body { padding: 10px 14px 18px; }
+  .modal-head-left h2 { font-size: 17px; }
+
+  /* Controls — keep inline (legend + cluster on one row, wraps if needed) */
+  .controls { flex-direction: row; align-items: center; }
 }
 
 /* TOUCH DEVICES — disable hover-only effects (no lift, no glow on hover) */
