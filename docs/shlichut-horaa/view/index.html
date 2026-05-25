@@ -1144,35 +1144,91 @@ body.theme-uria .modal-delete:hover {
 }
 
 /* PENDING-DELETE state for cell-item (set by applyDeletionsToCells before publish).
-   Visually clearer than archived: line-through + heavier dim + red tint, signaling
-   that THIS WILL BE GONE after publish (vs. "נגנז" which says "still here, muted"). */
+   Iron Rule #20 (סבב ג, 25.5.26): מחיקה באדיטור = הפריט נעלם מיידית מהגריד.
+   ה-Draft Bar + deletions-panel מתחתיו מציגים את הסטטוס + אפשרות לבטל ספציפית. */
 .cell-item.is-pending-delete {
-  opacity: 0.30;
-  filter: grayscale(1);
-  text-decoration: line-through;
-  cursor: not-allowed !important;
-  pointer-events: none;
-  position: relative;
+  display: none !important;
 }
-.cell:has(.cell-item.is-pending-delete)::after {
-  content: 'למחיקה';
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #EF4444;
-  color: #FFFFFF;
+
+/* DELETIONS PANEL — sits right below the Draft Bar, lists items marked for deletion
+   with per-item restore buttons. Hidden when there are no pending deletions. */
+.deletions-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.30);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
   font-family: var(--font-he);
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 12px;
-  border-radius: 999px;
-  letter-spacing: 0.06em;
-  pointer-events: none;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.35);
-  z-index: 4;
-  white-space: nowrap;
+  font-size: 12.5px;
+  color: #FCA5A5;
 }
+.deletions-panel[hidden] { display: none !important; }
+.deletions-panel-title {
+  font-weight: 800;
+  color: #EF4444;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.deletions-panel-title svg { display: block; }
+.deletions-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.deletions-list-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239,68,68,0.14);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 999px;
+  padding: 4px 10px 4px 6px;
+  max-width: 320px;
+}
+.deletions-list-item .item-title {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+.deletions-list-item .item-num {
+  color: #FCA5A5;
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+.restore-btn {
+  background: transparent;
+  border: none;
+  color: #FCA5A5;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-he);
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+.restore-btn:hover {
+  background: rgba(239,68,68,0.20);
+  color: #FFFFFF;
+}
+body.theme-uria .deletions-panel { background: rgba(239,68,68,0.10); border-color: rgba(239,68,68,0.40); color: #FCA5A5; }
 
 .modal-body { padding: 22px 32px 32px; }
 
@@ -2223,7 +2279,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 15:44</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 16:11</span></span>
     <span class="view-mode-badge">מצב צפייה · ללא עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2242,7 +2298,7 @@ const CLIENT_KEY = 'שליחות_הוראה';
 const MONTHS_META = {"2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = true;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/shlichut-horaa/view/';
-const LAST_UPDATED = '25.05.26, 15:44';
+const LAST_UPDATED = '25.05.26, 16:11';
 
 const STATUS_COLORS = {
   'בעבודה': '#3B82F6',
@@ -2612,7 +2668,8 @@ function collectDraftChanges() {
 }
 
 /* Show the draft bar whenever there are local changes (Editor only).
-   Counts edits AND pending deletions (Iron Rule #20). */
+   Counts edits AND pending deletions (Iron Rule #20). Also refreshes the deletions panel
+   below it (per-item restore chips). */
 function updateDraftBar() {
   if (VIEW_MODE_BAKED) return;  // viewer never shows the bar
   const bar = document.getElementById('draftBar');
@@ -2629,6 +2686,8 @@ function updateDraftBar() {
     if (delCount > 0)  parts.push(`${delCount} פריט${delCount > 1 ? 'ים' : ''} למחיקה`);
     text.textContent = `⚠ יש לך בטיוטה: ${parts.join(' + ')} — הלקוח עדיין לא רואה אותם`;
   }
+  // Keep the deletions panel in sync — shows per-item restore chips below the draft bar.
+  try { updateDeletionsPanel(); } catch (e) {}
 }
 
 /* ---------- Status decoration on cells (read from localStorage) ----------
@@ -3151,26 +3210,23 @@ window.requestDelete = function(num) {
   if (!it) return;
   const dels = getDeletions();
   if (dels.includes(String(num))) {
-    // Already marked - offer to undo
-    if (confirm(`'${it.title}' כבר מסומן למחיקה.
-
-לבטל את הסימון?`)) {
-      saveDeletions(dels.filter(d => String(d) !== String(num)));
-      applyDeletionsToCells();
-      updateDraftBar();
-      closeModal();
-    }
+    // Already marked — silently close (user can restore from the deletions panel)
+    closeModal();
     return;
   }
   const msg =
-    `למחוק לצמיתות את:
+    `למחוק את:
 
 "${it.title}"
 
 ` +
-    `הפריט יסומן למחיקה ויוסר מ-data.json בפרסום הבא.
+    `הפריט ייעלם מיידית מהגריד באדיטור.
 ` +
-    `עד הפרסום אפשר לבטל דרך 'בטל טיוטה' או דרך אותו כפתור סל בפריט.
+    `אפשר לשחזר אותו דרך פאנל "פריטים שסומנו למחיקה" שיופיע מתחת ל-Draft Bar.
+` +
+    `אחרי פרסום: יסומן is_deleted=true ב-data.json ויעלם גם מהלינק לצפייה.
+` +
+    `המסמך המקורי שלך לא ייפגע.
 
 ` +
     `להמשיך?`;
@@ -3182,9 +3238,51 @@ window.requestDelete = function(num) {
   closeModal();
 };
 
+/* Restore a single soft-deleted item — used by the per-item undo buttons in the
+   deletions panel. Removes the num from localStorage deletions, refreshes the grid
+   (cell-item becomes visible again), updates the draft bar. */
+window.restoreDeletion = function(num) {
+  const remaining = getDeletions().filter(d => String(d) !== String(num));
+  saveDeletions(remaining);
+  applyDeletionsToCells();
+  updateDraftBar();
+};
+
+/* Draw the deletions panel below the Draft Bar: one chip per pending deletion,
+   with item title + restore button. Hidden when there are zero deletions. */
+function updateDeletionsPanel() {
+  if (VIEW_MODE_BAKED) return;
+  const panel = document.getElementById('deletionsPanel');
+  const list = document.getElementById('deletionsList');
+  if (!panel || !list) return;
+  const dels = getDeletions();
+  if (dels.length === 0) {
+    panel.hidden = true;
+    list.innerHTML = '';
+    return;
+  }
+  // Render: for each pending deletion num, find the item and add a chip
+  const html = dels.map(numStr => {
+    const it = itemsByNum[numStr];
+    if (!it) return '';
+    const title = (it.title || '(ללא כותרת)').slice(0, 60);
+    return `
+      <li class="deletions-list-item">
+        <span class="item-num">#${escapeHtml(String(numStr))}</span>
+        <span class="item-title" title="${escapeHtml(it.title || '')}">${escapeHtml(title)}</span>
+        <button class="restore-btn" onclick="restoreDeletion('${escapeHtml(String(numStr))}')"
+                title="החזר את הפריט לגריד">↩ שחזר</button>
+      </li>
+    `;
+  }).filter(Boolean).join('');
+  list.innerHTML = html;
+  panel.hidden = false;
+}
+
 /* Apply deletions on initial load (so reload preserves the visual state) */
 document.addEventListener('DOMContentLoaded', () => {
   try { applyDeletionsToCells(); } catch (e) {}
+  try { updateDeletionsPanel(); } catch (e) {}
 });
 
 /* ---------- Media slots (multi-image gallery, per-type aspect ratio) ----------
