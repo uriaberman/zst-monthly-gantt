@@ -203,7 +203,12 @@ def render_legend() -> str:
 
 
 def render_tabs(months: list, default_key: str = None) -> str:
-    """Render month picker as a left-side dropdown (kept name for compatibility).
+    """Render month picker as a CUSTOM dropdown (not native <select>) so the open state
+    visually matches the closed state (same fonts, colors, radius). v9.8.4 (25.5.26).
+
+    Structure: button (trigger) + UL (panel) + hidden <select> (kept for semantics/forms).
+    JS toggles `is-open` class and updates both the button label and the hidden select.
+
     default_key: "YYYY-MM" to preselect a specific month. Falls back to first month.
     """
     if not months:
@@ -211,17 +216,43 @@ def render_tabs(months: list, default_key: str = None) -> str:
     if not default_key:
         y0, m0 = months[0]
         default_key = f'{y0}-{m0:02d}'
-    opts = []
+
+    # Build the list items + native-select options (hidden but kept for change events)
+    item_html = []
+    opts_html = []
+    default_title = ''
     for (y, m) in months:
         key = f'{y}-{m:02d}'
         title = f'{HEB_GREG_MONTHS[m]} {y}'
-        selected = ' selected' if key == default_key else ''
-        opts.append(f'<option value="{key}"{selected}>{title}</option>')
+        is_active = (key == default_key)
+        active_cls = ' is-active' if is_active else ''
+        if is_active:
+            default_title = title
+        item_html.append(
+            f'<li class="month-option{active_cls}" role="option" data-value="{key}" tabindex="0">'
+            f'<span class="month-option-name">{title}</span>'
+            f'<svg class="month-option-check" width="14" height="14" viewBox="0 0 24 24" fill="none" '
+            f'stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'
+            f'<polyline points="20 6 9 17 4 12"/></svg>'
+            f'</li>'
+        )
+        sel = ' selected' if is_active else ''
+        opts_html.append(f'<option value="{key}"{sel}>{title}</option>')
+
     return (
         '<div class="month-picker">'
         '<span class="month-picker-label">חודש</span>'
-        f'<select class="month-select" aria-label="בחר חודש">{"".join(opts)}</select>'
-        '<svg class="month-picker-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>'
+        '<div class="month-dd" data-state="closed">'
+        f'<button type="button" class="month-dd-trigger" aria-haspopup="listbox" aria-expanded="false">'
+        f'<span class="month-dd-label">{default_title}</span>'
+        '<svg class="month-dd-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" '
+        'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
+        '<polyline points="6 9 12 15 18 9"/></svg>'
+        '</button>'
+        f'<ul class="month-dd-panel" role="listbox" aria-label="בחר חודש">{"".join(item_html)}</ul>'
+        # Hidden native select kept for accessibility/forms + the existing JS change events
+        f'<select class="month-select" aria-hidden="true" tabindex="-1">{"".join(opts_html)}</select>'
+        '</div>'
         '</div>'
     )
 
@@ -1210,7 +1241,25 @@ body.view-mode .cell-status {
   text-transform: uppercase;
   color: var(--ink-mute);
 }
+/* CUSTOM DROPDOWN (v9.8.4) — replaces native <select> so the open panel matches the
+   closed button visually. The native <select> stays hidden for change-event compatibility. */
 .month-select {
+  /* Hidden but reachable — JS still emits 'change' events via this element */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.month-dd {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.month-dd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-he);
   font-size: 14px;
   font-weight: 700;
@@ -1218,19 +1267,97 @@ body.view-mode .cell-status {
   background: transparent;
   border: none;
   outline: none;
-  padding: 4px 4px 4px 0;
-  appearance: none;
-  -webkit-appearance: none;
+  padding: 4px 4px 4px 6px;
   cursor: pointer;
   direction: rtl;
   text-align: right;
   min-width: 110px;
+  transition: color 0.15s ease;
 }
-.month-select option {
+.month-dd-trigger:hover { color: var(--accent-cyan); }
+.month-dd-arrow {
+  color: var(--accent-cyan);
+  flex-shrink: 0;
+  transition: transform 0.18s ease;
+}
+.month-dd[data-state="open"] .month-dd-arrow {
+  transform: rotate(180deg);
+}
+.month-dd-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  min-width: 160px;
   background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-he);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.55),
+    0 2px 8px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 200;
+  direction: rtl;
 }
+.month-dd[data-state="open"] .month-dd-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.month-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  font-family: var(--font-he);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+}
+.month-option:hover,
+.month-option:focus-visible {
+  background: rgba(103,232,249,0.10);
+  color: var(--ink);
+  outline: none;
+}
+.month-option.is-active {
+  background: rgba(103,232,249,0.16);
+  color: var(--accent-cyan);
+}
+.month-option-name { flex: 1; }
+.month-option-check {
+  color: var(--accent-cyan);
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.12s ease;
+}
+.month-option.is-active .month-option-check { opacity: 1; }
+
+/* Uria theme variant — tangerine accent on the dropdown */
+body.theme-uria .month-dd-trigger:hover { color: #FF8A65; }
+body.theme-uria .month-dd-arrow { color: #FF8A65; }
+body.theme-uria .month-option:hover,
+body.theme-uria .month-option:focus-visible {
+  background: rgba(255,138,101,0.10);
+}
+body.theme-uria .month-option.is-active {
+  background: rgba(255,138,101,0.16);
+  color: #FF8A65;
+}
+body.theme-uria .month-option-check { color: #FF8A65; }
+
+/* Legacy arrow (no longer used, but kept for safety in older HTMLs) */
 .month-picker-arrow {
   color: var(--accent-cyan);
   pointer-events: none;
@@ -3473,6 +3600,7 @@ if (monthSelect) {
     const m = monthSelect.value;
     document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === m));
     updatePeriodLabel(m);
+    syncMonthDropdownUI(m);  // keep custom dropdown trigger label + active option in sync
     try { localStorage.setItem('gantt:active-month:' + CLIENT_KEY, m); } catch (e) {}
   });
   try {
@@ -3481,9 +3609,74 @@ if (monthSelect) {
       monthSelect.value = saved;
       document.querySelectorAll('.month').forEach(s => s.classList.toggle('active', s.dataset.month === saved));
       updatePeriodLabel(saved);
+      syncMonthDropdownUI(saved);
     }
   } catch (e) {}
 }
+
+/* ---------- Custom Month Dropdown (v9.8.4) ----------
+   Replaces native <select> visuals so the open panel matches the closed button
+   (same fonts, colors, radius). The hidden <select> still emits 'change' events
+   that the existing handler above listens to — no other code needs to know. */
+function syncMonthDropdownUI(monthKey) {
+  const dd = document.querySelector('.month-dd');
+  if (!dd) return;
+  const opt = dd.querySelector('.month-option[data-value="' + monthKey + '"]');
+  if (!opt) return;
+  // Update trigger label
+  const labelEl = dd.querySelector('.month-dd-label');
+  const name = opt.querySelector('.month-option-name');
+  if (labelEl && name) labelEl.textContent = name.textContent;
+  // Update active class on items
+  dd.querySelectorAll('.month-option').forEach(li => {
+    li.classList.toggle('is-active', li === opt);
+  });
+}
+
+(function setupMonthDropdown() {
+  const dd = document.querySelector('.month-dd');
+  if (!dd) return;
+  const trigger = dd.querySelector('.month-dd-trigger');
+  const panel = dd.querySelector('.month-dd-panel');
+  const select = dd.querySelector('.month-select');
+  if (!trigger || !panel || !select) return;
+
+  function setOpen(open) {
+    dd.dataset.state = open ? 'open' : 'closed';
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function toggle() { setOpen(dd.dataset.state !== 'open'); }
+  function close() { setOpen(false); }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+
+  panel.querySelectorAll('.month-option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const val = opt.dataset.value;
+      if (!val || val === select.value) { close(); return; }
+      select.value = val;
+      // Fire 'change' on the hidden select so the existing handler runs
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      close();
+    });
+    opt.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); opt.click(); }
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target)) close();
+  });
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dd.dataset.state === 'open') close();
+  });
+})();
 
 /* ---------- Modal ---------- */
 function openModal(num) {
