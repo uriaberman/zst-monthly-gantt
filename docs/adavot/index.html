@@ -2063,6 +2063,191 @@ body.theme-uria .footer-link {
 body.theme-uria .footer-link:hover {
   color: #FF6B35;
 }
+
+/* ============================================================
+   📱 RESPONSIVE — MOBILE FIRST (v9.9.1, 25.5.26)
+   Critical for the Viewer URL: clients open it from WhatsApp on their phones.
+   Strategy:
+   - Tablet (≤ 1024px): tighter spacing, smaller fonts, still 7-col grid
+   - Mobile (≤ 640px): stack the calendar — one cell per row, weekdays hidden,
+     empty cells (no items) hidden, modal full-screen
+   - Small mobile (≤ 380px): even more compact paddings/fonts
+   ============================================================ */
+
+/* TABLET (≤ 1024px) — keep grid, tighten everything */
+@media (max-width: 1024px) {
+  .container { padding: 16px 14px; }
+  .header-titles h1 { font-size: 22px; }
+  .header-titles .period { font-size: 13px; }
+  .cell { min-height: 130px; padding: 8px; }
+  .cell-title { font-size: 12.5px; }
+  .controls { gap: 10px; }
+  .legend { gap: 6px 10px; padding: 6px 12px; font-size: 11px; }
+  .modal { max-width: 96vw; }
+}
+
+/* MOBILE (≤ 640px) — calendar becomes a vertical list of content-cells.
+   Empty days are hidden. Weekday header hidden (each cell shows its own day name). */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .container { padding: 12px 10px; }
+
+  /* HEADER — compact, stack the titles */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .header-left, .header-right { width: 100%; }
+  .header-titles h1 { font-size: 19px; line-height: 1.2; }
+  .header-titles .period { font-size: 12px; }
+  .logo-mark, .uria-x-logo { transform: scale(0.85); transform-origin: right center; }
+
+  /* CONTROLS — stack legend + cluster vertically */
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .legend {
+    justify-content: center;
+    font-size: 10.5px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    flex-wrap: wrap;
+  }
+  .legend-chip { font-size: 10.5px; }
+  .control-cluster {
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .month-picker { flex: 1; min-width: 0; justify-content: center; }
+  .month-dd-trigger { min-width: 0; flex: 1; }
+  .month-dd-panel { right: auto; left: 0; min-width: 140px; }
+
+  /* WEEKDAYS HEADER — hide on mobile (each cell shows day name inline) */
+  .weekdays { display: none; }
+
+  /* GRID — one column. Each .week becomes a flat stack. */
+  .week {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .grid { gap: 8px; }
+
+  /* CELLS — hide empty days (outside / friday / saturday without content);
+     show only cells with content OR the current day (so user knows where "today" is). */
+  .cell.outside,
+  .cell.friday:not(.has-content),
+  .cell.saturday:not(.has-content) {
+    display: none;
+  }
+  /* Empty weekday cells without content also hidden — declutter the mobile view */
+  .cell:not(.has-content):not(.is-today) { display: none; }
+
+  /* Cells that ARE shown: full width, taller for touch */
+  .cell {
+    min-height: auto;
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
+  .cell-head {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .cell-num { font-size: 18px; }
+  .cell-num-row, .cell-heb { font-size: 11.5px; }
+  .cell-title { font-size: 14px; line-height: 1.35; }
+  .cell-type-row { font-size: 11px; }
+  .cell-status-pill { font-size: 11px; padding: 3px 9px; }
+  .cell-open { font-size: 11.5px; padding: 5px 10px; }
+
+  /* MODAL — full screen on mobile */
+  .modal-bg { padding: 0; align-items: stretch; }
+  .modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  .modal-head {
+    padding: 14px 16px 12px;
+    flex-wrap: wrap;
+  }
+  .modal-head-left h2 { font-size: 19px; }
+  .modal-head-left .date-row { font-size: 11.5px; gap: 6px; }
+  .modal-body { padding: 14px 16px 24px; }
+  .modal-primary { grid-template-columns: 1fr; gap: 14px; }
+  .copy-area textarea, .copy-view {
+    font-size: 14px;
+    min-height: 180px;
+  }
+  .modal-pill { font-size: 10.5px; }
+  .modal-publish-label { font-size: 10px; }
+  .modal-close, .modal-delete { width: 32px; height: 32px; }
+
+  /* MEDIA GRID inside modal: 2 columns on mobile (already handled above but tighten) */
+  .media-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .media-zone-label { font-size: 11px; padding: 6px 10px; }
+
+  /* DRAFT BAR — stack on mobile, larger touch targets */
+  .draft-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .draft-bar-actions { justify-content: stretch; }
+  .draft-bar-publish, .draft-bar-discard { flex: 1; padding: 10px 12px; font-size: 12px; }
+
+  /* DELETIONS PANEL — stack chips on mobile */
+  .deletions-panel { flex-direction: column; align-items: stretch; padding: 10px 12px; }
+  .deletions-list { flex-direction: column; align-items: stretch; gap: 6px; }
+  .deletions-list-item { max-width: 100%; justify-content: space-between; }
+
+  /* FOOTER — compact */
+  .footer-meta { flex-direction: column; align-items: stretch; gap: 8px; text-align: center; }
+  .footer-link { font-size: 11px; }
+
+  /* PREVIEW TOGGLE (Editor only) — smaller on mobile */
+  .preview-toggle {
+    bottom: 14px;
+    left: 14px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* SMALL MOBILE (≤ 380px) — even tighter for iPhone SE etc. */
+@media (max-width: 380px) {
+  .container { padding: 10px 8px; }
+  .header-titles h1 { font-size: 17px; }
+  .cell { padding: 10px 12px; }
+  .cell-title { font-size: 13.5px; }
+  .modal-head-left h2 { font-size: 17px; }
+  .media-grid { grid-template-columns: 1fr; }
+}
+
+/* TOUCH DEVICES — disable hover-only effects (no lift, no glow on hover) */
+@media (hover: none) {
+  .cell:hover { transform: none; }
+  .cell.has-content:hover {
+    background:
+      linear-gradient(155deg, rgba(103,232,249,0.30) 0%, rgba(103,232,249,0.14) 55%, rgba(103,232,249,0.06) 100%);
+    border-color: rgba(103,232,249,0.55);
+    transform: none;
+  }
+  .month-dd-trigger:hover { color: var(--ink); }
+}
 </style>
 </head>
 <body class="theme-zeliger">
@@ -2521,7 +2706,7 @@ body.theme-uria .footer-link:hover {
   </div>
 
   <div class="footer-meta">
-    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 17:00</span></span>
+    <span class="last-updated">עודכן לאחרונה: <span id="lastUpdatedTime">25.05.26, 17:05</span></span>
     <span class="view-mode-badge">מצב עריכה</span>
   </div>
   <div class="footer" dir="ltr">Built by <span class="footer-brand">Social · <a class="footer-link" href="https://zst.co.il/" target="_blank" rel="noopener">Zeliger Shomron</a></span></div>
@@ -2552,7 +2737,7 @@ const CLIENT_KEY = 'עמותת_אדוות';
 const MONTHS_META = {"2026-05": {"greg": "מאי 2026", "heb": "אייר תשפ״ו"}, "2026-06": {"greg": "יוני 2026", "heb": "סיון תשפ״ו"}};
 const VIEW_MODE_BAKED = false;   // true = this HTML is the frozen Viewer
 const VIEWER_URL = 'https://uriaberman.github.io/zst-monthly-gantt/adavot/view/';
-const LAST_UPDATED = '25.05.26, 17:00';
+const LAST_UPDATED = '25.05.26, 17:05';
 
 // 7 statuses (v9.9, 25.5.26). MUST stay in sync with Python STATUS_COLORS above.
 const STATUS_COLORS = {
