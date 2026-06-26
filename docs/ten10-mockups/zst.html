@@ -19,7 +19,7 @@ body{font-family:"Rubik","Inter",system-ui,sans-serif;background:var(--bg);color
 .hdr{position:sticky;top:0;z-index:20;background:rgba(7,16,31,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .mark{width:34px;height:34px;border-radius:9px;background:var(--paper2);border:1px solid var(--border);display:grid;place-items:center;color:var(--cyan);font-weight:900;font-size:18px}
 .htitle h1{font-size:17px;font-weight:700;letter-spacing:-.2px}
-.htitle .sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+.htitle .sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .htitle .sub b{color:var(--gold);font-weight:700}
 .spacer{flex:1}
 .themepill{display:flex;gap:6px;background:var(--paper3);border:1px solid var(--border);border-radius:999px;padding:4px}
@@ -39,10 +39,11 @@ body{font-family:"Rubik","Inter",system-ui,sans-serif;background:var(--bg);color
 .num{width:30px;height:30px;border-radius:9px;background:var(--paper2);border:1px solid var(--border);display:grid;place-items:center;color:var(--cyan);font-weight:900;font-size:14px;flex-shrink:0}
 .dir{font-size:11.5px;font-weight:700;color:var(--gold);letter-spacing:.3px}
 .favtag{font-size:10.5px;font-weight:700;color:var(--gold);background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.3);padding:3px 9px;border-radius:999px}
-.hook{font-size:16.5px;font-weight:700;line-height:1.35;color:var(--ink);min-height:46px}
-.body{font-size:13.5px;color:var(--ink-soft);line-height:1.62;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:66px}
-.card.expanded .body{-webkit-line-clamp:unset;overflow:visible}
-.more{display:none;background:none;border:0;color:var(--cyan);font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;padding:0;align-self:flex-start}
+.hook{font-size:16.5px;font-weight:700;line-height:1.3;color:var(--ink);height:43px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.body{font-size:13.5px;color:var(--ink-soft);line-height:1.62;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;height:65px}
+.card.expanded .body{-webkit-line-clamp:unset;overflow:visible;height:auto}
+.card.expanded .hook{-webkit-line-clamp:unset;height:auto}
+.more{display:block;visibility:hidden;height:18px;line-height:18px;background:none;border:0;color:var(--cyan);font-family:inherit;font-weight:700;font-size:12.5px;cursor:pointer;padding:0;align-self:flex-start}
 .cta{font-size:12.5px;color:var(--cyan);font-weight:600;margin-top:2px}
 .actions{display:flex;gap:8px;margin-top:auto;padding-top:13px;border-top:1px solid var(--border-soft)}
 .act{flex:1;border:1px solid var(--border);background:var(--paper3);color:var(--ink-soft);border-radius:8px;padding:8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
@@ -173,7 +174,7 @@ body{font-family:"Rubik","Inter",system-ui,sans-serif;background:var(--bg);color
 document.querySelectorAll('.card').forEach(function(card){
   var body=card.querySelector('.body'), more=card.querySelector('.more');
   if(!body||!more) return;
-  if(body.scrollHeight - body.clientHeight > 3){ more.style.display='inline'; }
+  var hk=card.querySelector('.hook'); if((body.scrollHeight-body.clientHeight>3)||(hk&&hk.scrollHeight-hk.clientHeight>3)){ more.style.visibility='visible'; }
   more.addEventListener('click',function(){
     var ex=card.classList.toggle('expanded');
     more.textContent = ex ? 'קרא פחות' : 'קרא עוד';
