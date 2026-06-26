@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ten10 · מוקאפ ZST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07101F; --paper:#0F1A2E; --paper2:#14223A; --paper3:#0C1828;
+  --ink:#F1F5F9; --ink-soft:#94A3B8; --ink-faint:#475569; --ink-mute:#64748B;
+  --border:#1E2D45; --border-soft:#182338;
+  --cyan:#67E8F9; --gold:#FACC15;
+  --st-work:#3B82F6; --st-design:#F97316; --st-pending:#EAB308; --st-approved:#22C55E; --st-fix:#EF4444;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Rubik","Inter",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+/* header */
+.hdr{position:sticky;top:0;z-index:20;background:rgba(7,16,31,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.mark{width:34px;height:34px;border-radius:9px;background:var(--paper2);border:1px solid var(--border);display:grid;place-items:center;color:var(--cyan);font-weight:900;font-size:18px}
+.htitle{display:flex;flex-direction:column;gap:2px}
+.htitle h1{font-size:17px;font-weight:700;letter-spacing:-.2px}
+.htitle .sub{font-size:12.5px;color:var(--ink-soft)}
+.htitle .sub b{color:var(--gold);font-weight:700}
+.spacer{flex:1}
+.themepill{display:flex;gap:6px;background:var(--paper3);border:1px solid var(--border);border-radius:999px;padding:4px}
+.themepill span{font-size:12px;padding:5px 13px;border-radius:999px;color:var(--ink-mute);font-weight:600}
+.themepill .on{background:var(--cyan);color:#062223}
+.btn{border:0;border-radius:9px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.btn.share{background:var(--gold);color:#1a1205}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink-soft)}
+/* grid */
+.wrap{max-width:1480px;margin:24px auto;padding:0 22px}
+.lead{color:var(--ink-soft);font-size:13px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.lead .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.card{background:linear-gradient(180deg,var(--paper) 0%,var(--paper3) 100%);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:11px;transition:.16s}
+.card:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 14px 34px -16px rgba(103,232,249,.4)}
+.card.fav{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 14px 30px -16px rgba(250,204,21,.45)}
+.crow{display:flex;align-items:center;gap:10px}
+.num{width:30px;height:30px;border-radius:9px;background:var(--paper2);border:1px solid var(--border);display:grid;place-items:center;color:var(--cyan);font-weight:900;font-size:14px;flex-shrink:0}
+.dir{font-size:11.5px;font-weight:700;color:var(--gold);letter-spacing:.3px}
+.favtag{margin-inline-start:auto;font-size:10.5px;font-weight:700;color:var(--gold);background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.3);padding:3px 9px;border-radius:999px}
+.hook{font-size:16.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+.body{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+.cta{font-size:12.5px;color:var(--cyan);font-weight:600;margin-top:2px}
+.actions{display:flex;gap:8px;margin-top:auto;padding-top:13px;border-top:1px solid var(--border-soft)}
+.act{flex:1;border:1px solid var(--border);background:var(--paper3);color:var(--ink-soft);border-radius:8px;padding:8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.act.yes:hover{border-color:var(--st-approved);color:var(--st-approved)}
+.act.no:hover{border-color:var(--st-fix);color:var(--st-fix)}
+.act.note:hover{border-color:var(--cyan);color:var(--cyan)}
+.act.yeson{border-color:var(--st-approved);color:var(--st-approved);background:rgba(34,197,94,.08)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(250,204,21,.5)}50%{box-shadow:0 0 0 7px rgba(250,204,21,0)}}
+.pulse{animation:pulse 2.6s ease-in-out infinite}
+.foot{max-width:1480px;margin:26px auto 0;padding:0 22px;color:var(--ink-faint);font-size:11.5px;text-align:center}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="mark">+</div>
+  <div class="htitle">
+    <h1>חיים בפלוס · עבודת קיץ ראשונה ותלוש שכר</h1>
+    <div class="sub">10 כיווני קופי לבחירה · <b>תבנית ZST</b></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="themepill"><span class="on">ZST</span><span>Uria</span></div>
+  <button class="btn ghost">⤓ ייצא</button>
+  <button class="btn share">🔗 שתף ללקוח</button>
+</div>
+
+<div class="wrap">
+  <div class="lead"><span class="dot"></span> בחר כיוון, סמן אהבתי/לא, או כתוב הערה. הפידבק חוזר אליי בצ'אט ואני מלטש.</div>
+  <div class="grid">
+
+    <div class="card fav pulse">
+      <div class="crow"><div class="num">1</div><div class="dir">הנתון המחץ</div><span class="favtag">★ מועדף</span></div>
+      <div class="hook">80% מהישראלים באוברדראפט. רוצים לדעת איפה זה מתחיל?</div>
+      <div class="body">בעבודת הקיץ הראשונה. שם נקבעים ההרגלים: לבדוק תלוש או לא, לשאול שאלות או לשתוק.</div>
+      <div class="cta">CTA: שמרו את הפוסט, תצטרכו אותו ב-1 ביולי.</div>
+      <div class="actions"><button class="act yes yeson">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">2</div><div class="dir">החידה</div></div>
+      <div class="hook">עבדת חודש שלם. סוכם 2,650 ש"ח. נכנסו 2,400. לאן נעלמו 250 שקל?</div>
+      <div class="body">לא, הבוס לא גנב אותך. כנראה. רק מי שקורא את התלוש יודע את התשובה.</div>
+      <div class="cta">CTA: גללו ותבדקו מול התלוש שלכם.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">3</div><div class="dir">הסיפור הספציפי</div></div>
+      <div class="hook">יובל, 17 וחצי, מלצר ברעננה. בסוף הקיץ גילה שמגיעים לו עוד 800 ש"ח.</div>
+      <div class="body">הוא ישב בסדנה אחת ולמד: דמי נסיעות זה חוק, לא טובה. הפסקה במשמרת ארוכה, גם.</div>
+      <div class="cta">CTA: רוצים את רשימת הזכויות? מילת קוד "קיץ" בתגובות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">4</div><div class="dir">הצ'ק-ליסט</div></div>
+      <div class="hook">5 דברים לסגור לפני שאתם אומרים "כן" לעבודת קיץ</div>
+      <div class="body">כמה לשעה בכתב · מתי יום התשלום · נסיעות על מי · מי רושם שעות · תלוש חובה גם בגיל 17.</div>
+      <div class="cta">CTA: שלחו לחבר שמתחיל עבודה השבוע.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">5</div><div class="dir">מיתוס מול אמת</div></div>
+      <div class="hook">"אני רק בן 17, לא מגיע לי תלוש" - בטוחים?</div>
+      <div class="body">כל עובד בישראל מקבל תלוש שכר. בכל גיל, בכל משרה. גם שבועיים בקיוסק.</div>
+      <div class="cta">CTA: עוד 3 מיתוסים בסטורי המוצמד.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">6</div><div class="dir">ההומור היבש</div></div>
+      <div class="hook">"אנחנו פה כמו משפחה" - הבוס, רגע לפני ששוכח את דמי הנסיעות</div>
+      <div class="body">גם משפחה משלמת נסיעות, זה בחוק. חיוך של מעסיק הוא לא מסמך משפטי. סיכום בוואטסאפ כן.</div>
+      <div class="cta">CTA: תייגו את החבר שעובד "כמו משפחה".</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">7</div><div class="dir">הוכחה חברתית</div></div>
+      <div class="hook">"חשבתי שתלוש שכר זה לגדולים. אז גיליתי שהפסדתי שעתיים ביום."</div>
+      <div class="body">המנטורים שלנו עוברים השנה ב-250 מוסדות, ושאלת הקיץ הכי חוזרת: "רגע, מגיע לי?"</div>
+      <div class="cta">CTA למוסדות: תוכנית 1038 בגפ"ן.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">8</div><div class="dir">"הטעות של..."</div></div>
+      <div class="hook">הטעות שכל נער עושה בקיץ הראשון, ואיך לתקן אותה בדקה</div>
+      <div class="body">לא לרשום שעות. נשמע קטן, עולה מאות שקלים. התיקון: פתקים בטלפון, 10 שניות בסוף משמרת.</div>
+      <div class="cta">CTA: יש לכם טריק לרישום שעות? ספרו בתגובות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">9</div><div class="dir">מטאפורת הגיימינג</div></div>
+      <div class="hook">תלוש שכר זה מסך הסטטיסטיקות בסוף המשחק. מי שלא פותח אותו לא יודע אם ניצח.</div>
+      <div class="body">ברוטו = הניקוד הכולל. נטו = מה שבאמת נכנס. ניכויים = מה שהמערכת לוקחת.</div>
+      <div class="cta">CTA: שתפו את מי שמשחק בעיניים עצומות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">10</div><div class="dir">POV המנטור</div></div>
+      <div class="hook">"בגיל 17 עבדתי קיץ שלם בלי לדעת שמגיעות לי נסיעות. אף אחד לא אמר לי."</div>
+      <div class="body">עומר, 24, מנטור: "היום אני אומר לכיתה את המשפט שהייתי צריך לשמוע: הכסף שלך מתחיל בידע שלך."</div>
+      <div class="cta">CTA לסטודנטים: מחפשים מנטורים לשנה הבאה.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+  </div>
+</div>
+<div class="foot">מוקאפ · ten10 · תבנית ZST (טוקנים אמיתיים מ-Gantts System) · הכפתורים להמחשה בלבד</div>
+</body>
+</html>

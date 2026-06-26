@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ten10 · מוקאפ Uria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;900&family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --aubergine:#4C1D95; --teal:#0EA5BB; --tangerine:#FF6B35;
+  --bg:#FAFAFA; --ink:#0A0A0A; --ink-soft:#52525B; --ink-faint:#A1A1AA;
+  --line:#ECECEC; --card:#FFFFFF;
+  --ok:#16A34A; --no:#E11D48;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Rubik",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+.en{font-family:"Plus Jakarta Sans",sans-serif}
+/* header */
+.hdr{position:sticky;top:0;z-index:20;background:rgba(250,250,250,.9);backdrop-filter:blur(10px);border-bottom:2px solid var(--ink);padding:16px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mark{width:34px;height:34px;border-radius:8px;background:var(--teal);display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px}
+.htitle h1{font-size:17px;font-weight:700;letter-spacing:-.2px;color:var(--aubergine)}
+.htitle .sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+.htitle .sub b{color:var(--tangerine);font-weight:700}
+.spacer{flex:1}
+.themepill{display:flex;gap:4px;background:#fff;border:1.5px solid var(--ink);border-radius:999px;padding:3px}
+.themepill span{font-size:12px;padding:5px 13px;border-radius:999px;color:var(--ink-faint);font-weight:700}
+.themepill .on{background:var(--aubergine);color:#fff}
+.btn{border:0;border-radius:8px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.btn.share{background:var(--tangerine);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+/* grid */
+.wrap{max-width:1480px;margin:24px auto;padding:0 22px}
+.lead{color:var(--ink-soft);font-size:13px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.lead .dot{width:8px;height:8px;background:var(--teal)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:11px;transition:.16s}
+.card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(14,165,187,.5)}
+.card.fav{border-color:var(--tangerine);box-shadow:0 0 0 1.5px var(--tangerine)}
+.crow{display:flex;align-items:center;gap:10px}
+.num{width:30px;height:30px;border-radius:8px;background:var(--aubergine);display:grid;place-items:center;color:#fff;font-weight:900;font-size:14px;flex-shrink:0}
+.dir{font-size:11.5px;font-weight:700;color:var(--teal);letter-spacing:.3px}
+.favtag{margin-inline-start:auto;font-size:10.5px;font-weight:700;color:var(--tangerine);background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.35);padding:3px 9px;border-radius:999px}
+.hook{font-size:16.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+.body{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+.cta{font-size:12.5px;color:var(--teal);font-weight:700;margin-top:2px}
+.actions{display:flex;gap:8px;margin-top:auto;padding-top:13px;border-top:1.5px solid var(--line)}
+.act{flex:1;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:8px;padding:8px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.act.yes:hover{border-color:var(--ok);color:var(--ok)}
+.act.no:hover{border-color:var(--no);color:var(--no)}
+.act.note:hover{border-color:var(--teal);color:var(--teal)}
+.act.yeson{border-color:var(--ok);color:var(--ok);background:rgba(22,163,74,.07)}
+.foot{max-width:1480px;margin:26px auto 0;padding:0 22px;color:var(--ink-faint);font-size:11.5px;text-align:center}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="mark">&times;</div>
+  <div class="htitle">
+    <h1>חיים בפלוס · עבודת קיץ ראשונה ותלוש שכר</h1>
+    <div class="sub">10 כיווני קופי לבחירה · <b>תבנית Uria</b></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="themepill"><span>ZST</span><span class="on">Uria</span></div>
+  <button class="btn ghost en">Export</button>
+  <button class="btn share">🔗 שתף ללקוח</button>
+</div>
+
+<div class="wrap">
+  <div class="lead"><span class="dot"></span> בחר כיוון, סמן אהבתי/לא, או כתוב הערה. הפידבק חוזר אליי בצ'אט ואני מלטש.</div>
+  <div class="grid">
+
+    <div class="card fav">
+      <div class="crow"><div class="num">1</div><div class="dir">הנתון המחץ</div><span class="favtag">★ מועדף</span></div>
+      <div class="hook">80% מהישראלים באוברדראפט. רוצים לדעת איפה זה מתחיל?</div>
+      <div class="body">בעבודת הקיץ הראשונה. שם נקבעים ההרגלים: לבדוק תלוש או לא, לשאול שאלות או לשתוק.</div>
+      <div class="cta">CTA: שמרו את הפוסט, תצטרכו אותו ב-1 ביולי.</div>
+      <div class="actions"><button class="act yes yeson">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">2</div><div class="dir">החידה</div></div>
+      <div class="hook">עבדת חודש שלם. סוכם 2,650 ש"ח. נכנסו 2,400. לאן נעלמו 250 שקל?</div>
+      <div class="body">לא, הבוס לא גנב אותך. כנראה. רק מי שקורא את התלוש יודע את התשובה.</div>
+      <div class="cta">CTA: גללו ותבדקו מול התלוש שלכם.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">3</div><div class="dir">הסיפור הספציפי</div></div>
+      <div class="hook">יובל, 17 וחצי, מלצר ברעננה. בסוף הקיץ גילה שמגיעים לו עוד 800 ש"ח.</div>
+      <div class="body">הוא ישב בסדנה אחת ולמד: דמי נסיעות זה חוק, לא טובה. הפסקה במשמרת ארוכה, גם.</div>
+      <div class="cta">CTA: רוצים את רשימת הזכויות? מילת קוד "קיץ" בתגובות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">4</div><div class="dir">הצ'ק-ליסט</div></div>
+      <div class="hook">5 דברים לסגור לפני שאתם אומרים "כן" לעבודת קיץ</div>
+      <div class="body">כמה לשעה בכתב · מתי יום התשלום · נסיעות על מי · מי רושם שעות · תלוש חובה גם בגיל 17.</div>
+      <div class="cta">CTA: שלחו לחבר שמתחיל עבודה השבוע.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">5</div><div class="dir">מיתוס מול אמת</div></div>
+      <div class="hook">"אני רק בן 17, לא מגיע לי תלוש" - בטוחים?</div>
+      <div class="body">כל עובד בישראל מקבל תלוש שכר. בכל גיל, בכל משרה. גם שבועיים בקיוסק.</div>
+      <div class="cta">CTA: עוד 3 מיתוסים בסטורי המוצמד.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">6</div><div class="dir">ההומור היבש</div></div>
+      <div class="hook">"אנחנו פה כמו משפחה" - הבוס, רגע לפני ששוכח את דמי הנסיעות</div>
+      <div class="body">גם משפחה משלמת נסיעות, זה בחוק. חיוך של מעסיק הוא לא מסמך משפטי. סיכום בוואטסאפ כן.</div>
+      <div class="cta">CTA: תייגו את החבר שעובד "כמו משפחה".</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">7</div><div class="dir">הוכחה חברתית</div></div>
+      <div class="hook">"חשבתי שתלוש שכר זה לגדולים. אז גיליתי שהפסדתי שעתיים ביום."</div>
+      <div class="body">המנטורים שלנו עוברים השנה ב-250 מוסדות, ושאלת הקיץ הכי חוזרת: "רגע, מגיע לי?"</div>
+      <div class="cta">CTA למוסדות: תוכנית 1038 בגפ"ן.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">8</div><div class="dir">"הטעות של..."</div></div>
+      <div class="hook">הטעות שכל נער עושה בקיץ הראשון, ואיך לתקן אותה בדקה</div>
+      <div class="body">לא לרשום שעות. נשמע קטן, עולה מאות שקלים. התיקון: פתקים בטלפון, 10 שניות בסוף משמרת.</div>
+      <div class="cta">CTA: יש לכם טריק לרישום שעות? ספרו בתגובות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">9</div><div class="dir">מטאפורת הגיימינג</div></div>
+      <div class="hook">תלוש שכר זה מסך הסטטיסטיקות בסוף המשחק. מי שלא פותח אותו לא יודע אם ניצח.</div>
+      <div class="body">ברוטו = הניקוד הכולל. נטו = מה שבאמת נכנס. ניכויים = מה שהמערכת לוקחת.</div>
+      <div class="cta">CTA: שתפו את מי שמשחק בעיניים עצומות.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+    <div class="card">
+      <div class="crow"><div class="num">10</div><div class="dir">POV המנטור</div></div>
+      <div class="hook">"בגיל 17 עבדתי קיץ שלם בלי לדעת שמגיעות לי נסיעות. אף אחד לא אמר לי."</div>
+      <div class="body">עומר, 24, מנטור: "היום אני אומר לכיתה את המשפט שהייתי צריך לשמוע: הכסף שלך מתחיל בידע שלך."</div>
+      <div class="cta">CTA לסטודנטים: מחפשים מנטורים לשנה הבאה.</div>
+      <div class="actions"><button class="act yes">✓ אהבתי</button><button class="act no">✗ לא</button><button class="act note">📝 הערה</button></div>
+    </div>
+
+  </div>
+</div>
+<div class="foot">מוקאפ · ten10 · תבנית Uria Brand Kit (Aubergine · Teal · Tangerine · flat) · הכפתורים להמחשה בלבד</div>
+</body>
+</html>
